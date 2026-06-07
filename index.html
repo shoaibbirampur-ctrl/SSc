@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>বিজ্ঞান ল্যাব — ভার্চুয়াল বিজ্ঞানাগার</title>
+<title>বিজ্ঞান ল্যাব — দাখিল ষষ্ঠ শ্রেণি</title>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -16,11 +16,8 @@
     --gold: #f59e0b;
     --text: #e2e8f0;
     --text-dim: #94a3b8;
-    --glow: rgba(0,212,255,0.15);
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   body {
     font-family: 'Hind Siliguri', sans-serif;
     background: var(--bg);
@@ -28,40 +25,13 @@
     min-height: 100vh;
     overflow-x: hidden;
   }
-
-  /* ===== ANIMATED BACKGROUND ===== */
   .bg-canvas {
     position: fixed; inset: 0; z-index: 0;
     background:
       radial-gradient(ellipse 80% 60% at 20% 10%, rgba(124,58,237,0.12) 0%, transparent 60%),
       radial-gradient(ellipse 60% 50% at 80% 80%, rgba(0,212,255,0.1) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(16,185,129,0.05) 0%, transparent 70%),
       #0a0e1a;
   }
-
-  .stars {
-    position: fixed; inset: 0; z-index: 0;
-    background-image:
-      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 50% 70%, rgba(0,212,255,0.5) 0%, transparent 100%),
-      radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.2) 0%, transparent 100%),
-      radial-gradient(1px 1px at 90% 50%, rgba(124,58,237,0.6) 0%, transparent 100%),
-      radial-gradient(1px 1px at 30% 90%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 70% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 40% 20%, rgba(0,212,255,0.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 60% 85%, rgba(255,255,255,0.25) 0%, transparent 100%),
-      radial-gradient(1px 1px at 15% 55%, rgba(16,185,129,0.5) 0%, transparent 100%);
-    background-size: 300px 300px;
-    animation: twinkle 8s ease-in-out infinite alternate;
-  }
-
-  @keyframes twinkle {
-    0% { opacity: 0.6; }
-    100% { opacity: 1; }
-  }
-
-  /* ===== GRID OVERLAY ===== */
   .grid-overlay {
     position: fixed; inset: 0; z-index: 0;
     background-image:
@@ -69,607 +39,265 @@
       linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
     background-size: 60px 60px;
   }
-
-  /* ===== MAIN WRAPPER ===== */
-  .wrapper {
-    position: relative; z-index: 1;
-    min-height: 100vh;
-    display: flex; flex-direction: column;
-    align-items: center;
-  }
-
-  /* ===== HEADER ===== */
-  header {
-    width: 100%; text-align: center;
-    padding: 50px 20px 20px;
-    position: relative;
-  }
-
-  .logo-icon {
-    font-size: 3rem;
-    display: block;
-    animation: float 4s ease-in-out infinite;
-    margin-bottom: 12px;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
+  .wrapper { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+  header { width: 100%; text-align: center; padding: 40px 20px 10px; }
+  .logo-icon { font-size: 2.8rem; display: block; animation: float 4s ease-in-out infinite; margin-bottom: 10px; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
   .site-title {
     font-family: 'Tiro Bangla', serif;
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 400;
+    font-size: clamp(1.8rem, 5vw, 3rem);
     background: linear-gradient(135deg, #00d4ff, #7c3aed, #10b981);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1.2;
-    margin-bottom: 8px;
-    letter-spacing: -0.5px;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    line-height: 1.2; margin-bottom: 6px;
   }
-
-  .site-sub {
-    font-size: 1rem;
-    color: var(--text-dim);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    font-weight: 300;
-  }
-
-  /* ===== NAV BAR ===== */
+  .site-sub { font-size: 0.85rem; color: var(--text-dim); letter-spacing: 3px; text-transform: uppercase; font-weight: 300; }
+  .pulse { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent3); margin-right: 5px; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(16,185,129,0.4)} 50%{transform:scale(1.3);box-shadow:0 0 0 6px rgba(16,185,129,0)} }
   .breadcrumb {
-    width: 90%; max-width: 800px;
-    display: flex; align-items: center; gap: 8px;
-    margin: 30px 0 0;
-    padding: 12px 20px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 50px;
-    font-size: 0.85rem;
-    color: var(--text-dim);
-    flex-wrap: wrap;
+    width: 90%; max-width: 800px; display: flex; align-items: center; gap: 8px;
+    margin: 24px 0 0; padding: 10px 18px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 50px; font-size: 0.82rem; color: var(--text-dim); flex-wrap: wrap;
   }
-
-  .breadcrumb span { color: var(--accent); opacity: 0.5; }
-  .breadcrumb .bc-item {
-    cursor: pointer; color: var(--text-dim);
-    transition: color 0.2s;
-  }
-  .breadcrumb .bc-item:hover { color: var(--accent); }
-  .breadcrumb .bc-item.active { color: var(--accent); }
-
-  /* ===== SCREEN CONTAINER ===== */
-  .screen-container {
-    width: 90%; max-width: 1100px;
-    margin: 40px auto 60px;
-    animation: screenIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  @keyframes screenIn {
-    from { opacity: 0; transform: translateY(30px) scale(0.97); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  /* ===== SCREEN TITLE ===== */
-  .screen-title {
-    font-family: 'Tiro Bangla', serif;
-    font-size: clamp(1.4rem, 3vw, 2rem);
-    text-align: center;
-    margin-bottom: 12px;
-    color: var(--text);
-  }
-
-  .screen-desc {
-    text-align: center;
-    color: var(--text-dim);
-    font-size: 0.95rem;
-    margin-bottom: 50px;
-    line-height: 1.7;
-  }
-
-  /* ===== CLASS CARDS (Screen 1) ===== */
-  .class-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 24px;
-  }
-
+  .breadcrumb .bc-item { cursor: pointer; color: var(--text-dim); transition: color 0.2s; }
+  .breadcrumb .bc-item:hover, .breadcrumb .bc-item.active { color: var(--accent); }
+  .screen-container { width: 90%; max-width: 1100px; margin: 30px auto 60px; animation: screenIn 0.45s cubic-bezier(0.16,1,0.3,1) forwards; }
+  @keyframes screenIn { from{opacity:0;transform:translateY(28px) scale(0.97)} to{opacity:1;transform:none} }
+  .screen-title { font-family: 'Tiro Bangla', serif; font-size: clamp(1.3rem, 3vw, 1.9rem); text-align: center; margin-bottom: 8px; }
+  .screen-desc { text-align: center; color: var(--text-dim); font-size: 0.9rem; margin-bottom: 40px; line-height: 1.7; }
+  /* CLASS CARDS */
+  .class-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
   .class-card {
-    position: relative;
-    background: var(--surface);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 20px;
-    padding: 36px 28px;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    overflow: hidden;
-    text-align: center;
+    position: relative; background: var(--surface); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 20px; padding: 32px 24px; cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.16,1,0.3,1); overflow: hidden; text-align: center;
   }
-
-  .class-card::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: var(--card-glow);
-    opacity: 0;
-    transition: opacity 0.4s;
-    border-radius: 20px;
-  }
-
-  .class-card:hover::before { opacity: 1; }
-
-  .class-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    border-color: var(--card-accent);
-    box-shadow: 0 20px 60px var(--card-shadow);
-  }
-
-  .class-card .card-emoji {
-    font-size: 2.8rem;
-    margin-bottom: 16px;
-    display: block;
-    transition: transform 0.4s;
-  }
-
+  .class-card::before { content:''; position:absolute; inset:0; background:var(--card-glow); opacity:0; transition:opacity 0.4s; border-radius:20px; }
+  .class-card:hover::before { opacity:1; }
+  .class-card:hover { transform: translateY(-8px) scale(1.02); border-color: var(--card-accent); box-shadow: 0 20px 60px var(--card-shadow); }
+  .class-card .card-emoji { font-size: 2.5rem; margin-bottom: 14px; display: block; transition: transform 0.4s; }
   .class-card:hover .card-emoji { transform: scale(1.2) rotate(-5deg); }
-
-  .class-card .card-label {
-    font-family: 'Tiro Bangla', serif;
-    font-size: 1.3rem;
-    font-weight: 400;
-    color: var(--text);
-    margin-bottom: 8px;
+  .class-card .card-label { font-family: 'Tiro Bangla', serif; font-size: 1.2rem; color: var(--text); margin-bottom: 6px; }
+  .class-card .card-sub { font-size: 0.78rem; color: var(--text-dim); letter-spacing: 1px; }
+  .class-card .card-badge { display:inline-block; margin-top:12px; padding:3px 12px; border-radius:20px; font-size:0.72rem; background:rgba(255,255,255,0.07); color:var(--card-accent); border:1px solid var(--card-accent); opacity:0.8; }
+  .card-blue { --card-accent:#00d4ff; --card-glow:linear-gradient(135deg,rgba(0,212,255,0.06),transparent); --card-shadow:rgba(0,212,255,0.15); }
+  .card-purple { --card-accent:#a78bfa; --card-glow:linear-gradient(135deg,rgba(167,139,250,0.06),transparent); --card-shadow:rgba(167,139,250,0.15); }
+  .card-green { --card-accent:#10b981; --card-glow:linear-gradient(135deg,rgba(16,185,129,0.06),transparent); --card-shadow:rgba(16,185,129,0.15); }
+  .card-gold { --card-accent:#f59e0b; --card-glow:linear-gradient(135deg,rgba(245,158,11,0.08),transparent); --card-shadow:rgba(245,158,11,0.2); }
+  /* MODE CARDS */
+  .mode-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; max-width:700px; margin:0 auto; }
+  .mode-card { position:relative; border-radius:22px; padding:44px 32px; cursor:pointer; text-align:center; transition:all 0.4s cubic-bezier(0.16,1,0.3,1); overflow:hidden; }
+  .exp-card { background:linear-gradient(135deg,#0d1f3c,#1a3a5c); border:1px solid rgba(0,212,255,0.2); }
+  .model-card { background:linear-gradient(135deg,#1a0d3c,#2d1a5c); border:1px solid rgba(124,58,237,0.2); }
+  .mode-card:hover { transform:translateY(-10px); }
+  .exp-card:hover { box-shadow:0 30px 80px rgba(0,212,255,0.2); border-color:rgba(0,212,255,0.5); }
+  .model-card:hover { box-shadow:0 30px 80px rgba(124,58,237,0.25); border-color:rgba(124,58,237,0.5); }
+  .mode-icon { font-size:3.5rem; margin-bottom:18px; display:block; animation:float 4s ease-in-out infinite; }
+  .model-card .mode-icon { animation-delay:-2s; }
+  .mode-title { font-family:'Tiro Bangla',serif; font-size:1.5rem; margin-bottom:10px; color:#fff; }
+  .mode-desc { font-size:0.88rem; color:var(--text-dim); line-height:1.7; }
+  .mode-tag { display:inline-block; margin-top:18px; padding:5px 16px; border-radius:30px; font-size:0.75rem; letter-spacing:1px; font-weight:500; }
+  .exp-card .mode-tag { background:rgba(0,212,255,0.1); border:1px solid rgba(0,212,255,0.3); color:var(--accent); }
+  .model-card .mode-tag { background:rgba(124,58,237,0.15); border:1px solid rgba(124,58,237,0.3); color:#a78bfa; }
+  /* SUBJECT CARDS */
+  .subject-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; max-width:860px; margin:0 auto; }
+  .subject-card { border-radius:20px; padding:40px 26px; cursor:pointer; text-align:center; border:1px solid transparent; transition:all 0.4s cubic-bezier(0.16,1,0.3,1); overflow:hidden; }
+  .sub-physics { background:linear-gradient(135deg,#0d2137,#132d4a); border-color:rgba(0,212,255,0.15); }
+  .sub-chemistry { background:linear-gradient(135deg,#1a1a0d,#2a2a0f); border-color:rgba(234,179,8,0.15); }
+  .sub-biology { background:linear-gradient(135deg,#0d200d,#0f2b0f); border-color:rgba(16,185,129,0.15); }
+  .subject-card:hover { transform:translateY(-10px) scale(1.03); }
+  .sub-physics:hover { box-shadow:0 30px 70px rgba(0,212,255,0.2); border-color:rgba(0,212,255,0.4); }
+  .sub-chemistry:hover { box-shadow:0 30px 70px rgba(234,179,8,0.2); border-color:rgba(234,179,8,0.4); }
+  .sub-biology:hover { box-shadow:0 30px 70px rgba(16,185,129,0.2); border-color:rgba(16,185,129,0.4); }
+  .sub-icon { font-size:3rem; display:block; margin-bottom:14px; animation:float 5s ease-in-out infinite; }
+  .sub-chemistry .sub-icon { animation-delay:-1.5s; } .sub-biology .sub-icon { animation-delay:-3s; }
+  .sub-title { font-family:'Tiro Bangla',serif; font-size:1.4rem; color:#fff; margin-bottom:6px; }
+  .sub-desc { font-size:0.82rem; color:var(--text-dim); line-height:1.6; }
+  /* CHAPTER LIST */
+  .chapter-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; margin-bottom:30px; }
+  .chapter-item {
+    background:var(--surface); border:1px solid rgba(255,255,255,0.07); border-radius:14px;
+    padding:16px 18px; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:12px;
   }
-
-  .class-card .card-sub {
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    letter-spacing: 1px;
-  }
-
-  .class-card .card-badge {
-    display: inline-block;
-    margin-top: 14px;
-    padding: 4px 14px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    background: rgba(255,255,255,0.07);
-    color: var(--card-accent);
-    border: 1px solid var(--card-accent);
-    opacity: 0.8;
-  }
-
-  /* Card color themes */
-  .card-blue {
-    --card-accent: #00d4ff;
-    --card-glow: linear-gradient(135deg, rgba(0,212,255,0.06), transparent);
-    --card-shadow: rgba(0,212,255,0.15);
-  }
-  .card-purple {
-    --card-accent: #a78bfa;
-    --card-glow: linear-gradient(135deg, rgba(167,139,250,0.06), transparent);
-    --card-shadow: rgba(167,139,250,0.15);
-  }
-  .card-green {
-    --card-accent: #10b981;
-    --card-glow: linear-gradient(135deg, rgba(16,185,129,0.06), transparent);
-    --card-shadow: rgba(16,185,129,0.15);
-  }
-  .card-gold {
-    --card-accent: #f59e0b;
-    --card-glow: linear-gradient(135deg, rgba(245,158,11,0.08), transparent);
-    --card-shadow: rgba(245,158,11,0.2);
-  }
-
-  /* ===== MODE CARDS (Screen 2) ===== */
-  .mode-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    max-width: 750px;
-    margin: 0 auto;
-  }
-
-  .mode-card {
-    position: relative;
-    border-radius: 24px;
-    padding: 50px 36px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    overflow: hidden;
-  }
-
-  .mode-card.exp-card {
-    background: linear-gradient(135deg, #0d1f3c, #1a3a5c);
-    border: 1px solid rgba(0,212,255,0.2);
-  }
-
-  .mode-card.model-card {
-    background: linear-gradient(135deg, #1a0d3c, #2d1a5c);
-    border: 1px solid rgba(124,58,237,0.2);
-  }
-
-  .mode-card:hover {
-    transform: translateY(-10px);
-  }
-
-  .mode-card.exp-card:hover {
-    box-shadow: 0 30px 80px rgba(0,212,255,0.2);
-    border-color: rgba(0,212,255,0.5);
-  }
-
-  .mode-card.model-card:hover {
-    box-shadow: 0 30px 80px rgba(124,58,237,0.25);
-    border-color: rgba(124,58,237,0.5);
-  }
-
-  .mode-icon {
-    font-size: 4rem;
-    margin-bottom: 20px;
-    display: block;
-    animation: float 4s ease-in-out infinite;
-  }
-
-  .mode-card.model-card .mode-icon { animation-delay: -2s; }
-
-  .mode-title {
-    font-family: 'Tiro Bangla', serif;
-    font-size: 1.6rem;
-    margin-bottom: 12px;
-    color: #fff;
-  }
-
-  .mode-desc {
-    font-size: 0.9rem;
-    color: var(--text-dim);
-    line-height: 1.7;
-  }
-
-  .mode-tag {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 6px 18px;
-    border-radius: 30px;
-    font-size: 0.78rem;
-    letter-spacing: 1px;
-    font-weight: 500;
-  }
-
-  .exp-card .mode-tag {
-    background: rgba(0,212,255,0.1);
-    border: 1px solid rgba(0,212,255,0.3);
-    color: var(--accent);
-  }
-
-  .model-card .mode-tag {
-    background: rgba(124,58,237,0.15);
-    border: 1px solid rgba(124,58,237,0.3);
-    color: #a78bfa;
-  }
-
-  /* ===== SUBJECT CARDS (Screen 3 — class 9-10) ===== */
-  .subject-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 24px;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .subject-card {
-    position: relative;
-    border-radius: 22px;
-    padding: 44px 30px;
-    cursor: pointer;
-    text-align: center;
-    border: 1px solid transparent;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    overflow: hidden;
-  }
-
-  .sub-physics {
-    background: linear-gradient(135deg, #0d2137, #132d4a);
-    border-color: rgba(0,212,255,0.15);
-  }
-  .sub-chemistry {
-    background: linear-gradient(135deg, #1a1a0d, #2a2a0f);
-    border-color: rgba(234,179,8,0.15);
-  }
-  .sub-biology {
-    background: linear-gradient(135deg, #0d200d, #0f2b0f);
-    border-color: rgba(16,185,129,0.15);
-  }
-
-  .subject-card:hover { transform: translateY(-10px) scale(1.03); }
-
-  .sub-physics:hover { box-shadow: 0 30px 70px rgba(0,212,255,0.2); border-color: rgba(0,212,255,0.4); }
-  .sub-chemistry:hover { box-shadow: 0 30px 70px rgba(234,179,8,0.2); border-color: rgba(234,179,8,0.4); }
-  .sub-biology:hover { box-shadow: 0 30px 70px rgba(16,185,129,0.2); border-color: rgba(16,185,129,0.4); }
-
-  .sub-icon { font-size: 3.5rem; display: block; margin-bottom: 16px; animation: float 5s ease-in-out infinite; }
-  .sub-chemistry .sub-icon { animation-delay: -1.5s; }
-  .sub-biology .sub-icon { animation-delay: -3s; }
-
-  .sub-title {
-    font-family: 'Tiro Bangla', serif;
-    font-size: 1.5rem;
-    color: #fff;
-    margin-bottom: 8px;
-  }
-
-  .sub-desc { font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; }
-
-  /* ===== CONTENT SCREEN (Final Screen) ===== */
-  .content-hero {
-    text-align: center;
-    margin-bottom: 50px;
-  }
-
-  .content-hero .big-icon { font-size: 5rem; animation: float 4s ease-in-out infinite; display: block; margin-bottom: 20px; }
-
-  .content-section-title {
-    font-family: 'Tiro Bangla', serif;
-    font-size: 1.6rem;
-    margin-bottom: 24px;
-    color: var(--text);
-    display: flex; align-items: center; gap: 12px;
-  }
-
-  .content-section-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.1), transparent);
-  }
-
-  .experiment-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
-    margin-bottom: 50px;
-  }
-
-  .exp-item {
-    background: var(--surface);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 16px;
-    padding: 20px 22px;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: flex; align-items: center; gap: 14px;
-  }
-
-  .exp-item:hover {
-    background: var(--surface2);
-    border-color: var(--accent);
-    transform: translateX(6px);
-    box-shadow: -4px 0 20px rgba(0,212,255,0.1);
-  }
-
-  .exp-num {
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15));
-    border: 1px solid rgba(0,212,255,0.2);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.8rem;
-    color: var(--accent);
-    font-weight: 600;
-    flex-shrink: 0;
-  }
-
-  .exp-name { font-size: 0.9rem; color: var(--text); line-height: 1.4; }
-
-  .coming-soon-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 6px 16px;
-    border-radius: 30px;
-    background: rgba(245,158,11,0.1);
-    border: 1px solid rgba(245,158,11,0.3);
-    color: var(--gold);
-    font-size: 0.8rem;
-    margin-top: 8px;
-  }
-
-  /* ===== BACK BUTTON ===== */
-  .back-btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 10px 22px;
-    border-radius: 30px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: var(--text-dim);
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-family: 'Hind Siliguri', sans-serif;
-    transition: all 0.3s;
-    margin-bottom: 36px;
-  }
-
-  .back-btn:hover {
-    background: rgba(0,212,255,0.08);
-    border-color: rgba(0,212,255,0.3);
-    color: var(--accent);
-  }
-
-  /* ===== FOOTER ===== */
-  footer {
-    position: relative; z-index: 1;
-    text-align: center;
-    padding: 24px;
-    color: var(--text-dim);
-    font-size: 0.8rem;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    width: 100%;
-  }
-
-  /* ===== PULSE DOT ===== */
-  .pulse {
-    display: inline-block; width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--accent3);
-    margin-right: 6px;
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
-    50% { transform: scale(1.3); opacity: 0.8; box-shadow: 0 0 0 6px rgba(16,185,129,0); }
-  }
-
-  /* ===== RESPONSIVE ===== */
-  @media (max-width: 600px) {
-    .mode-grid { grid-template-columns: 1fr; }
-    .class-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
-    .class-card { padding: 24px 16px; }
-  }
-
-  .hidden { display: none; }
+  .chapter-item:hover { background:var(--surface2); border-color:var(--accent); transform:translateX(5px); box-shadow:-3px 0 18px rgba(0,212,255,0.1); }
+  .ch-num { width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,rgba(0,212,255,0.15),rgba(124,58,237,0.15)); border:1px solid rgba(0,212,255,0.2); display:flex; align-items:center; justify-content:center; font-size:0.78rem; color:var(--accent); font-weight:600; flex-shrink:0; }
+  .ch-info .ch-title { font-size:0.88rem; color:var(--text); line-height:1.4; }
+  .ch-info .ch-sub { font-size:0.72rem; color:var(--text-dim); margin-top:3px; }
+  /* EXPERIMENT LIST */
+  .exp-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; margin-bottom:30px; }
+  .exp-item { background:var(--surface); border:1px solid rgba(255,255,255,0.07); border-radius:13px; padding:14px 16px; cursor:pointer; transition:all 0.3s; display:flex; align-items:flex-start; gap:12px; }
+  .exp-item:hover { background:var(--surface2); border-color:var(--accent3); transform:translateX(5px); }
+  .exp-num { width:32px; height:32px; border-radius:8px; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.25); display:flex; align-items:center; justify-content:center; font-size:0.72rem; color:var(--accent3); font-weight:700; flex-shrink:0; margin-top:2px; }
+  .exp-name { font-size:0.85rem; color:var(--text); line-height:1.5; }
+  .exp-ch { font-size:0.7rem; color:var(--text-dim); margin-top:3px; }
+  /* BACK BTN */
+  .back-btn { display:inline-flex; align-items:center; gap:8px; padding:9px 20px; border-radius:30px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:var(--text-dim); cursor:pointer; font-size:0.88rem; font-family:'Hind Siliguri',sans-serif; transition:all 0.3s; margin-bottom:30px; }
+  .back-btn:hover { background:rgba(0,212,255,0.08); border-color:rgba(0,212,255,0.3); color:var(--accent); }
+  /* SECTION TITLE */
+  .section-title { font-family:'Tiro Bangla',serif; font-size:1.2rem; margin-bottom:18px; color:var(--text); display:flex; align-items:center; gap:10px; }
+  .section-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(255,255,255,0.1),transparent); }
+  /* MODAL */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:100; display:flex; align-items:center; justify-content:center; padding:20px; animation:fadeIn 0.2s; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  .modal { background:var(--surface2); border:1px solid rgba(255,255,255,0.1); border-radius:24px; padding:36px; max-width:600px; width:100%; max-height:85vh; overflow-y:auto; position:relative; }
+  .modal-close { position:absolute; top:16px; right:16px; background:rgba(255,255,255,0.08); border:none; color:var(--text-dim); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:1.1rem; display:flex; align-items:center; justify-content:center; transition:all 0.2s; font-family:sans-serif; }
+  .modal-close:hover { background:rgba(255,0,0,0.2); color:#fff; }
+  .modal-title { font-family:'Tiro Bangla',serif; font-size:1.4rem; margin-bottom:8px; color:var(--text); padding-right:40px; }
+  .modal-chapter { font-size:0.8rem; color:var(--accent); margin-bottom:20px; letter-spacing:1px; }
+  .modal-section { margin-bottom:18px; }
+  .modal-section-title { font-size:0.85rem; color:var(--accent3); font-weight:600; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; }
+  .modal-text { font-size:0.88rem; color:var(--text-dim); line-height:1.8; }
+  .step-list { list-style:none; }
+  .step-list li { display:flex; gap:10px; margin-bottom:10px; font-size:0.88rem; color:var(--text-dim); line-height:1.6; }
+  .step-num { width:22px; height:22px; border-radius:50%; background:rgba(0,212,255,0.15); border:1px solid rgba(0,212,255,0.3); display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:var(--accent); flex-shrink:0; margin-top:2px; }
+  .materials-list { display:flex; flex-wrap:wrap; gap:8px; }
+  .material-tag { padding:4px 12px; background:rgba(124,58,237,0.12); border:1px solid rgba(124,58,237,0.25); border-radius:20px; font-size:0.78rem; color:#a78bfa; }
+  .coming-soon { text-align:center; padding:40px 20px; color:var(--text-dim); font-size:0.9rem; }
+  .coming-soon .big { font-size:3rem; display:block; margin-bottom:12px; }
+  footer { position:relative; z-index:1; text-align:center; padding:20px; color:var(--text-dim); font-size:0.75rem; border-top:1px solid rgba(255,255,255,0.05); width:100%; }
+  @media(max-width:600px){ .mode-grid{grid-template-columns:1fr} .class-grid{grid-template-columns:repeat(2,1fr);gap:12px} .class-card{padding:22px 14px} }
 </style>
 </head>
 <body>
-
 <div class="bg-canvas"></div>
-<div class="stars"></div>
 <div class="grid-overlay"></div>
-
 <div class="wrapper">
-
-  <!-- HEADER -->
   <header>
     <span class="logo-icon">🔬</span>
     <h1 class="site-title">বিজ্ঞান ল্যাব</h1>
-    <p class="site-sub"><span class="pulse"></span> ভার্চুয়াল বিজ্ঞানাগার · বাংলাদেশ</p>
+    <p class="site-sub"><span class="pulse"></span>ভার্চুয়াল বিজ্ঞানাগার · NCTB দাখিল</p>
   </header>
-
-  <!-- BREADCRUMB -->
-  <nav class="breadcrumb" id="breadcrumb">
-    <span class="bc-item active" onclick="goHome()">🏠 হোম</span>
-  </nav>
-
-  <!-- SCREENS -->
-  <div class="screen-container" id="mainContent">
-    <!-- Rendered by JS -->
-  </div>
-
-  <footer>
-    © ২০২৬ বিজ্ঞান ল্যাব — সকল শ্রেণির শিক্ষার্থীদের জন্য ভার্চুয়াল বিজ্ঞান অভিজ্ঞতা, "বিজ্ঞান কে খাতা কলমে নয় বাস্তবে শেখো"- মোঃ শোয়াইব হাসান 
-  </footer>
+  <nav class="breadcrumb" id="breadcrumb"></nav>
+  <div class="screen-container" id="mainContent"></div>
+  <footer>© ২০২৫ বিজ্ঞান ল্যাব — NCTB দাখিল পাঠ্যক্রম অনুযায়ী</footer>
 </div>
 
 <script>
-// ===== STATE =====
-let state = { screen: 'home', class: null, subject: null };
-
-// ===== DATA =====
-const experiments = {
-  '৬': [
-    'পানিচক্র পর্যবেক্ষণ', 'উদ্ভিদের আলোক সংশ্লেষণ', 'বায়ুর উপাদান পরীক্ষা',
-    'অ্যাসিড-ক্ষারক পরীক্ষা', 'পরিবাহী ও অপরিবাহী', 'শব্দের বিস্তার পরীক্ষা'
-  ],
-  '৭': [
-    'বাষ্পীভবন ও ঘনীভবন', 'চুম্বকের ধর্ম', 'তাপ পরিবহন পরীক্ষা',
-    'দ্রবণ ও মিশ্রণ', 'খাদ্যের পরীক্ষা', 'আলোর প্রতিফলন'
-  ],
-  '৮': [
-    'রাসায়নিক পরিবর্তন', 'বিদ্যুৎ বর্তনী তৈরি', 'লেন্স দিয়ে আলো',
-    'উদ্ভিদ কোষ পর্যবেক্ষণ', 'গতির সূত্র পরীক্ষা', 'অসমোসিস পরীক্ষা'
-  ],
-  'physics': [
-    'নিউটনের গতিসূত্র', 'সরল দোলক পরীক্ষা', 'তরঙ্গ ও শব্দ',
-    'আলোর বিচ্ছুরণ', 'বৈদ্যুতিক বর্তনী', 'তাপমাত্রা ও তাপধারণ',
-    'চুম্বক ও বিদ্যুৎ', 'প্রিজম দিয়ে বর্ণালী'
-  ],
-  'chemistry': [
-    'পর্যায় সারণী পরীক্ষা', 'অ্যাসিড-ক্ষার টাইট্রেশন', 'বৈদ্যুতিক বিশ্লেষণ',
-    'জারণ-বিজারণ', 'পলিমার তৈরি', 'রঙিন শিখা পরীক্ষা',
-    'ক্রোমাটোগ্রাফি', 'কার্বন বিশ্লেষণ'
-  ],
-  'biology': [
-    'কোষ বিভাজন', 'রক্ত পর্যবেক্ষণ', 'DNA মডেল তৈরি',
-    'উদ্ভিদের বৃদ্ধি পরীক্ষা', 'পরিপাকতন্ত্র', 'পরিবেশ ও বাস্তুতন্ত্র',
-    'প্রাণীর শ্রেণিবিন্যাস', 'শ্বসন প্রক্রিয়া'
-  ]
+// ===== DATA (NCTB Class 6 Dakhil - from actual book) =====
+const DATA = {
+  '৬': {
+    label: 'ষষ্ঠ শ্রেণি',
+    chapters: [
+      { id:'ch1', num:'১', title:'বৈজ্ঞানিক প্রক্রিয়া ও পরিমাপ', emoji:'📏' },
+      { id:'ch2', num:'২', title:'জীবজগৎ', emoji:'🌿' },
+      { id:'ch3', num:'৩', title:'উদ্ভিদ ও প্রাণীর কোষীয় সংগঠন', emoji:'🔬' },
+      { id:'ch4', num:'৪', title:'উদ্ভিদের বাহ্যিক বৈশিষ্ট্য', emoji:'🌱' },
+      { id:'ch5', num:'৫', title:'সালোকসংশ্লেষণ', emoji:'☀️' },
+      { id:'ch6', num:'৬', title:'সংবেদি অঙ্গ', emoji:'👁️' },
+      { id:'ch7', num:'৭', title:'পদার্থের বৈশিষ্ট্য এবং বাহ্যিক প্রভাব', emoji:'⚗️' },
+      { id:'ch8', num:'৮', title:'মিশণ', emoji:'🧪' },
+      { id:'ch9', num:'৯', title:'আলোর ঘটনা', emoji:'💡' },
+      { id:'ch10', num:'১০', title:'গতি', emoji:'🚀' },
+      { id:'ch11', num:'১১', title:'বল এবং সরল যন্ত্র', emoji:'⚙️' },
+      { id:'ch12', num:'১২', title:'পৃথিবীর উৎপত্তি ও গঠন', emoji:'🌍' },
+      { id:'ch13', num:'১৩', title:'খাদ্য ও পুষ্টি', emoji:'🍎' },
+      { id:'ch14', num:'১৪', title:'পরিবেশের ভারসাম্য এবং আমাদের জীবন', emoji:'🌳' },
+    ],
+    experiments: [
+      { id:'e1', title:'বৈজ্ঞানিক পরীক্ষা পদ্ধতি অনুশীলন (ফুলগাছের পানির প্রয়োজনীয়তা)', chapter:'১ম অধ্যায়', materials:['দুটি একই পাত্র','দুটি একই চারাগাছ','মাটি','পানি'], steps:['দুটি পাত্রে মাটি ভরে একটি করে চারাগাছ লাগাও','একটি পাত্রে নিয়মিত পানি দাও, অন্যটিতে পানি দিও না','প্রতিদিন পর্যবেক্ষণ করো','কয়েক দিন পর দুটি গাছের অবস্থা তুলনা করো','সিদ্ধান্ত নাও — পানি না পেলে কী হয়?'] },
+      { id:'e2', title:'থার্মোমিটার দিয়ে তাপমাত্রা পরিমাপ', chapter:'১ম অধ্যায়', materials:['একটি ক্লিনিক্যাল থার্মোমিটার'], steps:['থার্মোমিটারটি হাতে নাও ও ভালোভাবে দেখো','থার্মোমিটারটি জিহ্বার নিচে বা বগলে রাখো','১ মিনিট অপেক্ষা করো','থার্মোমিটার বের করে পাঠ নাও','শরীরের তাপমাত্রা রেকর্ড করো'] },
+      { id:'e3', title:'কঠিন বস্তুর আয়তন পরিমাপ (পানি সরণ পদ্ধতি)', chapter:'১ম অধ্যায়', materials:['একটি মেজারিং সিলিন্ডার','পানি','ছোট পাথর বা অনিয়মিত আকৃতির বস্তু'], steps:['মেজারিং সিলিন্ডারে একটি নির্দিষ্ট পরিমাণ পানি নাও — পাঠ নাও (V1)','পাথরটি সাবধানে পানিতে ডুবাও','নতুন পানির উচ্চতার পাঠ নাও (V2)','বস্তুর আয়তন = V2 − V1'] },
+      { id:'e4', title:'উদ্ভিদ ও প্রাণীর শ্রেণিবিন্যাস পর্যবেক্ষণ', chapter:'২য় অধ্যায়', materials:['ডেঁকিশাক','লালশাক','লাউশাক','গম','সরিষা'], steps:['বিভিন্ন উদ্ভিদের পাতা ও কাণ্ড পর্যবেক্ষণ করো','কোনটি ফার্ন আর কোনটি নয় তা চিহ্নিত করো','সপুষ্পক ও অপুষ্পক উদ্ভিদ আলাদা করো','খাতায় তালিকা তৈরি করো'] },
+      { id:'e5', title:'উদ্ভিদ কোষ ও প্রাণী কোষের পার্থক্য চার্ট তৈরি', chapter:'৩য় অধ্যায়', materials:['সাদা কাগজ','রঙিন পেন্সিল'], steps:['উদ্ভিদ কোষের চিত্র আঁকো — কোষপ্রাচীর ও ক্লোরোপ্লাস্ট দেখাও','প্রাণী কোষের চিত্র আঁকো','দুটির মিল ও পার্থক্য একটি ছকে লেখো'] },
+      { id:'e6', title:'মাটি দিয়ে নিউক্লিয়াসের মডেল তৈরি', chapter:'৩য় অধ্যায়', materials:['বিভিন্ন রঙের মাটি বা প্লাস্টিসিন'], steps:['বাইরের স্তর হিসেবে নিউক্লিয়ার মেমব্রেন তৈরি করো','ভেতরে নিউক্লিওপ্লাজম দেখাও','ক্রোমাটিন তন্তু ও নিউক্লিওলাস যোগ করো','মডেলটির লেবেল করো'] },
+      { id:'e7', title:'উদ্ভিদের মূল, কাণ্ড ও পাতার গঠন পর্যবেক্ষণ', chapter:'৪র্থ অধ্যায়', materials:['যেকোনো একটি গাছ','ম্যাগনিফাইং গ্লাস (যদি থাকে)'], steps:['গাছটি মাটি সহ তুলে আনো','মূলের আকৃতি লক্ষ্য করো — কোনো শাখা আছে কিনা','কাণ্ড স্পর্শ করো — শক্ত নাকি নরম?','পাতার উপরে ও নিচের দিক দেখো','খাতায় চিত্র এঁকে লেবেল করো'] },
+      { id:'e8', title:'সালোকসংশ্লেষণে আলোর প্রয়োজনীয়তা পরীক্ষা (বেলজার পরীক্ষা)', chapter:'৫ম অধ্যায়', materials:['দুটি বেলজার বা কাচের পাত্র','দুটি সবুজ চারাগাছ','একটি মোমবাতি'], steps:['দুটি বেলজারে একটি করে সবুজ চারাগাছ রাখো (P ও Q)','P বেলজারে একটি জ্বলন্ত মোমবাতি রাখো (CO₂ শেষ হবে)','Q বেলজারে কিছু রাখো না','কিছুক্ষণ পর দুটি গাছ পর্যবেক্ষণ করো','Q গাছ সুস্থ কারণ তার CO₂ আছে'] },
+      { id:'e9', title:'ধাতুর বিদ্যুৎ পরিবাহিতা পর্যবেক্ষণ', chapter:'৭ম অধ্যায়', materials:['একটি ব্যাটারি','বৈদ্যুতিক বাল্ব','তার','স্টিলের চামচ','অ্যালুমিনিয়ামের টুকরা','রাবার','কাঠ','প্লাস্টিক'], steps:['ব্যাটারি, বাল্ব ও তার দিয়ে একটি সার্কিট তৈরি করো','সার্কিটে একটি ফাঁক রাখো','বিভিন্ন বস্তু (ধাতু, অধাতু) ফাঁকে রাখো','কোন বস্তু রাখলে বাল্ব জ্বলে তা রেকর্ড করো','বিদ্যুৎ পরিবাহী ও অপরিবাহী তালিকা তৈরি করো'] },
+      { id:'e10', title:'মোমের গলনাঙ্ক নির্ণয়', chapter:'৭ম অধ্যায়', materials:['মোম','বিকার','পানি','থার্মোমিটার','স্পিরিট ল্যাম্প','টেস্টটিউব'], steps:['টেস্টটিউবে ছোট মোমের টুকরা নাও','বিকারে পানি নিয়ে তাপ দাও','টেস্টটিউব পানিতে ডুবিয়ে রাখো','থার্মোমিটারে তাপমাত্রা দেখতে থাকো','মোম গলতে শুরু করলে তাপমাত্রা রেকর্ড করো — এটি গলনাঙ্ক'] },
+      { id:'e11', title:'দ্রবণ ও সাসপেনশন তৈরি ও পার্থক্য করা', chapter:'৮ম অধ্যায়', materials:['পানি','চিনি বা লবণ','মাটি','দুটি গ্লাস'], steps:['এক গ্লাস পানিতে চিনি বা লবণ মিশিয়ে নাড়াও — এটি দ্রবণ','অন্য গ্লাসে পানিতে মাটি মিশাও — এটি সাসপেনশন','কিছুক্ষণ রেখে দাও','কোনটি স্বচ্ছ, কোনটি ঘোলা তা দেখো','পার্থক্য খাতায় লিখে রাখো'] },
+      { id:'e12', title:'লবণ-পানি থেকে লবণ পৃথক করা (বাষ্পীভবন)', chapter:'৮ম অধ্যায়', materials:['লবণ পানি','চুলা বা স্পিরিট ল্যাম্প','পাত্র'], steps:['লবণ পানি পাত্রে নাও','আস্তে আস্তে তাপ দাও','পানি বাষ্প হয়ে উড়ে যাবে','পাত্রে সাদা লবণের কেলাস দেখা যাবে','লবণ সংগ্রহ করো'] },
+      { id:'e13', title:'আলোর প্রতিফলন পরীক্ষা (সমতল দর্পণ)', chapter:'৯ম অধ্যায়', materials:['একটি সমতল দর্পণ','একটি টর্চলাইট বা সূর্যের আলো'], steps:['অন্ধকার ঘরে দর্পণের সামনে টর্চ ধরো','আলোর রশ্মি দর্পণে পড়তে দাও','প্রতিফলিত রশ্মির দিক লক্ষ্য করো','আপতন কোণ ও প্রতিফলন কোণ মাপো','কাগজে চিত্র এঁকে দেখাও'] },
+      { id:'e14', title:'গতির পরিমাপ — দ্রুতি ও দূরত্ব নির্ণয়', chapter:'১০ম অধ্যায়', materials:['স্টপওয়াচ বা মোবাইল টাইমার','মেজারিং টেপ'], steps:['একটি নির্দিষ্ট দূরত্ব (যেমন ১০ মিটার) চিহ্নিত করো','বন্ধুকে ওই দূরত্ব হাঁটতে বলো, সময় মাপো','দ্রুতি = দূরত্ব ÷ সময় সূত্র ব্যবহার করো','দৌড়ানোর সময়ও একইভাবে মাপো','হাঁটা ও দৌড়ানোর দ্রুতি তুলনা করো'] },
+      { id:'e15', title:'সরল যন্ত্র হিসেবে লিভার পর্যবেক্ষণ', chapter:'১১শ অধ্যায়', materials:['একটি লম্বা কাঠ বা শাসন','একটি পেন্সিল (ফালক্রাম)','ভার হিসেবে বই'], steps:['পেন্সিলের উপর কাঠ রাখো (ফালক্রাম মাঝখানে)','এক প্রান্তে ভারী বই রাখো','অন্য প্রান্তে হাত দিয়ে চাপ দাও','বই উঠছে কিনা দেখো','ফালক্রামের অবস্থান পরিবর্তন করে পর্যবেক্ষণ করো'] },
+    ],
+    models3d: [
+      { id:'m1', title:'উদ্ভিদ কোষের গঠন', chapter:'৩য় অধ্যায়', desc:'কোষপ্রাচীর, কোষঝিল্লি, নিউক্লিয়াস, ক্লোরোপ্লাস্ট, মাইটোকন্ড্রিয়া' },
+      { id:'m2', title:'প্রাণী কোষের গঠন', chapter:'৩য় অধ্যায়', desc:'কোষঝিল্লি, নিউক্লিয়াস, মাইটোকন্ড্রিয়া, রাইবোজোম' },
+      { id:'m3', title:'নিউক্লিয়াসের অভ্যন্তরীণ গঠন', chapter:'৩য় অধ্যায়', desc:'নিউক্লিওপ্লাজম, ক্রোমাটিন তন্তু, নিউক্লিওলাস' },
+      { id:'m4', title:'উদ্ভিদের মূল, কাণ্ড ও পাতা', chapter:'৪র্থ অধ্যায়', desc:'গাছের বিভিন্ন অংশের বিস্তারিত গঠন' },
+      { id:'m5', title:'সালোকসংশ্লেষণ প্রক্রিয়া', chapter:'৫ম অধ্যায়', desc:'সূর্যালোক + CO₂ + পানি → গ্লুকোজ + অক্সিজেন' },
+      { id:'m6', title:'চোখের গঠন', chapter:'৬ষ্ঠ অধ্যায়', desc:'কর্নিয়া, আইরিস, লেন্স, রেটিনা' },
+      { id:'m7', title:'কানের গঠন', chapter:'৬ষ্ঠ অধ্যায়', desc:'বাহ্যিক কান, মধ্যকর্ণ, অন্তঃকর্ণ' },
+      { id:'m8', title:'পৃথিবীর অভ্যন্তরীণ গঠন', chapter:'১২শ অধ্যায়', desc:'ভূত্বক, ম্যান্টল, বাইরের কোর, ভেতরের কোর' },
+      { id:'m9', title:'সৌরজগতের গঠন', chapter:'১২শ অধ্যায়', desc:'সূর্য, গ্রহ ও উপগ্রহসমূহ' },
+      { id:'m10', title:'সরল যন্ত্র — লিভার, পুলি, হেলানো তল', chapter:'১১শ অধ্যায়', desc:'বিভিন্ন শ্রেণির সরল যন্ত্রের কাজ' },
+      { id:'m11', title:'মানবদেহের পাচনতন্ত্র', chapter:'১৩শ অধ্যায়', desc:'মুখ থেকে পায়ু পর্যন্ত পাচনতন্ত্র' },
+      { id:'m12', title:'খাদ্যের পুষ্টিগুণ চার্ট', chapter:'১৩শ অধ্যায়', desc:'শর্করা, প্রোটিন, চর্বি, ভিটামিন, খনিজ লবণ' },
+    ]
+  }
 };
 
-// ===== RENDER =====
+let state = { screen:'home', cls:null, mode:null, subject:null };
+
 function render() {
   const c = document.getElementById('mainContent');
-  c.innerHTML = '';
   const d = document.createElement('div');
-  d.style.animation = 'screenIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards';
-
-  if (state.screen === 'home') renderHome(d);
-  else if (state.screen === 'classMode') renderClassMode(d);
-  else if (state.screen === 'subjects') renderSubjects(d);
-  else if (state.screen === 'content') renderContent(d);
-
-  c.appendChild(d);
+  d.style.animation = 'screenIn 0.45s cubic-bezier(0.16,1,0.3,1) forwards';
+  if (state.screen==='home') renderHome(d);
+  else if (state.screen==='classMode') renderClassMode(d);
+  else if (state.screen==='subjects') renderSubjects(d);
+  else if (state.screen==='subjectMode') renderSubjectMode(d);
+  else if (state.screen==='content') renderContent(d);
+  c.innerHTML=''; c.appendChild(d);
   updateBreadcrumb();
 }
 
 function renderHome(d) {
-  d.innerHTML = `
+  d.innerHTML=`
     <h2 class="screen-title">তোমার শ্রেণি বেছে নাও</h2>
-    <p class="screen-desc">বাংলাদেশ জাতীয় পাঠ্যক্রম অনুযায়ী এক্সপেরিমেন্ট ও থ্রিডি মডেল</p>
+    <p class="screen-desc">NCTB দাখিল পাঠ্যক্রম অনুযায়ী ভার্চুয়াল বিজ্ঞান ল্যাব</p>
     <div class="class-grid">
       <div class="class-card card-blue" onclick="selectClass('৬')">
         <span class="card-emoji">📘</span>
         <div class="card-label">ষষ্ঠ শ্রেণি</div>
-        <div class="card-sub">Class Six</div>
-        <div class="card-badge">১৫+ এক্সপেরিমেন্ট</div>
+        <div class="card-sub">Dakhil Class Six</div>
+        <div class="card-badge">১৪ অধ্যায় · ১৫ এক্সপেরিমেন্ট</div>
       </div>
       <div class="class-card card-purple" onclick="selectClass('৭')">
         <span class="card-emoji">📗</span>
         <div class="card-label">সপ্তম শ্রেণি</div>
-        <div class="card-sub">Class Seven</div>
-        <div class="card-badge">১৮+ এক্সপেরিমেন্ট</div>
+        <div class="card-sub">Dakhil Class Seven</div>
+        <div class="card-badge">শীঘ্রই আসছে</div>
       </div>
       <div class="class-card card-green" onclick="selectClass('৮')">
         <span class="card-emoji">📙</span>
         <div class="card-label">অষ্টম শ্রেণি</div>
-        <div class="card-sub">Class Eight</div>
-        <div class="card-badge">২০+ এক্সপেরিমেন্ট</div>
+        <div class="card-sub">Dakhil Class Eight</div>
+        <div class="card-badge">শীঘ্রই আসছে</div>
       </div>
       <div class="class-card card-gold" onclick="selectClass('৯-১০')">
         <span class="card-emoji">📕</span>
         <div class="card-label">নবম ও দশম শ্রেণি</div>
-        <div class="card-sub">Class Nine & Ten</div>
-        <div class="card-badge">৫০+ এক্সপেরিমেন্ট</div>
+        <div class="card-sub">Dakhil Class 9 & 10</div>
+        <div class="card-badge">শীঘ্রই আসছে</div>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
 function renderClassMode(d) {
-  const isHigher = state.class === '৯-১০';
-  if (isHigher) { renderSubjects(d); return; }
-
-  d.innerHTML = `
+  const cls = DATA[state.cls];
+  d.innerHTML=`
     <button class="back-btn" onclick="goHome()">← হোম</button>
-    <h2 class="screen-title">${state.class} শ্রেণি — কী দেখতে চাও?</h2>
-    <p class="screen-desc">এক্সপেরিমেন্ট করো অথবা থ্রিডি মডেলে দেখো</p>
+    <h2 class="screen-title">${cls.label} — কী দেখতে চাও?</h2>
+    <p class="screen-desc">১৪টি অধ্যায়ের এক্সপেরিমেন্ট ও থ্রিডি মডেল</p>
     <div class="mode-grid">
       <div class="mode-card exp-card" onclick="selectMode('experiment')">
         <span class="mode-icon">⚗️</span>
         <div class="mode-title">এক্সপেরিমেন্ট</div>
-        <div class="mode-desc">তোমার বইয়ের সকল পরীক্ষা-নিরীক্ষা ভার্চুয়ালি করো। ধাপে ধাপে নির্দেশনা সহ।</div>
-        <span class="mode-tag">🧪 EXPERIMENT</span>
+        <div class="mode-desc">বইয়ের সব পরীক্ষা-নিরীক্ষা ভার্চুয়ালি করো। উপকরণ, পদ্ধতি ও ধাপে ধাপে নির্দেশনা সহ।</div>
+        <span class="mode-tag">🧪 ${cls.experiments.length}টি এক্সপেরিমেন্ট</span>
       </div>
       <div class="mode-card model-card" onclick="selectMode('3d')">
         <span class="mode-icon">🌐</span>
         <div class="mode-title">থ্রিডি মডেল</div>
         <div class="mode-desc">বইয়ের সকল বিষয় থ্রিডিতে দেখো। ঘোরাও, জুম করো, বিস্তারিত জানো।</div>
-        <span class="mode-tag">🔮 3D MODEL</span>
+        <span class="mode-tag">🔮 ${cls.models3d.length}টি থ্রিডি মডেল</span>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
 function renderSubjects(d) {
-  d.innerHTML = `
+  d.innerHTML=`
     <button class="back-btn" onclick="goHome()">← হোম</button>
     <h2 class="screen-title">নবম ও দশম শ্রেণি — বিষয় বেছে নাও</h2>
     <p class="screen-desc">পদার্থবিজ্ঞান, রসায়ন ও জীববিজ্ঞানের সম্পূর্ণ ল্যাব</p>
@@ -677,134 +305,124 @@ function renderSubjects(d) {
       <div class="subject-card sub-physics" onclick="selectSubject('physics')">
         <span class="sub-icon">⚡</span>
         <div class="sub-title">পদার্থবিজ্ঞান</div>
-        <div class="sub-desc">গতি, আলো, শব্দ, তাপ, বিদ্যুৎ ও চুম্বক</div>
+        <div class="sub-desc">শীঘ্রই আসছে</div>
       </div>
       <div class="subject-card sub-chemistry" onclick="selectSubject('chemistry')">
         <span class="sub-icon">🧪</span>
         <div class="sub-title">রসায়ন</div>
-        <div class="sub-desc">পরমাণু, বন্ধন, বিক্রিয়া ও পর্যায় সারণী</div>
+        <div class="sub-desc">শীঘ্রই আসছে</div>
       </div>
       <div class="subject-card sub-biology" onclick="selectSubject('biology')">
         <span class="sub-icon">🧬</span>
         <div class="sub-title">জীববিজ্ঞান</div>
-        <div class="sub-desc">কোষ, জীবন প্রক্রিয়া ও বাস্তুতন্ত্র</div>
+        <div class="sub-desc">শীঘ্রই আসছে</div>
       </div>
-    </div>
-  `;
+    </div>`;
+}
+
+function renderSubjectMode(d) {
+  d.innerHTML=`
+    <button class="back-btn" onclick="selectClass('৯-১০')">← বিষয়সমূহ</button>
+    <h2 class="screen-title">শীঘ্রই আসছে!</h2>
+    <div class="coming-soon"><span class="big">🚧</span>নবম-দশম শ্রেণির কন্টেন্ট তৈরি হচ্ছে</div>`;
 }
 
 function renderContent(d) {
-  const key = state.subject || state.class;
-  const expList = experiments[key] || [];
-  const modeLabel = state.mode === 'experiment' ? '⚗️ এক্সপেরিমেন্ট' : '🌐 থ্রিডি মডেল';
-  const isExp = state.mode === 'experiment';
+  const cls = DATA[state.cls];
+  const isExp = state.mode==='experiment';
+  const items = isExp ? cls.experiments : cls.models3d;
 
-  d.innerHTML = `
-    <button class="back-btn" onclick="goBack()">← পেছনে যাও</button>
-    <div class="content-hero">
-      <span class="big-icon">${isExp ? '⚗️' : '🌐'}</span>
-      <h2 class="screen-title">${modeLabel}</h2>
-      <p class="screen-desc">${isExp ? 'একটি এক্সপেরিমেন্ট বেছে শুরু করো' : 'থ্রিডি মডেল দেখতে নিচের তালিকা থেকে বেছে নাও'}</p>
-    </div>
+  d.innerHTML=`
+    <button class="back-btn" onclick="selectClass('${state.cls}')">← পেছনে</button>
+    <h2 class="screen-title">${isExp?'⚗️ এক্সপেরিমেন্ট':'🌐 থ্রিডি মডেল'} — ${cls.label}</h2>
+    <p class="screen-desc">${isExp?'একটি এক্সপেরিমেন্টে ক্লিক করো বিস্তারিত দেখতে':'একটি মডেলে ক্লিক করো বিস্তারিত দেখতে'}</p>
+    <div class="section-title">${isExp?'📋':'🔮'} ${items.length}টি ${isExp?'এক্সপেরিমেন্ট':'থ্রিডি মডেল'}</div>
+    <div class="${isExp?'exp-list':'chapter-grid'}">
+      ${items.map((item,i)=>`
+        <div class="${isExp?'exp-item':'chapter-item'}" onclick="${isExp?`showExp('${item.id}')`:`show3D('${item.id}')`}">
+          <div class="${isExp?'exp-num':'ch-num'}">${String(i+1).padStart(2,'0')}</div>
+          <div class="${isExp?'':'ch-info'}">
+            <div class="${isExp?'exp-name':'ch-title'}">${item.title}</div>
+            <div class="${isExp?'exp-ch':'ch-sub'}">${item.chapter}</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
 
-    <div class="content-section-title">📋 তালিকা</div>
-    <div class="experiment-list">
-      ${expList.map((e, i) => `
-        <div class="exp-item" onclick="showComingSoon()">
-          <div class="exp-num">${String(i+1).padStart(2,'0')}</div>
-          <div class="exp-name">${e}</div>
+function showExp(id) {
+  const cls = DATA[state.cls];
+  const exp = cls.experiments.find(e=>e.id===id);
+  if(!exp) return;
+  const html=`
+    <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <div class="modal-title">⚗️ ${exp.title}</div>
+        <div class="modal-chapter">📖 ${exp.chapter}</div>
+        <div class="modal-section">
+          <div class="modal-section-title">🧰 প্রয়োজনীয় উপকরণ</div>
+          <div class="materials-list">${exp.materials.map(m=>`<span class="material-tag">${m}</span>`).join('')}</div>
         </div>
-      `).join('')}
-    </div>
-
-    <div style="text-align:center">
-      <div class="coming-soon-badge">⏳ কন্টেন্ট তৈরি হচ্ছে — শীঘ্রই আসছে!</div>
-    </div>
-  `;
+        <div class="modal-section">
+          <div class="modal-section-title">📝 পদ্ধতি</div>
+          <ul class="step-list">${exp.steps.map((s,i)=>`<li><span class="step-num">${i+1}</span><span>${s}</span></li>`).join('')}</ul>
+        </div>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
 }
 
-// ===== ACTIONS =====
+function show3D(id) {
+  const cls = DATA[state.cls];
+  const m = cls.models3d.find(x=>x.id===id);
+  if(!m) return;
+  const html=`
+    <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <div class="modal-title">🌐 ${m.title}</div>
+        <div class="modal-chapter">📖 ${m.chapter}</div>
+        <div class="modal-section">
+          <div class="modal-section-title">📋 বিষয়বস্তু</div>
+          <div class="modal-text">${m.desc}</div>
+        </div>
+        <div class="coming-soon" style="padding:30px 0 0">
+          <span style="font-size:2rem;display:block;margin-bottom:10px">🚧</span>
+          <div style="font-size:0.85rem;color:var(--text-dim)">থ্রিডি মডেলটি তৈরি হচ্ছে — শীঘ্রই যোগ করা হবে!</div>
+        </div>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+
+function closeModal() {
+  const m = document.querySelector('.modal-overlay');
+  if(m) m.remove();
+}
+
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+
 function selectClass(cls) {
-  state.class = cls;
-  state.screen = cls === '৯-১০' ? 'subjects' : 'classMode';
+  state.cls = cls;
+  if(cls==='৯-১০') { state.screen='subjects'; }
+  else if(DATA[cls]) { state.screen='classMode'; }
+  else { alert('এই শ্রেণির কন্টেন্ট শীঘ্রই আসছে!'); return; }
   render();
 }
 
-function selectMode(mode) {
-  state.mode = mode;
-  state.screen = 'content';
-  render();
-}
+function selectMode(mode) { state.mode=mode; state.screen='content'; render(); }
+function selectSubject(sub) { state.subject=sub; state.screen='subjectMode'; render(); }
+function goHome() { state={screen:'home',cls:null,mode:null,subject:null}; render(); }
 
-function selectSubject(sub) {
-  state.subject = sub;
-  state.screen = 'classMode-hs';
-  renderSubjectMode();
-}
-
-function renderSubjectMode() {
-  const c = document.getElementById('mainContent');
-  const labels = { physics: 'পদার্থবিজ্ঞান', chemistry: 'রসায়ন', biology: 'জীববিজ্ঞান' };
-  c.innerHTML = `<div style="animation: screenIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards">
-    <button class="back-btn" onclick="selectClass('৯-১০')">← বিষয়সমূহ</button>
-    <h2 class="screen-title">${labels[state.subject]} — কী দেখতে চাও?</h2>
-    <p class="screen-desc">এক্সপেরিমেন্ট করো অথবা থ্রিডি মডেলে দেখো</p>
-    <div class="mode-grid">
-      <div class="mode-card exp-card" onclick="selectMode('experiment')">
-        <span class="mode-icon">⚗️</span>
-        <div class="mode-title">এক্সপেরিমেন্ট</div>
-        <div class="mode-desc">ভার্চুয়ালি পরীক্ষা-নিরীক্ষা করো ধাপে ধাপে নির্দেশনা সহ।</div>
-        <span class="mode-tag">🧪 EXPERIMENT</span>
-      </div>
-      <div class="mode-card model-card" onclick="selectMode('3d')">
-        <span class="mode-icon">🌐</span>
-        <div class="mode-title">থ্রিডি মডেল</div>
-        <div class="mode-desc">সকল বিষয় থ্রিডিতে দেখো, ঘোরাও ও বিস্তারিত জানো।</div>
-        <span class="mode-tag">🔮 3D MODEL</span>
-      </div>
-    </div>
-  </div>`;
-  updateBreadcrumb();
-}
-
-function goHome() {
-  state = { screen: 'home', class: null, subject: null };
-  render();
-}
-
-function goBack() {
-  if (state.subject) {
-    renderSubjectMode();
-  } else {
-    state.screen = 'classMode';
-    render();
-  }
-}
-
-function showComingSoon() {
-  alert('🚧 এই কন্টেন্টটি শীঘ্রই যুক্ত হবে!');
-}
-
-// ===== BREADCRUMB =====
 function updateBreadcrumb() {
   const bc = document.getElementById('breadcrumb');
-  const labels = { physics: 'পদার্থবিজ্ঞান', chemistry: 'রসায়ন', biology: 'জীববিজ্ঞান' };
-  let html = `<span class="bc-item" onclick="goHome()">🏠 হোম</span>`;
-
-  if (state.class) {
-    html += `<span>›</span><span class="bc-item">${state.class} শ্রেণি</span>`;
-  }
-  if (state.subject) {
-    html += `<span>›</span><span class="bc-item">${labels[state.subject]}</span>`;
-  }
-  if (state.mode) {
-    html += `<span>›</span><span class="bc-item active">${state.mode === 'experiment' ? 'এক্সপেরিমেন্ট' : 'থ্রিডি মডেল'}</span>`;
-  }
-
-  bc.innerHTML = html;
+  let html=`<span class="bc-item" onclick="goHome()">🏠 হোম</span>`;
+  if(state.cls) html+=`<span>›</span><span class="bc-item">${state.cls==='৯-১০'?'নবম-দশম':state.cls+' শ্রেণি'}</span>`;
+  if(state.subject) { const sl={physics:'পদার্থ',chemistry:'রসায়ন',biology:'জীব'}; html+=`<span>›</span><span class="bc-item">${sl[state.subject]}</span>`; }
+  if(state.mode) html+=`<span>›</span><span class="bc-item active">${state.mode==='experiment'?'এক্সপেরিমেন্ট':'থ্রিডি মডেল'}</span>`;
+  bc.innerHTML=html;
 }
 
-// ===== INIT =====
 render();
 </script>
 </body>
