@@ -1,429 +1,557 @@
+cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>বিজ্ঞান ল্যাব — দাখিল ষষ্ঠ শ্রেণি</title>
+<title>বিজ্ঞান ল্যাব — NCTB দাখিল</title>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0e1a;
-    --surface: #111827;
-    --surface2: #1a2235;
-    --accent: #00d4ff;
-    --accent2: #7c3aed;
-    --accent3: #10b981;
-    --gold: #f59e0b;
-    --text: #e2e8f0;
-    --text-dim: #94a3b8;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Hind Siliguri', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-  .bg-canvas {
-    position: fixed; inset: 0; z-index: 0;
-    background:
-      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(124,58,237,0.12) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 50% at 80% 80%, rgba(0,212,255,0.1) 0%, transparent 60%),
-      #0a0e1a;
-  }
-  .grid-overlay {
-    position: fixed; inset: 0; z-index: 0;
-    background-image:
-      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
-    background-size: 60px 60px;
-  }
-  .wrapper { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
-  header { width: 100%; text-align: center; padding: 40px 20px 10px; }
-  .logo-icon { font-size: 2.8rem; display: block; animation: float 4s ease-in-out infinite; margin-bottom: 10px; }
-  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-  .site-title {
-    font-family: 'Tiro Bangla', serif;
-    font-size: clamp(1.8rem, 5vw, 3rem);
-    background: linear-gradient(135deg, #00d4ff, #7c3aed, #10b981);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    line-height: 1.2; margin-bottom: 6px;
-  }
-  .site-sub { font-size: 0.85rem; color: var(--text-dim); letter-spacing: 3px; text-transform: uppercase; font-weight: 300; }
-  .pulse { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent3); margin-right: 5px; animation: pulse 2s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(16,185,129,0.4)} 50%{transform:scale(1.3);box-shadow:0 0 0 6px rgba(16,185,129,0)} }
-  .breadcrumb {
-    width: 90%; max-width: 800px; display: flex; align-items: center; gap: 8px;
-    margin: 24px 0 0; padding: 10px 18px;
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 50px; font-size: 0.82rem; color: var(--text-dim); flex-wrap: wrap;
-  }
-  .breadcrumb .bc-item { cursor: pointer; color: var(--text-dim); transition: color 0.2s; }
-  .breadcrumb .bc-item:hover, .breadcrumb .bc-item.active { color: var(--accent); }
-  .screen-container { width: 90%; max-width: 1100px; margin: 30px auto 60px; animation: screenIn 0.45s cubic-bezier(0.16,1,0.3,1) forwards; }
-  @keyframes screenIn { from{opacity:0;transform:translateY(28px) scale(0.97)} to{opacity:1;transform:none} }
-  .screen-title { font-family: 'Tiro Bangla', serif; font-size: clamp(1.3rem, 3vw, 1.9rem); text-align: center; margin-bottom: 8px; }
-  .screen-desc { text-align: center; color: var(--text-dim); font-size: 0.9rem; margin-bottom: 40px; line-height: 1.7; }
-  /* CLASS CARDS */
-  .class-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-  .class-card {
-    position: relative; background: var(--surface); border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 20px; padding: 32px 24px; cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.16,1,0.3,1); overflow: hidden; text-align: center;
-  }
-  .class-card::before { content:''; position:absolute; inset:0; background:var(--card-glow); opacity:0; transition:opacity 0.4s; border-radius:20px; }
-  .class-card:hover::before { opacity:1; }
-  .class-card:hover { transform: translateY(-8px) scale(1.02); border-color: var(--card-accent); box-shadow: 0 20px 60px var(--card-shadow); }
-  .class-card .card-emoji { font-size: 2.5rem; margin-bottom: 14px; display: block; transition: transform 0.4s; }
-  .class-card:hover .card-emoji { transform: scale(1.2) rotate(-5deg); }
-  .class-card .card-label { font-family: 'Tiro Bangla', serif; font-size: 1.2rem; color: var(--text); margin-bottom: 6px; }
-  .class-card .card-sub { font-size: 0.78rem; color: var(--text-dim); letter-spacing: 1px; }
-  .class-card .card-badge { display:inline-block; margin-top:12px; padding:3px 12px; border-radius:20px; font-size:0.72rem; background:rgba(255,255,255,0.07); color:var(--card-accent); border:1px solid var(--card-accent); opacity:0.8; }
-  .card-blue { --card-accent:#00d4ff; --card-glow:linear-gradient(135deg,rgba(0,212,255,0.06),transparent); --card-shadow:rgba(0,212,255,0.15); }
-  .card-purple { --card-accent:#a78bfa; --card-glow:linear-gradient(135deg,rgba(167,139,250,0.06),transparent); --card-shadow:rgba(167,139,250,0.15); }
-  .card-green { --card-accent:#10b981; --card-glow:linear-gradient(135deg,rgba(16,185,129,0.06),transparent); --card-shadow:rgba(16,185,129,0.15); }
-  .card-gold { --card-accent:#f59e0b; --card-glow:linear-gradient(135deg,rgba(245,158,11,0.08),transparent); --card-shadow:rgba(245,158,11,0.2); }
-  /* MODE CARDS */
-  .mode-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; max-width:700px; margin:0 auto; }
-  .mode-card { position:relative; border-radius:22px; padding:44px 32px; cursor:pointer; text-align:center; transition:all 0.4s cubic-bezier(0.16,1,0.3,1); overflow:hidden; }
-  .exp-card { background:linear-gradient(135deg,#0d1f3c,#1a3a5c); border:1px solid rgba(0,212,255,0.2); }
-  .model-card { background:linear-gradient(135deg,#1a0d3c,#2d1a5c); border:1px solid rgba(124,58,237,0.2); }
-  .mode-card:hover { transform:translateY(-10px); }
-  .exp-card:hover { box-shadow:0 30px 80px rgba(0,212,255,0.2); border-color:rgba(0,212,255,0.5); }
-  .model-card:hover { box-shadow:0 30px 80px rgba(124,58,237,0.25); border-color:rgba(124,58,237,0.5); }
-  .mode-icon { font-size:3.5rem; margin-bottom:18px; display:block; animation:float 4s ease-in-out infinite; }
-  .model-card .mode-icon { animation-delay:-2s; }
-  .mode-title { font-family:'Tiro Bangla',serif; font-size:1.5rem; margin-bottom:10px; color:#fff; }
-  .mode-desc { font-size:0.88rem; color:var(--text-dim); line-height:1.7; }
-  .mode-tag { display:inline-block; margin-top:18px; padding:5px 16px; border-radius:30px; font-size:0.75rem; letter-spacing:1px; font-weight:500; }
-  .exp-card .mode-tag { background:rgba(0,212,255,0.1); border:1px solid rgba(0,212,255,0.3); color:var(--accent); }
-  .model-card .mode-tag { background:rgba(124,58,237,0.15); border:1px solid rgba(124,58,237,0.3); color:#a78bfa; }
-  /* SUBJECT CARDS */
-  .subject-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; max-width:860px; margin:0 auto; }
-  .subject-card { border-radius:20px; padding:40px 26px; cursor:pointer; text-align:center; border:1px solid transparent; transition:all 0.4s cubic-bezier(0.16,1,0.3,1); overflow:hidden; }
-  .sub-physics { background:linear-gradient(135deg,#0d2137,#132d4a); border-color:rgba(0,212,255,0.15); }
-  .sub-chemistry { background:linear-gradient(135deg,#1a1a0d,#2a2a0f); border-color:rgba(234,179,8,0.15); }
-  .sub-biology { background:linear-gradient(135deg,#0d200d,#0f2b0f); border-color:rgba(16,185,129,0.15); }
-  .subject-card:hover { transform:translateY(-10px) scale(1.03); }
-  .sub-physics:hover { box-shadow:0 30px 70px rgba(0,212,255,0.2); border-color:rgba(0,212,255,0.4); }
-  .sub-chemistry:hover { box-shadow:0 30px 70px rgba(234,179,8,0.2); border-color:rgba(234,179,8,0.4); }
-  .sub-biology:hover { box-shadow:0 30px 70px rgba(16,185,129,0.2); border-color:rgba(16,185,129,0.4); }
-  .sub-icon { font-size:3rem; display:block; margin-bottom:14px; animation:float 5s ease-in-out infinite; }
-  .sub-chemistry .sub-icon { animation-delay:-1.5s; } .sub-biology .sub-icon { animation-delay:-3s; }
-  .sub-title { font-family:'Tiro Bangla',serif; font-size:1.4rem; color:#fff; margin-bottom:6px; }
-  .sub-desc { font-size:0.82rem; color:var(--text-dim); line-height:1.6; }
-  /* CHAPTER LIST */
-  .chapter-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; margin-bottom:30px; }
-  .chapter-item {
-    background:var(--surface); border:1px solid rgba(255,255,255,0.07); border-radius:14px;
-    padding:16px 18px; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:12px;
-  }
-  .chapter-item:hover { background:var(--surface2); border-color:var(--accent); transform:translateX(5px); box-shadow:-3px 0 18px rgba(0,212,255,0.1); }
-  .ch-num { width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,rgba(0,212,255,0.15),rgba(124,58,237,0.15)); border:1px solid rgba(0,212,255,0.2); display:flex; align-items:center; justify-content:center; font-size:0.78rem; color:var(--accent); font-weight:600; flex-shrink:0; }
-  .ch-info .ch-title { font-size:0.88rem; color:var(--text); line-height:1.4; }
-  .ch-info .ch-sub { font-size:0.72rem; color:var(--text-dim); margin-top:3px; }
-  /* EXPERIMENT LIST */
-  .exp-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; margin-bottom:30px; }
-  .exp-item { background:var(--surface); border:1px solid rgba(255,255,255,0.07); border-radius:13px; padding:14px 16px; cursor:pointer; transition:all 0.3s; display:flex; align-items:flex-start; gap:12px; }
-  .exp-item:hover { background:var(--surface2); border-color:var(--accent3); transform:translateX(5px); }
-  .exp-num { width:32px; height:32px; border-radius:8px; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.25); display:flex; align-items:center; justify-content:center; font-size:0.72rem; color:var(--accent3); font-weight:700; flex-shrink:0; margin-top:2px; }
-  .exp-name { font-size:0.85rem; color:var(--text); line-height:1.5; }
-  .exp-ch { font-size:0.7rem; color:var(--text-dim); margin-top:3px; }
-  /* BACK BTN */
-  .back-btn { display:inline-flex; align-items:center; gap:8px; padding:9px 20px; border-radius:30px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:var(--text-dim); cursor:pointer; font-size:0.88rem; font-family:'Hind Siliguri',sans-serif; transition:all 0.3s; margin-bottom:30px; }
-  .back-btn:hover { background:rgba(0,212,255,0.08); border-color:rgba(0,212,255,0.3); color:var(--accent); }
-  /* SECTION TITLE */
-  .section-title { font-family:'Tiro Bangla',serif; font-size:1.2rem; margin-bottom:18px; color:var(--text); display:flex; align-items:center; gap:10px; }
-  .section-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(255,255,255,0.1),transparent); }
-  /* MODAL */
-  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:100; display:flex; align-items:center; justify-content:center; padding:20px; animation:fadeIn 0.2s; }
-  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-  .modal { background:var(--surface2); border:1px solid rgba(255,255,255,0.1); border-radius:24px; padding:36px; max-width:600px; width:100%; max-height:85vh; overflow-y:auto; position:relative; }
-  .modal-close { position:absolute; top:16px; right:16px; background:rgba(255,255,255,0.08); border:none; color:var(--text-dim); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:1.1rem; display:flex; align-items:center; justify-content:center; transition:all 0.2s; font-family:sans-serif; }
-  .modal-close:hover { background:rgba(255,0,0,0.2); color:#fff; }
-  .modal-title { font-family:'Tiro Bangla',serif; font-size:1.4rem; margin-bottom:8px; color:var(--text); padding-right:40px; }
-  .modal-chapter { font-size:0.8rem; color:var(--accent); margin-bottom:20px; letter-spacing:1px; }
-  .modal-section { margin-bottom:18px; }
-  .modal-section-title { font-size:0.85rem; color:var(--accent3); font-weight:600; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; }
-  .modal-text { font-size:0.88rem; color:var(--text-dim); line-height:1.8; }
-  .step-list { list-style:none; }
-  .step-list li { display:flex; gap:10px; margin-bottom:10px; font-size:0.88rem; color:var(--text-dim); line-height:1.6; }
-  .step-num { width:22px; height:22px; border-radius:50%; background:rgba(0,212,255,0.15); border:1px solid rgba(0,212,255,0.3); display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:var(--accent); flex-shrink:0; margin-top:2px; }
-  .materials-list { display:flex; flex-wrap:wrap; gap:8px; }
-  .material-tag { padding:4px 12px; background:rgba(124,58,237,0.12); border:1px solid rgba(124,58,237,0.25); border-radius:20px; font-size:0.78rem; color:#a78bfa; }
-  .coming-soon { text-align:center; padding:40px 20px; color:var(--text-dim); font-size:0.9rem; }
-  .coming-soon .big { font-size:3rem; display:block; margin-bottom:12px; }
-  footer { position:relative; z-index:1; text-align:center; padding:20px; color:var(--text-dim); font-size:0.75rem; border-top:1px solid rgba(255,255,255,0.05); width:100%; }
-  @media(max-width:600px){ .mode-grid{grid-template-columns:1fr} .class-grid{grid-template-columns:repeat(2,1fr);gap:12px} .class-card{padding:22px 14px} }
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1a2235;--accent:#00d4ff;--a2:#7c3aed;--a3:#10b981;--gold:#f59e0b;--text:#e2e8f0;--dim:#94a3b8}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Hind Siliguri',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.bg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(124,58,237,.12),transparent 60%),radial-gradient(ellipse 60% 50% at 80% 80%,rgba(0,212,255,.1),transparent 60%),#0a0e1a}
+.grid{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);background-size:60px 60px}
+.wrap{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center}
+header{width:100%;text-align:center;padding:35px 20px 8px}
+.logo{font-size:2.5rem;display:block;animation:float 4s ease-in-out infinite;margin-bottom:8px}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+h1{font-family:'Tiro Bangla',serif;font-size:clamp(1.6rem,5vw,2.7rem);background:linear-gradient(135deg,#00d4ff,#7c3aed,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:5px}
+.sub{font-size:.8rem;color:var(--dim);letter-spacing:3px;text-transform:uppercase}
+.pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--a3);margin-right:5px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(16,185,129,.4)}50%{transform:scale(1.3);box-shadow:0 0 0 6px rgba(16,185,129,0)}}
+.bc{width:90%;max-width:800px;display:flex;align-items:center;gap:8px;margin:18px 0 0;padding:9px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:50px;font-size:.78rem;color:var(--dim);flex-wrap:wrap}
+.bc .bi{cursor:pointer;color:var(--dim);transition:color .2s}
+.bc .bi:hover,.bc .bi.a{color:var(--accent)}
+.sc{width:90%;max-width:1100px;margin:26px auto 60px;animation:si .45s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes si{from{opacity:0;transform:translateY(28px) scale(.97)}to{opacity:1;transform:none}}
+.st{font-family:'Tiro Bangla',serif;font-size:clamp(1.2rem,3vw,1.8rem);text-align:center;margin-bottom:7px}
+.sd{text-align:center;color:var(--dim);font-size:.87rem;margin-bottom:34px;line-height:1.7}
+/* CLASS GRID */
+.cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px}
+.cc{position:relative;background:var(--surface);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:28px 20px;cursor:pointer;transition:all .4s cubic-bezier(.16,1,.3,1);overflow:hidden;text-align:center}
+.cc::before{content:'';position:absolute;inset:0;background:var(--cg);opacity:0;transition:opacity .4s;border-radius:18px}
+.cc:hover::before{opacity:1}
+.cc:hover{transform:translateY(-8px) scale(1.02);border-color:var(--ca);box-shadow:0 20px 60px var(--cs)}
+.cc .ce{font-size:2.2rem;margin-bottom:12px;display:block;transition:transform .4s}
+.cc:hover .ce{transform:scale(1.2) rotate(-5deg)}
+.cc .cl{font-family:'Tiro Bangla',serif;font-size:1.1rem;color:var(--text);margin-bottom:5px}
+.cc .cs2{font-size:.73rem;color:var(--dim);letter-spacing:1px}
+.cc .cb{display:inline-block;margin-top:10px;padding:3px 11px;border-radius:20px;font-size:.68rem;background:rgba(255,255,255,.07);color:var(--ca);border:1px solid var(--ca);opacity:.8}
+.c1{--ca:#00d4ff;--cg:linear-gradient(135deg,rgba(0,212,255,.06),transparent);--cs:rgba(0,212,255,.15)}
+.c2{--ca:#a78bfa;--cg:linear-gradient(135deg,rgba(167,139,250,.06),transparent);--cs:rgba(167,139,250,.15)}
+.c3{--ca:#10b981;--cg:linear-gradient(135deg,rgba(16,185,129,.06),transparent);--cs:rgba(16,185,129,.15)}
+.c4{--ca:#f59e0b;--cg:linear-gradient(135deg,rgba(245,158,11,.08),transparent);--cs:rgba(245,158,11,.2)}
+/* MODE */
+.mg{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:22px;max-width:680px;margin:0 auto}
+.mc{position:relative;border-radius:20px;padding:38px 28px;cursor:pointer;text-align:center;transition:all .4s cubic-bezier(.16,1,.3,1)}
+.ec{background:linear-gradient(135deg,#0d1f3c,#1a3a5c);border:1px solid rgba(0,212,255,.2)}
+.dc{background:linear-gradient(135deg,#1a0d3c,#2d1a5c);border:1px solid rgba(124,58,237,.2)}
+.mc:hover{transform:translateY(-10px)}
+.ec:hover{box-shadow:0 30px 80px rgba(0,212,255,.2);border-color:rgba(0,212,255,.5)}
+.dc:hover{box-shadow:0 30px 80px rgba(124,58,237,.25);border-color:rgba(124,58,237,.5)}
+.mi{font-size:3.2rem;margin-bottom:16px;display:block;animation:float 4s ease-in-out infinite}
+.dc .mi{animation-delay:-2s}
+.mt{font-family:'Tiro Bangla',serif;font-size:1.35rem;margin-bottom:9px;color:#fff}
+.md{font-size:.84rem;color:var(--dim);line-height:1.7}
+.mtg{display:inline-block;margin-top:15px;padding:5px 14px;border-radius:30px;font-size:.71rem;letter-spacing:1px;font-weight:500}
+.ec .mtg{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:var(--accent)}
+.dc .mtg{background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);color:#a78bfa}
+/* SUBJECT */
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;max-width:840px;margin:0 auto}
+.scard{border-radius:18px;padding:36px 24px;cursor:pointer;text-align:center;border:1px solid transparent;transition:all .4s cubic-bezier(.16,1,.3,1)}
+.sphy{background:linear-gradient(135deg,#0d2137,#132d4a);border-color:rgba(0,212,255,.15)}
+.sche{background:linear-gradient(135deg,#1a1a0d,#2a2a0f);border-color:rgba(234,179,8,.15)}
+.sbio{background:linear-gradient(135deg,#0d200d,#0f2b0f);border-color:rgba(16,185,129,.15)}
+.scard:hover{transform:translateY(-10px) scale(1.03)}
+.sphy:hover{box-shadow:0 30px 70px rgba(0,212,255,.2);border-color:rgba(0,212,255,.4)}
+.sche:hover{box-shadow:0 30px 70px rgba(234,179,8,.2);border-color:rgba(234,179,8,.4)}
+.sbio:hover{box-shadow:0 30px 70px rgba(16,185,129,.2);border-color:rgba(16,185,129,.4)}
+.si2{font-size:2.8rem;display:block;margin-bottom:12px;animation:float 5s ease-in-out infinite}
+.sche .si2{animation-delay:-1.5s}.sbio .si2{animation-delay:-3s}
+.stt{font-family:'Tiro Bangla',serif;font-size:1.3rem;color:#fff;margin-bottom:5px}
+.sdd{font-size:.8rem;color:var(--dim);line-height:1.5}
+/* LIST */
+.ig{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:11px;margin-bottom:28px}
+.li{background:var(--surface);border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:13px 15px;cursor:pointer;transition:all .3s;display:flex;align-items:flex-start;gap:11px}
+.li:hover{background:var(--surface2);border-color:var(--ic,var(--accent));transform:translateX(5px)}
+.in{width:30px;height:30px;border-radius:8px;background:var(--ib,rgba(0,212,255,.1));border:1px solid var(--ibr,rgba(0,212,255,.25));display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--ic,var(--accent));font-weight:700;flex-shrink:0;margin-top:2px}
+.it{font-size:.84rem;color:var(--text);line-height:1.4}
+.is{font-size:.68rem;color:var(--dim);margin-top:2px}
+/* BACK */
+.bb{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:30px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--dim);cursor:pointer;font-size:.84rem;font-family:'Hind Siliguri',sans-serif;transition:all .3s;margin-bottom:24px}
+.bb:hover{background:rgba(0,212,255,.08);border-color:rgba(0,212,255,.3);color:var(--accent)}
+.sect{font-family:'Tiro Bangla',serif;font-size:1.05rem;margin-bottom:14px;color:var(--text);display:flex;align-items:center;gap:10px}
+.sect::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.1),transparent)}
+/* MODAL */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;animation:fo .2s}
+@keyframes fo{from{opacity:0}to{opacity:1}}
+.mo{background:var(--surface2);border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:28px;max-width:580px;width:100%;max-height:88vh;overflow-y:auto;position:relative}
+.mc2{position:absolute;top:13px;right:13px;background:rgba(255,255,255,.08);border:none;color:var(--dim);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:sans-serif}
+.mc2:hover{background:rgba(255,0,0,.2);color:#fff}
+.mtt{font-family:'Tiro Bangla',serif;font-size:1.3rem;margin-bottom:6px;color:var(--text);padding-right:36px}
+.mch{font-size:.76rem;color:var(--accent);margin-bottom:16px;letter-spacing:1px}
+.ms{margin-bottom:15px}
+.mst{font-size:.78rem;color:var(--a3);font-weight:600;margin-bottom:7px;text-transform:uppercase;letter-spacing:1px}
+.mtxt{font-size:.84rem;color:var(--dim);line-height:1.8}
+.sl{list-style:none}
+.sl li{display:flex;gap:9px;margin-bottom:8px;font-size:.83rem;color:var(--dim);line-height:1.6}
+.sn{width:20px;height:20px;border-radius:50%;background:rgba(0,212,255,.15);border:1px solid rgba(0,212,255,.3);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--accent);flex-shrink:0;margin-top:2px}
+.ml{display:flex;flex-wrap:wrap;gap:7px}
+.mt2{padding:3px 11px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.25);border-radius:20px;font-size:.73rem;color:#a78bfa}
+.cs{text-align:center;padding:32px 20px;color:var(--dim);font-size:.86rem}
+footer{position:relative;z-index:1;text-align:center;padding:18px;color:var(--dim);font-size:.71rem;border-top:1px solid rgba(255,255,255,.05);width:100%}
+@media(max-width:600px){.mg{grid-template-columns:1fr}.cg{grid-template-columns:repeat(2,1fr);gap:12px}.cc{padding:20px 12px}}
 </style>
 </head>
 <body>
-<div class="bg-canvas"></div>
-<div class="grid-overlay"></div>
-<div class="wrapper">
-  <header>
-    <span class="logo-icon">🔬</span>
-    <h1 class="site-title">বিজ্ঞান ল্যাব</h1>
-    <p class="site-sub"><span class="pulse"></span>ভার্চুয়াল বিজ্ঞানাগার · NCTB দাখিল</p>
-  </header>
-  <nav class="breadcrumb" id="breadcrumb"></nav>
-  <div class="screen-container" id="mainContent"></div>
-  <footer>© ২০২৫ বিজ্ঞান ল্যাব — NCTB দাখিল পাঠ্যক্রম অনুযায়ী</footer>
+<div class="bg"></div><div class="grid"></div>
+<div class="wrap">
+<header>
+  <span class="logo">🔬</span>
+  <h1>বিজ্ঞান ল্যাব</h1>
+  <p class="sub"><span class="pulse"></span>ভার্চুয়াল বিজ্ঞানাগার · NCTB দাখিল</p>
+</header>
+<nav class="bc" id="bc"></nav>
+<div class="sc" id="sc"></div>
+<footer>© ২০২৫ বিজ্ঞান ল্যাব — NCTB দাখিল পাঠ্যক্রম ষষ্ঠ–দশম শ্রেণি</footer>
 </div>
-
 <script>
-// ===== DATA (NCTB Class 6 Dakhil - from actual book) =====
-const DATA = {
-  '৬': {
-    label: 'ষষ্ঠ শ্রেণি',
-    chapters: [
-      { id:'ch1', num:'১', title:'বৈজ্ঞানিক প্রক্রিয়া ও পরিমাপ', emoji:'📏' },
-      { id:'ch2', num:'২', title:'জীবজগৎ', emoji:'🌿' },
-      { id:'ch3', num:'৩', title:'উদ্ভিদ ও প্রাণীর কোষীয় সংগঠন', emoji:'🔬' },
-      { id:'ch4', num:'৪', title:'উদ্ভিদের বাহ্যিক বৈশিষ্ট্য', emoji:'🌱' },
-      { id:'ch5', num:'৫', title:'সালোকসংশ্লেষণ', emoji:'☀️' },
-      { id:'ch6', num:'৬', title:'সংবেদি অঙ্গ', emoji:'👁️' },
-      { id:'ch7', num:'৭', title:'পদার্থের বৈশিষ্ট্য এবং বাহ্যিক প্রভাব', emoji:'⚗️' },
-      { id:'ch8', num:'৮', title:'মিশণ', emoji:'🧪' },
-      { id:'ch9', num:'৯', title:'আলোর ঘটনা', emoji:'💡' },
-      { id:'ch10', num:'১০', title:'গতি', emoji:'🚀' },
-      { id:'ch11', num:'১১', title:'বল এবং সরল যন্ত্র', emoji:'⚙️' },
-      { id:'ch12', num:'১২', title:'পৃথিবীর উৎপত্তি ও গঠন', emoji:'🌍' },
-      { id:'ch13', num:'১৩', title:'খাদ্য ও পুষ্টি', emoji:'🍎' },
-      { id:'ch14', num:'১৪', title:'পরিবেশের ভারসাম্য এবং আমাদের জীবন', emoji:'🌳' },
-    ],
-    experiments: [
-      { id:'e1', title:'বৈজ্ঞানিক পরীক্ষা পদ্ধতি অনুশীলন (ফুলগাছের পানির প্রয়োজনীয়তা)', chapter:'১ম অধ্যায়', materials:['দুটি একই পাত্র','দুটি একই চারাগাছ','মাটি','পানি'], steps:['দুটি পাত্রে মাটি ভরে একটি করে চারাগাছ লাগাও','একটি পাত্রে নিয়মিত পানি দাও, অন্যটিতে পানি দিও না','প্রতিদিন পর্যবেক্ষণ করো','কয়েক দিন পর দুটি গাছের অবস্থা তুলনা করো','সিদ্ধান্ত নাও — পানি না পেলে কী হয়?'] },
-      { id:'e2', title:'থার্মোমিটার দিয়ে তাপমাত্রা পরিমাপ', chapter:'১ম অধ্যায়', materials:['একটি ক্লিনিক্যাল থার্মোমিটার'], steps:['থার্মোমিটারটি হাতে নাও ও ভালোভাবে দেখো','থার্মোমিটারটি জিহ্বার নিচে বা বগলে রাখো','১ মিনিট অপেক্ষা করো','থার্মোমিটার বের করে পাঠ নাও','শরীরের তাপমাত্রা রেকর্ড করো'] },
-      { id:'e3', title:'কঠিন বস্তুর আয়তন পরিমাপ (পানি সরণ পদ্ধতি)', chapter:'১ম অধ্যায়', materials:['একটি মেজারিং সিলিন্ডার','পানি','ছোট পাথর বা অনিয়মিত আকৃতির বস্তু'], steps:['মেজারিং সিলিন্ডারে একটি নির্দিষ্ট পরিমাণ পানি নাও — পাঠ নাও (V1)','পাথরটি সাবধানে পানিতে ডুবাও','নতুন পানির উচ্চতার পাঠ নাও (V2)','বস্তুর আয়তন = V2 − V1'] },
-      { id:'e4', title:'উদ্ভিদ ও প্রাণীর শ্রেণিবিন্যাস পর্যবেক্ষণ', chapter:'২য় অধ্যায়', materials:['ডেঁকিশাক','লালশাক','লাউশাক','গম','সরিষা'], steps:['বিভিন্ন উদ্ভিদের পাতা ও কাণ্ড পর্যবেক্ষণ করো','কোনটি ফার্ন আর কোনটি নয় তা চিহ্নিত করো','সপুষ্পক ও অপুষ্পক উদ্ভিদ আলাদা করো','খাতায় তালিকা তৈরি করো'] },
-      { id:'e5', title:'উদ্ভিদ কোষ ও প্রাণী কোষের পার্থক্য চার্ট তৈরি', chapter:'৩য় অধ্যায়', materials:['সাদা কাগজ','রঙিন পেন্সিল'], steps:['উদ্ভিদ কোষের চিত্র আঁকো — কোষপ্রাচীর ও ক্লোরোপ্লাস্ট দেখাও','প্রাণী কোষের চিত্র আঁকো','দুটির মিল ও পার্থক্য একটি ছকে লেখো'] },
-      { id:'e6', title:'মাটি দিয়ে নিউক্লিয়াসের মডেল তৈরি', chapter:'৩য় অধ্যায়', materials:['বিভিন্ন রঙের মাটি বা প্লাস্টিসিন'], steps:['বাইরের স্তর হিসেবে নিউক্লিয়ার মেমব্রেন তৈরি করো','ভেতরে নিউক্লিওপ্লাজম দেখাও','ক্রোমাটিন তন্তু ও নিউক্লিওলাস যোগ করো','মডেলটির লেবেল করো'] },
-      { id:'e7', title:'উদ্ভিদের মূল, কাণ্ড ও পাতার গঠন পর্যবেক্ষণ', chapter:'৪র্থ অধ্যায়', materials:['যেকোনো একটি গাছ','ম্যাগনিফাইং গ্লাস (যদি থাকে)'], steps:['গাছটি মাটি সহ তুলে আনো','মূলের আকৃতি লক্ষ্য করো — কোনো শাখা আছে কিনা','কাণ্ড স্পর্শ করো — শক্ত নাকি নরম?','পাতার উপরে ও নিচের দিক দেখো','খাতায় চিত্র এঁকে লেবেল করো'] },
-      { id:'e8', title:'সালোকসংশ্লেষণে আলোর প্রয়োজনীয়তা পরীক্ষা (বেলজার পরীক্ষা)', chapter:'৫ম অধ্যায়', materials:['দুটি বেলজার বা কাচের পাত্র','দুটি সবুজ চারাগাছ','একটি মোমবাতি'], steps:['দুটি বেলজারে একটি করে সবুজ চারাগাছ রাখো (P ও Q)','P বেলজারে একটি জ্বলন্ত মোমবাতি রাখো (CO₂ শেষ হবে)','Q বেলজারে কিছু রাখো না','কিছুক্ষণ পর দুটি গাছ পর্যবেক্ষণ করো','Q গাছ সুস্থ কারণ তার CO₂ আছে'] },
-      { id:'e9', title:'ধাতুর বিদ্যুৎ পরিবাহিতা পর্যবেক্ষণ', chapter:'৭ম অধ্যায়', materials:['একটি ব্যাটারি','বৈদ্যুতিক বাল্ব','তার','স্টিলের চামচ','অ্যালুমিনিয়ামের টুকরা','রাবার','কাঠ','প্লাস্টিক'], steps:['ব্যাটারি, বাল্ব ও তার দিয়ে একটি সার্কিট তৈরি করো','সার্কিটে একটি ফাঁক রাখো','বিভিন্ন বস্তু (ধাতু, অধাতু) ফাঁকে রাখো','কোন বস্তু রাখলে বাল্ব জ্বলে তা রেকর্ড করো','বিদ্যুৎ পরিবাহী ও অপরিবাহী তালিকা তৈরি করো'] },
-      { id:'e10', title:'মোমের গলনাঙ্ক নির্ণয়', chapter:'৭ম অধ্যায়', materials:['মোম','বিকার','পানি','থার্মোমিটার','স্পিরিট ল্যাম্প','টেস্টটিউব'], steps:['টেস্টটিউবে ছোট মোমের টুকরা নাও','বিকারে পানি নিয়ে তাপ দাও','টেস্টটিউব পানিতে ডুবিয়ে রাখো','থার্মোমিটারে তাপমাত্রা দেখতে থাকো','মোম গলতে শুরু করলে তাপমাত্রা রেকর্ড করো — এটি গলনাঙ্ক'] },
-      { id:'e11', title:'দ্রবণ ও সাসপেনশন তৈরি ও পার্থক্য করা', chapter:'৮ম অধ্যায়', materials:['পানি','চিনি বা লবণ','মাটি','দুটি গ্লাস'], steps:['এক গ্লাস পানিতে চিনি বা লবণ মিশিয়ে নাড়াও — এটি দ্রবণ','অন্য গ্লাসে পানিতে মাটি মিশাও — এটি সাসপেনশন','কিছুক্ষণ রেখে দাও','কোনটি স্বচ্ছ, কোনটি ঘোলা তা দেখো','পার্থক্য খাতায় লিখে রাখো'] },
-      { id:'e12', title:'লবণ-পানি থেকে লবণ পৃথক করা (বাষ্পীভবন)', chapter:'৮ম অধ্যায়', materials:['লবণ পানি','চুলা বা স্পিরিট ল্যাম্প','পাত্র'], steps:['লবণ পানি পাত্রে নাও','আস্তে আস্তে তাপ দাও','পানি বাষ্প হয়ে উড়ে যাবে','পাত্রে সাদা লবণের কেলাস দেখা যাবে','লবণ সংগ্রহ করো'] },
-      { id:'e13', title:'আলোর প্রতিফলন পরীক্ষা (সমতল দর্পণ)', chapter:'৯ম অধ্যায়', materials:['একটি সমতল দর্পণ','একটি টর্চলাইট বা সূর্যের আলো'], steps:['অন্ধকার ঘরে দর্পণের সামনে টর্চ ধরো','আলোর রশ্মি দর্পণে পড়তে দাও','প্রতিফলিত রশ্মির দিক লক্ষ্য করো','আপতন কোণ ও প্রতিফলন কোণ মাপো','কাগজে চিত্র এঁকে দেখাও'] },
-      { id:'e14', title:'গতির পরিমাপ — দ্রুতি ও দূরত্ব নির্ণয়', chapter:'১০ম অধ্যায়', materials:['স্টপওয়াচ বা মোবাইল টাইমার','মেজারিং টেপ'], steps:['একটি নির্দিষ্ট দূরত্ব (যেমন ১০ মিটার) চিহ্নিত করো','বন্ধুকে ওই দূরত্ব হাঁটতে বলো, সময় মাপো','দ্রুতি = দূরত্ব ÷ সময় সূত্র ব্যবহার করো','দৌড়ানোর সময়ও একইভাবে মাপো','হাঁটা ও দৌড়ানোর দ্রুতি তুলনা করো'] },
-      { id:'e15', title:'সরল যন্ত্র হিসেবে লিভার পর্যবেক্ষণ', chapter:'১১শ অধ্যায়', materials:['একটি লম্বা কাঠ বা শাসন','একটি পেন্সিল (ফালক্রাম)','ভার হিসেবে বই'], steps:['পেন্সিলের উপর কাঠ রাখো (ফালক্রাম মাঝখানে)','এক প্রান্তে ভারী বই রাখো','অন্য প্রান্তে হাত দিয়ে চাপ দাও','বই উঠছে কিনা দেখো','ফালক্রামের অবস্থান পরিবর্তন করে পর্যবেক্ষণ করো'] },
-    ],
-    models3d: [
-      { id:'m1', title:'উদ্ভিদ কোষের গঠন', chapter:'৩য় অধ্যায়', desc:'কোষপ্রাচীর, কোষঝিল্লি, নিউক্লিয়াস, ক্লোরোপ্লাস্ট, মাইটোকন্ড্রিয়া' },
-      { id:'m2', title:'প্রাণী কোষের গঠন', chapter:'৩য় অধ্যায়', desc:'কোষঝিল্লি, নিউক্লিয়াস, মাইটোকন্ড্রিয়া, রাইবোজোম' },
-      { id:'m3', title:'নিউক্লিয়াসের অভ্যন্তরীণ গঠন', chapter:'৩য় অধ্যায়', desc:'নিউক্লিওপ্লাজম, ক্রোমাটিন তন্তু, নিউক্লিওলাস' },
-      { id:'m4', title:'উদ্ভিদের মূল, কাণ্ড ও পাতা', chapter:'৪র্থ অধ্যায়', desc:'গাছের বিভিন্ন অংশের বিস্তারিত গঠন' },
-      { id:'m5', title:'সালোকসংশ্লেষণ প্রক্রিয়া', chapter:'৫ম অধ্যায়', desc:'সূর্যালোক + CO₂ + পানি → গ্লুকোজ + অক্সিজেন' },
-      { id:'m6', title:'চোখের গঠন', chapter:'৬ষ্ঠ অধ্যায়', desc:'কর্নিয়া, আইরিস, লেন্স, রেটিনা' },
-      { id:'m7', title:'কানের গঠন', chapter:'৬ষ্ঠ অধ্যায়', desc:'বাহ্যিক কান, মধ্যকর্ণ, অন্তঃকর্ণ' },
-      { id:'m8', title:'পৃথিবীর অভ্যন্তরীণ গঠন', chapter:'১২শ অধ্যায়', desc:'ভূত্বক, ম্যান্টল, বাইরের কোর, ভেতরের কোর' },
-      { id:'m9', title:'সৌরজগতের গঠন', chapter:'১২শ অধ্যায়', desc:'সূর্য, গ্রহ ও উপগ্রহসমূহ' },
-      { id:'m10', title:'সরল যন্ত্র — লিভার, পুলি, হেলানো তল', chapter:'১১শ অধ্যায়', desc:'বিভিন্ন শ্রেণির সরল যন্ত্রের কাজ' },
-      { id:'m11', title:'মানবদেহের পাচনতন্ত্র', chapter:'১৩শ অধ্যায়', desc:'মুখ থেকে পায়ু পর্যন্ত পাচনতন্ত্র' },
-      { id:'m12', title:'খাদ্যের পুষ্টিগুণ চার্ট', chapter:'১৩শ অধ্যায়', desc:'শর্করা, প্রোটিন, চর্বি, ভিটামিন, খনিজ লবণ' },
-    ]
-  }
+const D={
+'৬':{label:'ষষ্ঠ শ্রেণি',emoji:'📘',
+ chapters:[
+  {id:'c1',n:'১',t:'বৈজ্ঞানিক প্রক্রিয়া ও পরিমাপ',e:'📏'},
+  {id:'c2',n:'২',t:'জীবজগৎ',e:'🌿'},
+  {id:'c3',n:'৩',t:'উদ্ভিদ ও প্রাণীর কোষীয় সংগঠন',e:'🔬'},
+  {id:'c4',n:'৪',t:'উদ্ভিদের বাহ্যিক বৈশিষ্ট্য',e:'🌱'},
+  {id:'c5',n:'৫',t:'সালোকসংশ্লেষণ',e:'☀️'},
+  {id:'c6',n:'৬',t:'সংবেদি অঙ্গ',e:'👁️'},
+  {id:'c7',n:'৭',t:'পদার্থের বৈশিষ্ট্য ও বাহ্যিক প্রভাব',e:'⚗️'},
+  {id:'c8',n:'৮',t:'মিশণ',e:'🧪'},
+  {id:'c9',n:'৯',t:'আলোর ঘটনা',e:'💡'},
+  {id:'c10',n:'১০',t:'গতি',e:'🚀'},
+  {id:'c11',n:'১১',t:'বল এবং সরল যন্ত্র',e:'⚙️'},
+  {id:'c12',n:'১২',t:'পৃথিবীর উৎপত্তি ও গঠন',e:'🌍'},
+  {id:'c13',n:'১৩',t:'খাদ্য ও পুষ্টি',e:'🍎'},
+  {id:'c14',n:'১৪',t:'পরিবেশের ভারসাম্য ও আমাদের জীবন',e:'🌳'},
+ ],
+ exp:[
+  {id:'e1',t:'বৈজ্ঞানিক পদ্ধতিতে পরীক্ষা — ফুলগাছের পানির প্রয়োজনীয়তা',ch:'১ম অধ্যায়',m:['দুটি পাত্র','দুটি চারাগাছ','মাটি','পানি'],s:['দুই পাত্রে মাটি ভরে চারা লাগাও','এক পাত্রে পানি দাও, অন্যটিতে দিও না','প্রতিদিন পর্যবেক্ষণ ও নোট রাখো','কয়েকদিন পর দুটি গাছের তুলনা করো','সিদ্ধান্ত লেখো']},
+  {id:'e2',t:'থার্মোমিটার দিয়ে তাপমাত্রা পরিমাপ',ch:'১ম অধ্যায়',m:['ক্লিনিক্যাল থার্মোমিটার'],s:['থার্মোমিটার ঝাঁকাও','জিহ্বার নিচে রাখো ১ মিনিট','পাঠ নাও ও রেকর্ড করো','বগলেও করে দেখো','তুলনা করো']},
+  {id:'e3',t:'পানি সরণ পদ্ধতিতে কঠিন বস্তুর আয়তন',ch:'১ম অধ্যায়',m:['মেজারিং সিলিন্ডার','পানি','পাথর'],s:['সিলিন্ডারে পানি নাও (V1)','পাথর ডুবাও','নতুন পাঠ নাও (V2)','আয়তন = V2 − V1']},
+  {id:'e4',t:'নিউক্লিয়াসের মডেল তৈরি (মাটি দিয়ে)',ch:'৩য় অধ্যায়',m:['রঙিন মাটি','প্লাস্টিসিন'],s:['নিউক্লিয়ার মেমব্রেন তৈরি করো','নিউক্লিওপ্লাজম দেখাও','ক্রোমাটিন তন্তু ও নিউক্লিওলাস যোগ করো','লেবেল করো']},
+  {id:'e5',t:'উদ্ভিদ কোষ ও প্রাণী কোষের পার্থক্য চার্ট',ch:'৩য় অধ্যায়',m:['কাগজ','রঙিন পেন্সিল'],s:['উদ্ভিদ কোষ আঁকো','প্রাণী কোষ আঁকো','মিল ও পার্থক্য ছকে লেখো']},
+  {id:'e6',t:'সালোকসংশ্লেষণে আলোর প্রয়োজনীয়তা (বেলজার পরীক্ষা)',ch:'৫ম অধ্যায়',m:['দুটি বেলজার','দুটি গাছ','মোমবাতি'],s:['P বেলজারে মোমবাতি রাখো (CO₂ শেষ হবে)','Q বেলজার স্বাভাবিক রাখো','কিছুক্ষণ পর পর্যবেক্ষণ করো','Q সুস্থ কারণ CO₂ আছে']},
+  {id:'e7',t:'ধাতুর বিদ্যুৎ পরিবাহিতা পরীক্ষা',ch:'৭ম অধ্যায়',m:['ব্যাটারি','বাল্ব','তার','লোহা','রাবার','কাঠ'],s:['সার্কিট তৈরি করো ফাঁক রেখে','বিভিন্ন বস্তু ফাঁকে রাখো','বাল্ব জ্বলে কিনা দেখো','পরিবাহী ও অপরিবাহী তালিকা তৈরি করো']},
+  {id:'e8',t:'মোমের গলনাঙ্ক নির্ণয়',ch:'৭ম অধ্যায়',m:['মোম','বিকার','পানি','থার্মোমিটার','স্পিরিট ল্যাম্প'],s:['টেস্টটিউবে মোম নাও','পানির বিকারে তাপ দাও','মোম গলতে শুরু হলে তাপমাত্রা রেকর্ড করো','এটি গলনাঙ্ক']},
+  {id:'e9',t:'লবণ পানি থেকে লবণ পৃথক (বাষ্পীভবন)',ch:'৮ম অধ্যায়',m:['লবণ পানি','চুলা','পাত্র'],s:['লবণ পানি পাত্রে নাও','তাপ দাও','পানি উড়ে যাবে','লবণের কেলাস থাকবে']},
+  {id:'e10',t:'আলোর প্রতিফলন — সমতল দর্পণ',ch:'৯ম অধ্যায়',m:['সমতল দর্পণ','টর্চলাইট'],s:['অন্ধকারে টর্চ দর্পণে ফেলো','প্রতিফলিত রশ্মি দেখো','আপতন ও প্রতিফলন কোণ মাপো','সিদ্ধান্ত লেখো']},
+  {id:'e11',t:'দ্রুতি নির্ণয় — স্টপওয়াচ দিয়ে',ch:'১০ম অধ্যায়',m:['মেজারিং টেপ','মোবাইল টাইমার'],s:['১০ মিটার চিহ্নিত করো','হাঁটা ও দৌড়ানোর সময় মাপো','দ্রুতি = দূরত্ব ÷ সময়','তুলনা করো']},
+  {id:'e12',t:'লিভার যন্ত্র পর্যবেক্ষণ',ch:'১১শ অধ্যায়',m:['কাঠের শাসন','পেন্সিল','বই'],s:['পেন্সিলের উপর শাসন রাখো','এক প্রান্তে বই রাখো','অন্য প্রান্তে চাপ দাও','ফালক্রাম পরিবর্তন করে দেখো']},
+ ],
+ m3d:[
+  {id:'m1',t:'উদ্ভিদ কোষের বিস্তারিত গঠন',ch:'৩য় অধ্যায়',d:'কোষপ্রাচীর, কোষঝিল্লি, নিউক্লিয়াস, ক্লোরোপ্লাস্ট, মাইটোকন্ড্রিয়া, ভ্যাকুওল, এন্ডোপ্লাজমিক রেটিকুলাম'},
+  {id:'m2',t:'প্রাণী কোষের বিস্তারিত গঠন',ch:'৩য় অধ্যায়',d:'কোষঝিল্লি, নিউক্লিয়াস, মাইটোকন্ড্রিয়া, রাইবোজোম, গলজি বস্তু, লাইসোজোম'},
+  {id:'m3',t:'নিউক্লিয়াসের অভ্যন্তরীণ গঠন',ch:'৩য় অধ্যায়',d:'নিউক্লিয়ার মেমব্রেন, নিউক্লিওপ্লাজম, ক্রোমাটিন তন্তু, নিউক্লিওলাস'},
+  {id:'m4',t:'উদ্ভিদের মূল, কাণ্ড ও পাতার গঠন',ch:'৪র্থ অধ্যায়',d:'মূলের প্রকার, সতজুমূল, বায়বীয় মূল, কাণ্ডের অভ্যন্তরীণ গঠন'},
+  {id:'m5',t:'সালোকসংশ্লেষণ প্রক্রিয়া',ch:'৫ম অধ্যায়',d:'CO₂ + H₂O + আলো → গ্লুকোজ + O₂, ক্লোরোপ্লাস্টের ভূমিকা'},
+  {id:'m6',t:'চোখের গঠন ও কাজ',ch:'৬ষ্ঠ অধ্যায়',d:'কর্নিয়া, আইরিস, লেন্স, রেটিনা, অপটিক নার্ভ, রড ও কোন কোষ'},
+  {id:'m7',t:'কানের গঠন ও কাজ',ch:'৬ষ্ঠ অধ্যায়',d:'বাহ্যিক কান, কানের পর্দা, মধ্যকর্ণ, অন্তঃকর্ণ, শ্রবণ প্রক্রিয়া'},
+  {id:'m8',t:'সমতল দর্পণে আলোর প্রতিফলন',ch:'৯ম অধ্যায়',d:'আপতন কোণ = প্রতিফলন কোণ, প্রতিবিম্ব তৈরি'},
+  {id:'m9',t:'পৃথিবীর অভ্যন্তরীণ গঠন',ch:'১২শ অধ্যায়',d:'ভূত্বক, ম্যান্টল, বাইরের কোর, ভেতরের কোর, ভূমিকম্পের কারণ'},
+  {id:'m10',t:'সৌরজগতের গ্রহগুলো',ch:'১২শ অধ্যায়',d:'সূর্য থেকে দূরত্ব অনুযায়ী আটটি গ্রহ, তাদের কক্ষপথ ও বৈশিষ্ট্য'},
+  {id:'m11',t:'সরল যন্ত্র — লিভার, পুলি, হেলানো তল',ch:'১১শ অধ্যায়',d:'তিন শ্রেণির লিভার, যান্ত্রিক সুবিধা, দৈনন্দিন ব্যবহার'},
+  {id:'m12',t:'মানবদেহের পাচনতন্ত্র',ch:'১৩শ অধ্যায়',d:'মুখ, অন্ননালী, পাকস্থলী, ক্ষুদ্রান্ত্র, বৃহদান্ত্র, লিভার, অগ্ন্যাশয়'},
+ ]
+},
+'৭':{label:'সপ্তম শ্রেণি',emoji:'📗',
+ chapters:[
+  {id:'c1',n:'১',t:'নিম্নশেণির জীব',e:'🦠'},{id:'c2',n:'২',t:'উদ্ভিদ ও প্রাণীর কোষীয় সংগঠন',e:'🔬'},
+  {id:'c3',n:'৩',t:'উদ্ভিদের বাহ্যিক বৈশিষ্ট্য',e:'🌱'},{id:'c4',n:'৪',t:'শ্বসন',e:'💨'},
+  {id:'c5',n:'৫',t:'পরিপাকতন্ত্র এবং রক্ত সংবহনতন্ত্র',e:'❤️'},{id:'c6',n:'৬',t:'পদার্থের গঠন',e:'⚛️'},
+  {id:'c7',n:'৭',t:'শক্তির ব্যবহার',e:'⚡'},{id:'c8',n:'৮',t:'শব্দের কথা',e:'🔊'},
+  {id:'c9',n:'৯',t:'তাপ ও তাপমাত্রা',e:'🌡️'},{id:'c10',n:'১০',t:'বিদ্যুৎ ও চুম্বকের ঘটনা',e:'🔌'},
+  {id:'c11',n:'১১',t:'পারিপার্শ্বিক পরিবর্তন ও বিভিন্ন ঘটনা',e:'🔥'},{id:'c12',n:'১২',t:'সৌরজগৎ ও আমাদের পৃথিবী',e:'🌍'},
+  {id:'c13',n:'১৩',t:'প্রাকৃতিক পরিবেশ এবং দূষণ',e:'🌿'},{id:'c14',n:'১৪',t:'জলবায়ু পরিবর্তন',e:'🌡️'},
+ ],
+ exp:[
+  {id:'e1',t:'ভাজক ও স্থায়ী টিস্যুর বৈশিষ্ট্য পোস্টারে উপস্থাপন',ch:'২য় অধ্যায়',m:['পোস্টার কাগজ','রঙিন কলম'],s:['ভাজক টিস্যুর বৈশিষ্ট্য লেখো','স্থায়ী টিস্যুর বৈশিষ্ট্য লেখো','উভয়ের মিল ও পার্থক্য তুলনা করো','পোস্টারে সুন্দরভাবে উপস্থাপন করো']},
+  {id:'e2',t:'উদ্ভিদের মূলের প্রকার পর্যবেক্ষণ ও শ্রেণিবিন্যাস',ch:'৩য় অধ্যায়',m:['বিভিন্ন গাছের মূল','ম্যাগনিফাইং গ্লাস','নোটবুক'],s:['বিভিন্ন গাছের মূল সংগ্রহ করো','সরল মূল, শাখামূল, বায়বীয় মূল চেনো','প্রতিটির বৈশিষ্ট্য লেখো','চিত্র অঙ্কন ও লেবেল করো']},
+  {id:'e3',t:'শ্বসনতন্ত্রের চিহ্নিত চিত্র অঙ্কন',ch:'৪র্থ অধ্যায়',m:['সাদা কাগজ','পেন্সিল','রঙ'],s:['নাক থেকে ফুসফুস পর্যন্ত চিত্র আঁকো','শ্বাসনালী, ব্রংকাস, ব্রংকিওল লেবেল করো','ফুসফুসের অংশগুলো দেখাও','শ্বসন প্রক্রিয়া ব্যাখ্যা করো']},
+  {id:'e4',t:'নলের দৈর্ঘ্যের সাথে শব্দের তীক্ষ্ণতার পরিবর্তন',ch:'৮ম অধ্যায়',m:['পান করার নল','কাঁচি'],s:['নলের এক প্রান্ত চেপ্টা করো','কাটো ও মুখে নিয়ে ফুঁ দাও','শব্দ শোনো','নল কেটে খাটো করো','শব্দের তীক্ষ্ণতার পার্থক্য শোনো']},
+  {id:'e5',t:'বায়বীয় পদার্থের প্রসারণ পরীক্ষা (বোতল-বেলুন)',ch:'৯ম অধ্যায়',m:['কাচের বোতল','বেলুন','সুতা','গরম ও ঠান্ডা পানি'],s:['বেলুন বোতলের মুখে সুতা দিয়ে বাঁধো','গরম পানিতে বোতল ডুবাও','বেলুন ফুলে উঠছে লক্ষ্য করো','ঠান্ডা পানিতে রাখো','বেলুন চুপসে যাচ্ছে — কারণ ব্যাখ্যা করো']},
+  {id:'e6',t:'মোমবাতির দহন পর্যবেক্ষণ (রাসায়নিক vs ভৌত পরিবর্তন)',ch:'১১শ অধ্যায়',m:['মোমবাতি','দিয়াশলাই'],s:['মোমবাতি জ্বালাও','মোম গলা — ভৌত পরিবর্তন','মোম পোড়া — রাসায়নিক পরিবর্তন','দুটির পার্থক্য খাতায় লেখো']},
+  {id:'e7',t:'পরমাণুর মডেল তৈরি',ch:'৬ষ্ঠ অধ্যায়',m:['রঙিন মাটি বা বল','কাঠি','কার্ডবোর্ড'],s:['নিউক্লিয়াস তৈরি করো (প্রোটন+নিউট্রন)','কক্ষপথে ইলেকট্রন সাজাও','কার্বন বা অক্সিজেন মডেল তৈরি করো','চিহ্নিত করো']},
+  {id:'e8',t:'চুম্বকের ক্ষেত্ররেখা পর্যবেক্ষণ',ch:'১০ম অধ্যায়',m:['একটি চুম্বক','লোহার গুঁড়া','কাগজ'],s:['কাগজে লোহার গুঁড়া ছড়াও','নিচে চুম্বক রাখো','চৌম্বক ক্ষেত্ররেখা দেখো','উত্তর ও দক্ষিণ মেরু চিহ্নিত করো']},
+  {id:'e9',t:'পরিবেশ দূষণ পর্যবেক্ষণ ও প্রতিবেদন',ch:'১৩শ অধ্যায়',m:['নোটবুক','কলম'],s:['বায়ু, পানি ও মাটি দূষণের উৎস চিহ্নিত করো','দূষণের প্রভাব লেখো','প্রতিকারের উপায় লেখো','প্রতিবেদন তৈরি করো']},
+  {id:'e10',t:'গ্রহের কক্ষপথ মডেল তৈরি',ch:'১২শ অধ্যায়',m:['কার্ডবোর্ড','রঙিন কাগজ','কম্পাস'],s:['সূর্যকে মাঝখানে রাখো','গ্রহগুলোর কক্ষপথ আঁকো','সঠিক দূরত্ব বজায় রাখো','গ্রহের নাম লেবেল করো']},
+ ],
+ m3d:[
+  {id:'m1',t:'অ্যামিবার গঠন',ch:'১ম অধ্যায়',d:'ক্ষণপদ, নিউক্লিয়াস, খাদ্যগহ্বর, পানিগহ্বর, প্লাজমামেলা, অ্যামিবার চলাচল'},
+  {id:'m2',t:'ব্যাকটেরিয়ার গঠন',ch:'১ম অধ্যায়',d:'কোষপ্রাচীর, সাইটোপ্লাজম, ক্রোমাটিন বস্তু, ফ্লাজেলা, পিলি, ক্যাপসুল'},
+  {id:'m3',t:'ভাইরাসের গঠন',ch:'১ম অধ্যায়',d:'প্রোটিন আবরণ (ক্যাপসিড), নিউক্লিক এসিড, ব্যাকটেরিওফাজ গঠন'},
+  {id:'m4',t:'উদ্ভিদ ও প্রাণী টিস্যু',ch:'২য় অধ্যায়',d:'ভাজক টিস্যু, স্থায়ী টিস্যু, আবরণী টিস্যু, পেশি টিস্যু, স্নায়ু টিস্যু'},
+  {id:'m5',t:'মানব শ্বসনতন্ত্র',ch:'৪র্থ অধ্যায়',d:'নাসারন্ধ্র, শ্বাসনালী, ব্রংকাস, ব্রংকিওল, অ্যালভিওলাস, ফুসফুস, মধ্যচ্ছদা'},
+  {id:'m6',t:'পরিপাকতন্ত্র বিস্তারিত',ch:'৫ম অধ্যায়',d:'মুখগহ্বর, অন্ননালী, পাকস্থলী, ক্ষুদ্রান্ত্র, বৃহদান্ত্র, লিভার, অগ্ন্যাশয়, পিত্তথলি'},
+  {id:'m7',t:'হৃদযন্ত্র ও রক্ত সংবহনতন্ত্র',ch:'৫ম অধ্যায়',d:'হৃদযন্ত্রের চারটি প্রকোষ্ঠ, ধমনী, শিরা, কৈশিক নালী, রক্ত সংবহন চক্র'},
+  {id:'m8',t:'পরমাণুর গঠন মডেল',ch:'৬ষ্ঠ অধ্যায়',d:'নিউক্লিয়াস (প্রোটন+নিউট্রন), ইলেকট্রন কক্ষপথ, বোর মডেল, বিভিন্ন মৌলের পরমাণু'},
+  {id:'m9',t:'সৌরজগৎ ও গ্রহগুলো',ch:'১২শ অধ্যায়',d:'৮টি গ্রহের কক্ষপথ, বৈশিষ্ট্য, সূর্য থেকে দূরত্ব, উপগ্রহ'},
+  {id:'m10',t:'রক্তকণিকার গঠন',ch:'৫ম অধ্যায়',d:'লোহিত রক্তকণিকা, শ্বেত রক্তকণিকা, অণুচক্রিকা, হিমোগ্লোবিন'},
+  {id:'m11',t:'শব্দ তরঙ্গের বিস্তার',ch:'৮ম অধ্যায়',d:'শব্দ তরঙ্গ, কম্পাঙ্ক, বিস্তার, শব্দের বেগ, প্রতিধ্বনি'},
+  {id:'m12',t:'চুম্বক ও চৌম্বক ক্ষেত্র',ch:'১০ম অধ্যায়',d:'চুম্বকের মেরু, চৌম্বক ক্ষেত্ররেখা, ইলেকট্রোম্যাগনেট, পৃথিবীর চৌম্বক ক্ষেত্র'},
+ ]
+},
+  '৮':{label:'অষ্টম শ্রেণি',emoji:'📙',
+ chapters:[
+  {id:'c1',n:'১',t:'প্রাণিজগতের শ্রেণিবিন্যাস',e:'🐾'},{id:'c2',n:'২',t:'জীবের বৃদ্ধি ও বংশগতি',e:'🧬'},
+  {id:'c3',n:'৩',t:'ব্যাপন, অভিস্রবণ ও প্রস্বেদন',e:'💧'},{id:'c4',n:'৪',t:'উদ্ভিদের বংশ বৃদ্ধি',e:'🌱'},
+  {id:'c5',n:'৫',t:'সমন্বয় ও নিঃসরণ',e:'🧠'},{id:'c6',n:'৬',t:'পরমাণুর গঠন',e:'⚛️'},
+  {id:'c7',n:'৭',t:'পৃথিবী ও মহাকর্ষ',e:'🌍'},{id:'c8',n:'৮',t:'রাসায়নিক বিক্রিয়া',e:'⚗️'},
+  {id:'c9',n:'৯',t:'বর্তনী ও চলবিদ্যুৎ',e:'🔌'},{id:'c10',n:'১০',t:'অম্ল, ক্ষারক ও লবণ',e:'🧪'},
+  {id:'c11',n:'১১',t:'আলো',e:'💡'},{id:'c12',n:'১২',t:'মহাকাশ ও উপগ্রহ',e:'🚀'},
+  {id:'c13',n:'১৩',t:'খাদ্য ও পুষ্টি',e:'🍎'},{id:'c14',n:'১৪',t:'পরিবেশ এবং বাস্তুতন্ত্র',e:'🌳'},
+ ],
+ exp:[
+  {id:'e1',t:'মাইটোসিস ও মিয়োসিসের তুলনামূলক ছক',ch:'২য় অধ্যায়',m:['কাগজ','রঙিন পেন্সিল'],s:['মাইটোসিসের ধাপ আঁকো (প্রোফেজ→মেটাফেজ→অ্যানাফেজ→টেলোফেজ)','মিয়োসিসের ধাপ আঁকো','মিল ও পার্থক্য ছকে লেখো','কোথায় কোনটি হয় বলো']},
+  {id:'e2',t:'প্রস্বেদনের পরীক্ষা (পলিথিন পদ্ধতি)',ch:'৩য় অধ্যায়',m:['টবের গাছ','পলিথিন মোড়ক','সুতা','ভেসলিন'],s:['পাতায় পলিথিন মোড়ক দিয়ে ঢাকো','সুতা বেঁধে ভেসলিন লাগাও','কিছুক্ষণ রোদে রাখো','পলিথিনের ভেতরে পানির বিন্দু দেখো','প্রস্বেদন প্রমাণিত']},
+  {id:'e3',t:'পরমাণুর মডেল তৈরি (Na, Cl, Fe)',ch:'৬ষ্ঠ অধ্যায়',m:['রঙিন মাটি','কার্ডবোর্ড','কাঠি'],s:['প্রোটন (লাল) ও নিউট্রন (নীল) নিউক্লিয়াস তৈরি','ইলেকট্রন কক্ষপথ সাজাও','সোডিয়াম (Na) মডেল তৈরি করো','ক্লোরিন (Cl) মডেল তৈরি করো','লেবেল করো']},
+  {id:'e4',t:'লিটমাস পরীক্ষা — অম্ল ও ক্ষার শনাক্ত করো',ch:'১০ম অধ্যায়',m:['চুন বা NaOH','HCl বা ভিনেগার','লাল ও নীল লিটমাস কাগজ','পানি','বিকার'],s:['চুনের দ্রবণ তৈরি করো','লাল লিটমাস ডুবাও — নীল হবে (ক্ষার)','ভিনেগারে নীল লিটমাস ডুবাও — লাল হবে (অম্ল)','বিভিন্ন তরলে পরীক্ষা করো','ফলাফল সারণিতে লেখো']},
+  {id:'e5',t:'ভৌত ও রাসায়নিক পরিবর্তনের পার্থক্য',ch:'৮ম অধ্যায়',m:['কাগজ','মোমবাতি','লবণ','পানি','কাঁচি'],s:['কাগজ কাটো — ভৌত পরিবর্তন','কাগজ পোড়াও — রাসায়নিক পরিবর্তন','লবণ পানিতে মেশাও — ভৌত পরিবর্তন','মোম গলাও — ভৌত পরিবর্তন','পার্থক্য ছকে লেখো']},
+  {id:'e6',t:'আলোর পূর্ণ অভ্যন্তরীণ প্রতিফলন পর্যবেক্ষণ',ch:'১১শ অধ্যায়',m:['টর্চলাইট','পানিভরা পাত্র','কাচের গ্লাস'],s:['পাত্রে পানি নাও','বিভিন্ন কোণে টর্চ ফেলো','একটি নির্দিষ্ট কোণে আলো পানি থেকে বের হয় না','এটি পূর্ণ অভ্যন্তরীণ প্রতিফলন','অপটিক্যাল ফাইবারের নীতি ব্যাখ্যা করো']},
+  {id:'e7',t:'মহাকর্ষ পর্যবেক্ষণ — বিভিন্ন ভরের বস্তু',ch:'৭ম অধ্যায়',m:['বিভিন্ন ভরের বস্তু','সুতা'],s:['একই উচ্চতা থেকে বিভিন্ন বস্তু ছাড়ো','কে আগে পড়ে লক্ষ্য করো','ভারী ও হালকা বস্তু একসাথে ছাড়ো','ফলাফল রেকর্ড করো','মহাকর্ষ সম্পর্কে সিদ্ধান্ত নাও']},
+  {id:'e8',t:'খাদ্যে পুষ্টি পরীক্ষা — আয়োডিন টেস্ট',ch:'১৩শ অধ্যায়',m:['ভাত','রুটি','আলু','আয়োডিন দ্রবণ'],s:['ভাতে আয়োডিন দাও','নীল/কালো হলে শর্করা আছে','বিভিন্ন খাদ্যে পরীক্ষা করো','ফলাফল সারণিতে লেখো','সুষম খাদ্য তালিকা তৈরি করো']},
+  {id:'e9',t:'বাস্তুতন্ত্রের খাদ্যশৃঙ্খল ও খাদ্যজাল',ch:'১৪শ অধ্যায়',m:['কাগজ','কলম'],s:['একটি খাদ্যশৃঙ্খল লেখো (ঘাস→ঘাসফড়িং→ব্যাঙ→সাপ→ঈগল)','উৎপাদক ও বিভিন্ন শ্রেণির ভোক্তা চিহ্নিত করো','খাদ্যজাল তৈরি করো','কোনো একটি বাদ গেলে কী হবে ব্যাখ্যা করো']},
+  {id:'e10',t:'সিরিজ ও প্যারালাল বর্তনী তৈরি',ch:'৯ম অধ্যায়',m:['ব্যাটারি','তার','দুটি বাল্ব','সুইচ'],s:['সিরিজ সংযোগ করো — দুটি বাল্ব লাগাও','একটি বাল্ব খুলে দেখো কী হয়','প্যারালাল সংযোগ করো','একটি বাল্ব খুলে দেখো কী হয়','পার্থক্য লেখো']},
+  {id:'e11',t:'উদ্ভিদের অঙ্গজ জনন পর্যবেক্ষণ',ch:'৪র্থ অধ্যায়',m:['মিষ্টি আলু','পেঁয়াজ','জলের পাত্র'],s:['মিষ্টি আলু পানিতে রাখো','পেঁয়াজ পানিতে রাখো','কয়েকদিন পর কুঁড়ি ও শিকড় দেখো','অঙ্গজ জনন ব্যাখ্যা করো']},
+ ],
+ m3d:[
+  {id:'m1',t:'DNA ও RNA এর গঠন',ch:'২য় অধ্যায়',d:'ডবল হেলিক্স, নিউক্লিওটাইড, বেস পেয়ার (A-T, G-C), RNA এর একক সূত্র'},
+  {id:'m2',t:'মাইটোসিস কোষ বিভাজনের ধাপ',ch:'২য় অধ্যায়',d:'প্রোফেজ, মেটাফেজ, অ্যানাফেজ, টেলোফেজ — প্রতিটি ধাপের বিস্তারিত চিত্র'},
+  {id:'m3',t:'মিয়োসিস কোষ বিভাজন',ch:'২য় অধ্যায়',d:'মিয়োসিস-১ ও মিয়োসিস-২ এর ধাপ, জনন কোষ তৈরি'},
+  {id:'m4',t:'পরমাণুর গঠন ও আইসোটোপ',ch:'৬ষ্ঠ অধ্যায়',d:'নিউক্লিয়াস, ইলেকট্রন কক্ষপথ, পারমাণবিক সংখ্যা, ভর সংখ্যা, আইসোটোপ'},
+  {id:'m5',t:'পৃথিবী ও চাঁদের গতি',ch:'৭ম অধ্যায়',d:'মহাকর্ষ, কক্ষপথ, জোয়ার-ভাটা, চন্দ্রগ্রহণ, সূর্যগ্রহণ'},
+  {id:'m6',t:'রাসায়নিক বিক্রিয়ার মডেল',ch:'৮ম অধ্যায়',d:'বিক্রিয়ক → বিক্রিয়াজাত, সমতাকরণ, তাপ উৎপাদী ও তাপগ্রাহী বিক্রিয়া'},
+  {id:'m7',t:'বৈদ্যুতিক বর্তনী — সিরিজ ও প্যারালাল',ch:'৯ম অধ্যায়',d:'সিরিজ ও প্যারালাল সংযোগ, রোধ, তড়িৎপ্রবাহ, ওহমের সূত্র'},
+  {id:'m8',t:'লেন্স ও আলোর প্রতিসরণ',ch:'১১শ অধ্যায়',d:'উত্তল ও অবতল লেন্স, ফোকাস দূরত্ব, চোখের গঠন ও দোষ, চশমা'},
+  {id:'m9',t:'কৃত্রিম উপগ্রহ ও মহাকাশ',ch:'১২শ অধ্যায়',d:'LEO, MEO, GEO কক্ষপথ, যোগাযোগ উপগ্রহ, আবহাওয়া উপগ্রহ'},
+  {id:'m10',t:'খাদ্য পিরামিড ও পুষ্টি',ch:'১৩শ অধ্যায়',d:'শর্করা, প্রোটিন, চর্বি, ভিটামিন, খনিজ লবণ, পানির সঠিক অনুপাত'},
+  {id:'m11',t:'বাস্তুতন্ত্র ও খাদ্যজাল',ch:'১৪শ অধ্যায়',d:'উৎপাদক, প্রথম/দ্বিতীয়/তৃতীয় শ্রেণির ভোক্তা, বিয়োজক, শক্তির প্রবাহ'},
+  {id:'m12',t:'মানব কঙ্কালতন্ত্র',ch:'৭ম অধ্যায়',d:'হাড়ের সংখ্যা ও প্রকার, অস্থিসন্ধি, তরুণাস্থি, পেশির সংযোগ'},
+ ]
+},
+'physics':{label:'পদার্থবিজ্ঞান (৯ম-১০ম)',emoji:'⚡',parent:'৯-১০',
+ chapters:[
+  {id:'c1',n:'১',t:'ভৌত রাশি এবং তাদের পরিমাপ',e:'📏'},{id:'c2',n:'২',t:'গতি',e:'🚀'},
+  {id:'c3',n:'৩',t:'বল',e:'💪'},{id:'c4',n:'৪',t:'কাজ, ক্ষমতা ও শক্তি',e:'⚡'},
+  {id:'c5',n:'৫',t:'পদার্থের অবস্থা ও চাপ',e:'🌊'},{id:'c6',n:'৬',t:'বস্তুর উপর তাপের প্রভাব',e:'🔥'},
+  {id:'c7',n:'৭',t:'তরঙ্গ ও শব্দ',e:'🔊'},{id:'c8',n:'৮',t:'আলোর প্রতিফলন',e:'💡'},
+  {id:'c9',n:'৯',t:'আলোর প্রতিসরণ',e:'🔭'},{id:'c10',n:'১০',t:'স্থির বিদ্যুৎ',e:'⚡'},
+  {id:'c11',n:'১১',t:'চল বিদ্যুৎ',e:'🔌'},{id:'c12',n:'১২',t:'বিদ্যুতের চৌম্বক ক্রিয়া',e:'🧲'},
+  {id:'c13',n:'১৩',t:'তেজস্ক্রিয়তা ও ইলেকট্রনিকস',e:'☢️'},
+ ],
+ exp:[
+  {id:'e1',t:'স্লাইড ক্যালিপার্স দিয়ে বস্তুর দৈর্ঘ্য, প্রস্থ ও উচ্চতা মাপো',ch:'১ম অধ্যায়',m:['স্লাইড ক্যালিপার্স (বা তৈরি করো)','মাচবাক্স বা ছোট বস্তু'],s:['স্লাইড ক্যালিপার্সের প্রধান স্কেল পাঠ নাও (M)','ভার্নিয়ার সমপাতন দাগ খোঁজো (V)','পাঠ = M + (V × VC)','বস্তুর দৈর্ঘ্য, প্রস্থ ও উচ্চতা মাপো','ভলিউম = দৈর্ঘ্য × প্রস্থ × উচ্চতা']},
+  {id:'e2',t:'গতির সমীকরণ যাচাই — মুক্তভাবে পড়ন্ত বস্তু',ch:'২য় অধ্যায়',m:['বিভিন্ন ভরের বল','স্টপওয়াচ','মেজারিং টেপ'],s:['একটি নির্দিষ্ট উচ্চতা (h) থেকে বল ছাড়ো','সময় (t) মাপো','v = gt সূত্র যাচাই করো','h = ½gt² যাচাই করো','বিভিন্ন উচ্চতায় পরীক্ষা করো']},
+  {id:'e3',t:'জড়তার পরীক্ষা — কার্ড সরানো',ch:'৩য় অধ্যায়',m:['একটি গ্লাস','কার্ড','একটি কয়েন'],s:['গ্লাসের উপর কার্ড রাখো','কার্ডের উপর কয়েন রাখো','কার্ড দ্রুত সরিয়ে দাও','কয়েন গ্লাসে পড়বে','জড়তার সূত্র ব্যাখ্যা করো']},
+  {id:'e4',t:'কাজ ও শক্তির রূপান্তর পর্যবেক্ষণ',ch:'৪র্থ অধ্যায়',m:['একটি রাবার বল','মেজারিং টেপ'],s:['বল একটি উচ্চতা থেকে ফেলো','কতটুকু ফিরে আসে মাপো','বিভব শক্তি → গতিশক্তি → বিভব শক্তি','শক্তির রূপান্তর ব্যাখ্যা করো']},
+  {id:'e5',t:'বায়ুর চাপ পরীক্ষা — পানি ভর্তি গ্লাস',ch:'৫ম অধ্যায়',m:['একটি গ্লাস','পানি','কার্ড'],s:['গ্লাস পুরো পানিতে ভরো','কার্ড দিয়ে ঢাকো','উল্টে দাও — পানি পড়বে না','কারণ: বায়ুর চাপ ব্যাখ্যা করো']},
+  {id:'e6',t:'পদার্থের তাপীয় প্রসারণ পর্যবেক্ষণ',ch:'৬ষ্ঠ অধ্যায়',m:['ধাতব রিং','ধাতব বল','মোমবাতি'],s:['ঠান্ডায় বল রিংয়ের ভেতর দিয়ে যায়','মোমবাতিতে বল গরম করো','এখন বল রিংয়ের ভেতর দিয়ে যাবে না','তাপীয় প্রসারণ প্রমাণিত']},
+  {id:'e7',t:'সুর-শলাকা দিয়ে শব্দ তরঙ্গ পর্যবেক্ষণ',ch:'৭ম অধ্যায়',m:['সুর-শলাকা বা শাসন','পানির পাত্র'],s:['সুর-শলাকা বা শাসন আঘাত করো','পানির পাত্রে ছুঁইয়ে দাও','পানিতে তরঙ্গ তৈরি হয়','শব্দের কম্পন দৃশ্যমান হলো']},
+  {id:'e8',t:'সমতল দর্পণে প্রতিফলন — আপতন=প্রতিফলন কোণ',ch:'৮ম অধ্যায়',m:['সমতল দর্পণ','কাগজ','পেন্সিল','প্রট্র্যাক্টর'],s:['দর্পণ কাগজে রাখো','বিভিন্ন কোণে আলো ফেলো','প্রতিফলিত রশ্মি দেখো','আপতন ও প্রতিফলন কোণ মাপো','দুটি সমান — সূত্র প্রমাণ করো']},
+  {id:'e9',t:'উত্তল লেন্স দিয়ে আলোর প্রতিসরণ ও ফোকাস',ch:'৯ম অধ্যায়',m:['উত্তল লেন্স','সাদা স্ক্রিন','টর্চলাইট'],s:['টর্চের আলো লেন্সে ফেলো','স্ক্রিনে ফোকাস বিন্দু খোঁজো','ফোকাস দূরত্ব মাপো','বস্তু দূরত্ব পরিবর্তন করো','প্রতিবিম্বের পরিবর্তন লক্ষ্য করো']},
+  {id:'e10',t:'ঘর্ষণ বিদ্যুৎ ও স্থির বিদ্যুৎ পরীক্ষা',ch:'১০ম অধ্যায়',m:['প্লাস্টিক রড বা চিরুনি','পশমী কাপড়','ছোট কাগজের টুকরা'],s:['প্লাস্টিক রড পশমী কাপড়ে ঘষো','ছোট কাগজের টুকরার কাছে ধরো','কাগজ আকর্ষণ করছে','চিরুনি চুলে ঘষো','কাগজ আকর্ষণ পর্যবেক্ষণ করো']},
+  {id:'e11',t:'সিরিজ ও প্যারালাল বর্তনীতে রোধের পরিবর্তন',ch:'১১শ অধ্যায়',m:['ব্যাটারি','তার','দুটি বাল্ব','মাল্টিমিটার (থাকলে)'],s:['সিরিজে দুটি বাল্ব লাগাও','বাল্বের উজ্জ্বলতা দেখো','প্যারালালে লাগাও','উজ্জ্বলতার পার্থক্য লক্ষ্য করো','ওহমের সূত্র যাচাই করো']},
+  {id:'e12',t:'বৈদ্যুতিক চুম্বক তৈরি',ch:'১২শ অধ্যায়',m:['লোহার পেরেক','তামার তার','ব্যাটারি','ছোট ধাতব বস্তু'],s:['পেরেকে তার পেঁচাও (কমপক্ষে ৫০ পাক)','ব্যাটারির সাথে সংযুক্ত করো','পেরেক এখন চুম্বক হয়ে গেছে','ছোট ধাতব বস্তু আকর্ষণ করে','তার খুললে চুম্বকত্ব নষ্ট হয়']},
+  {id:'e13',t:'ট্রানজিস্টর সুইচ পর্যবেক্ষণ',ch:'১৩শ অধ্যায়',m:['NPN ট্রানজিস্টর','ব্যাটারি','তার','বাল্ব','রেজিস্টর'],s:['ট্রানজিস্টরের বেস, কালেক্টর, ইমিটার চিনো','বেসে ছোট কারেন্ট দাও','কালেক্টর-ইমিটার বর্তনীতে বড় কারেন্ট প্রবাহ দেখো','বাল্ব জ্বলে — এটি সুইচ বা অ্যাম্পলিফায়ার']},
+ ],
+ m3d:[
+  {id:'m1',t:'ভার্নিয়ার ক্যালিপার্সের গঠন ও কাজ',ch:'১ম অধ্যায়',d:'প্রধান স্কেল, ভার্নিয়ার স্কেল, ভার্নিয়ার ধ্রুবক, পাঠ নেওয়ার পদ্ধতি'},
+  {id:'m2',t:'গতির লেখচিত্র বিশ্লেষণ',ch:'২য় অধ্যায়',d:'দূরত্ব-সময় গ্রাফ, বেগ-সময় গ্রাফ, ত্বরণ, গতির সমীকরণ'},
+  {id:'m3',t:'নিউটনের গতিসূত্র',ch:'৩য় অধ্যায়',d:'প্রথম সূত্র (জড়তা), দ্বিতীয় সূত্র (F=ma), তৃতীয় সূত্র (ক্রিয়া-প্রতিক্রিয়া)'},
+  {id:'m4',t:'পদার্থের তিন অবস্থা ও চাপ',ch:'৫ম অধ্যায়',d:'কঠিন, তরল, বায়বীয় অবস্থা, বয়েলের সূত্র, প্যাসকেলের সূত্র, আর্কিমিডিসের নীতি'},
+  {id:'m5',t:'তাপ ও তাপমাত্রা',ch:'৬ষ্ঠ অধ্যায়',d:'তাপ, তাপমাত্রা, তাপ পরিবাহিতা, তাপমাত্রিক প্রসারণ, গলন-বাষ্পীভবন'},
+  {id:'m6',t:'তরঙ্গ ও শব্দ',ch:'৭ম অধ্যায়',d:'সরল স্পন্দন, তরঙ্গদৈর্ঘ্য, কম্পাঙ্ক, বিস্তার, শব্দের বেগ, আনুনাদ'},
+  {id:'m7',t:'আলোর প্রতিফলন — সমতল ও গোলীয় দর্পণ',ch:'৮ম অধ্যায়',d:'সমতল, উত্তল, অবতল দর্পণ, ফোকাস, প্রতিবিম্ব তৈরি, রশ্মিচিত্র'},
+  {id:'m8',t:'আলোর প্রতিসরণ ও লেন্স',ch:'৯ম অধ্যায়',d:'স্নেলের সূত্র, প্রতিসরণাঙ্ক, উত্তল-অবতল লেন্স, পূর্ণ অভ্যন্তরীণ প্রতিফলন'},
+  {id:'m9',t:'স্থির বিদ্যুৎ ও কুলম্বের সূত্র',ch:'১০ম অধ্যায়',d:'বৈদ্যুতিক চার্জ, কুলম্বের সূত্র, বৈদ্যুতিক ক্ষেত্র, বিভব'},
+  {id:'m10',t:'বৈদ্যুতিক বর্তনী ও ওহমের সূত্র',ch:'১১শ অধ্যায়',d:'তড়িৎপ্রবাহ, রোধ, ওহমের সূত্র, কির্শফের সূত্র, তড়িৎশক্তি'},
+  {id:'m11',t:'বিদ্যুতের চৌম্বক ক্রিয়া',ch:'১২শ অধ্যায়',d:'বৈদ্যুতিক চুম্বক, তড়িৎচৌম্বক আবেশ, মোটর, জেনারেটর, ট্রান্সফর্মার'},
+  {id:'m12',t:'ট্রানজিস্টর ও ইলেকট্রনিক্স',ch:'১৩শ অধ্যায়',d:'p-n জংশন, ডায়োড, ট্রানজিস্টর, লজিক গেট, ডিজিটাল সার্কিট'},
+  {id:'m13',t:'তেজস্ক্রিয়তা',ch:'১৩শ অধ্যায়',d:'আলফা, বিটা, গামা রশ্মি, অর্ধায়ু, নিউক্লিয়ার বিক্রিয়া, পারমাণবিক শক্তি'},
+ ]
+},
+'chemistry':{label:'রসায়ন (৯ম-১০ম)',emoji:'🧪',parent:'৯-১০',
+ chapters:[
+  {id:'c1',n:'১',t:'রসায়নের ধারণা',e:'🔬'},{id:'c2',n:'২',t:'পদার্থের অবস্থা',e:'⚗️'},
+  {id:'c3',n:'৩',t:'পদার্থের গঠন',e:'⚛️'},{id:'c4',n:'৪',t:'পর্যায় সারণি',e:'📊'},
+  {id:'c5',n:'৫',t:'রাসায়নিক বন্ধন',e:'🔗'},{id:'c6',n:'৬',t:'মোলের ধারণা ও রাসায়নিক গণনা',e:'🔢'},
+  {id:'c7',n:'৭',t:'রাসায়নিক বিক্রিয়া',e:'💥'},{id:'c8',n:'৮',t:'রসায়ন ও শক্তি',e:'⚡'},
+  {id:'c9',n:'৯',t:'এসিড-ক্ষারক সমতা',e:'🧫'},{id:'c10',n:'১০',t:'খনিজ সম্পদ: ধাতু-অধাতু',e:'⛏️'},
+  {id:'c11',n:'১১',t:'খনিজ সম্পদ: জীবাশ্মা',e:'🛢️'},{id:'c12',n:'১২',t:'আমাদের জীবনে রসায়ন',e:'🌍'},
+ ],
+ exp:[
+  {id:'e1',t:'লিটমাস পরীক্ষা — বিভিন্ন পদার্থের অম্লতা/ক্ষারকতা',ch:'১ম অধ্যায়',m:['লাল ও নীল লিটমাস কাগজ','ভিনেগার','সাবান পানি','লেবুর রস','চুনের পানি'],s:['বিভিন্ন পদার্থ আলাদা পাত্রে নাও','লিটমাস কাগজ ডুবাও','রং পরিবর্তন লক্ষ্য করো','অম্ল, ক্ষার, নিরপেক্ষ চিহ্নিত করো','ফলাফল সারণিতে লেখো']},
+  {id:'e2',t:'পদার্থের অবস্থা পরিবর্তন পর্যবেক্ষণ',ch:'২য় অধ্যায়',m:['বরফ','তাপ উৎস','থার্মোমিটার','বিকার'],s:['বরফ নাও ও তাপমাত্রা মাপো','আস্তে তাপ দাও','বরফ গলার সময় তাপমাত্রা নাও','পানি ফোটার সময় তাপমাত্রা নাও','গ্রাফ তৈরি করো']},
+  {id:'e3',t:'পরমাণুর মডেল তৈরি (বোর মডেল)',ch:'৩য় অধ্যায়',m:['রঙিন মাটি বা বল','কার্ডবোর্ড'],s:['নিউক্লিয়াস তৈরি করো','ইলেকট্রন কক্ষপথ বসাও','সোডিয়াম (Na-11) মডেল তৈরি করো','ক্লোরিন (Cl-17) মডেল তৈরি করো','আয়নিক বন্ধন দেখাও']},
+  {id:'e4',t:'পর্যায় সারণিতে মৌলের বৈশিষ্ট্য বিশ্লেষণ',ch:'৪র্থ অধ্যায়',m:['পর্যায় সারণির চার্ট','নোটবুক'],s:['একই পর্যায়ের মৌল দেখো','পারমাণবিক ব্যাসার্ধের পরিবর্তন লক্ষ্য করো','একই গ্রুপের মৌল দেখো','ধাতব ধর্মের পরিবর্তন লেখো','সারণি তৈরি করো']},
+  {id:'e5',t:'রাসায়নিক বিক্রিয়া পর্যবেক্ষণ (ভিনেগার + বেকিং সোডা)',ch:'৭ম অধ্যায়',m:['ভিনেগার','বেকিং সোডা','বিকার','গ্যাস সংগ্রাহক'],s:['বিকারে ভিনেগার নাও','বেকিং সোডা যোগ করো','বুদবুদ দেখো — CO₂ উৎপন্ন হচ্ছে','গ্যাস চুনের পানিতে পাঠাও — ঘোলা হবে','CO₂ প্রমাণিত']},
+  {id:'e6',t:'ধাতু-অধাতু তাপ ও বিদ্যুৎ পরিবাহিতা',ch:'১০ম অধ্যায়',m:['লোহা','তামা','অ্যালুমিনিয়াম','রাবার','কাঠ','ব্যাটারি','বাল্ব'],s:['সার্কিট তৈরি করো','বিভিন্ন পদার্থ সার্কিটে রাখো','বাল্ব জ্বলে কিনা দেখো','ধাতু ও অধাতু আলাদা করো','তুলনামূলক সারণি লেখো']},
+  {id:'e7',t:'মোলার দ্রবণ তৈরি',ch:'৬ষ্ঠ অধ্যায়',m:['খাবার লবণ (NaCl)','নির্ভুল দাঁড়িপাল্লা','ভলিউমেট্রিক ফ্লাস্ক','পানি'],s:['NaCl-এর আণবিক ভর বের করো (58.5 g/mol)','58.5 গ্রাম NaCl ওজন করো','ফ্লাস্কে পানিতে দ্রবীভূত করো','1 লিটার পর্যন্ত পানি যোগ করো','1 মোলার NaCl দ্রবণ তৈরি হলো']},
+  {id:'e8',t:'জারণ-বিজারণ বিক্রিয়া — তামার তার ও সালফিউরিক এসিড',ch:'৭ম অধ্যায়',m:['তামার তার','তনু H₂SO₄','বিকার'],s:['বিকারে তনু H₂SO₄ নাও','তামার তার যোগ করো','তামার রং পরিবর্তন দেখো','দ্রবণের রং পরিবর্তন লক্ষ্য করো','জারণ-বিজারণ ব্যাখ্যা করো']},
+  {id:'e9',t:'ক্রোমাটোগ্রাফি — মিশ্রণ পৃথক করা',ch:'১ম অধ্যায়',m:['ফিল্টার কাগজ','রঙিন কালি','পানি','বিকার'],s:['ফিল্টার কাগজে কালির বিন্দু রাখো','কাগজের প্রান্ত পানিতে ডুবাও','পানি উপরে উঠছে দেখো','বিভিন্ন রং আলাদা হয়ে যাচ্ছে','ক্রোমাটোগ্রাফি নীতি ব্যাখ্যা করো']},
+  {id:'e10',t:'চুনের পানি দিয়ে CO₂ শনাক্তকরণ',ch:'৭ম অধ্যায়',m:['চুনের পানি','স্ট্র','বিকার'],s:['বিকারে চুনের পানি নাও','স্ট্র দিয়ে ফুঁ দাও','চুনের পানি ঘোলা হয় — CO₂ উপস্থিত','আরো ফুঁ দাও — আবার পরিষ্কার হয়','Ca(OH)₂ + CO₂ → CaCO₃ + H₂O']},
+  {id:'e11',t:'ইলেকট্রোলাইসিস — পানি ভেঙে H₂ ও O₂',ch:'৮ম অধ্যায়',m:['বিদ্যুৎ উৎস','তার','গ্রাফাইট ইলেক্ট্রোড','NaOH পানি','টেস্টটিউব'],s:['NaOH মেশানো পানিতে ইলেক্ট্রোড বসাও','বিদ্যুৎ সংযোগ দাও','দুই ইলেক্ট্রোডে গ্যাস উৎপন্ন দেখো','ক্যাথোডে H₂, অ্যানোডে O₂','পরীক্ষা করে নিশ্চিত করো']},
+  {id:'e12',t:'সাবান তৈরি (সাপোনিফিকেশন)',ch:'১২শ অধ্যায়',m:['নারিকেল তেল','NaOH','পানি','তাপ উৎস','ছাঁচ'],s:['NaOH দ্রবণ তৈরি করো','নারিকেল তেলে মেশাও','আস্তে গরম করো','মিশ্রণ ঘন হলে ছাঁচে ঢালো','ঠান্ডায় রাখো — সাবান তৈরি']},
+ ],
+ m3d:[
+  {id:'m1',t:'পর্যায় সারণির বিস্তারিত',ch:'৪র্থ অধ্যায়',d:'১৮টি গ্রুপ, ৭টি পর্যায়, ধাতু-অধাতু-মেটালয়েড, ইলেকট্রন বিন্যাস প্রবণতা'},
+  {id:'m2',t:'আয়নিক বন্ধন — NaCl গঠন',ch:'৫ম অধ্যায়',d:'Na ইলেকট্রন দেয়, Cl ইলেকট্রন নেয়, Na⁺ ও Cl⁻ আয়ন গঠন, স্ফটিক জালি'},
+  {id:'m3',t:'সমযোজী বন্ধন — H₂O ও CH₄',ch:'৫ম অধ্যায়',d:'ইলেকট্রন ভাগাভাগি, একক-দ্বি-ত্রিবন্ধন, বন্ধন কোণ, অণুর আকৃতি'},
+  {id:'m4',t:'রাসায়নিক বিক্রিয়ার এনার্জি ডায়াগ্রাম',ch:'৭ম অধ্যায়',d:'তাপ উৎপাদী ও তাপগ্রাহী বিক্রিয়া, অ্যাক্টিভেশন এনার্জি, বিক্রিয়ার গতি'},
+  {id:'m5',t:'অম্ল-ক্ষার প্রশমন বিক্রিয়া',ch:'৯ম অধ্যায়',d:'HCl + NaOH → NaCl + H₂O, pH স্কেল, নির্দেশক, বাফার দ্রবণ'},
+  {id:'m6',t:'ধাতু নিষ্কাশন প্রক্রিয়া',ch:'১০ম অধ্যায়',d:'আকরিক থেকে ধাতু নিষ্কাশন, বিজারণ, ইলেকট্রোলাইসিস, পরিশোধন'},
+  {id:'m7',t:'জীবাশ্মা জ্বালানির গঠন',ch:'১১শ অধ্যায়',d:'পেট্রোলিয়াম, প্রাকৃতিক গ্যাস, কয়লা, হাইড্রোকার্বনের গঠন, পাতন প্রক্রিয়া'},
+  {id:'m8',t:'কার্বনের যৌগ সমূহ',ch:'১২শ অধ্যায়',d:'মিথেন, ইথেন, ইথিলিন, অ্যাসিটিলিন, বেনজিন, পলিমার গঠন'},
+  {id:'m9',t:'পরমাণুর ইলেকট্রন বিন্যাস',ch:'৩য় অধ্যায়',d:'শক্তিস্তর, উপস্তর (s,p,d,f), ইলেকট্রন বিন্যাসের নিয়ম, পলির নিয়ম'},
+  {id:'m10',t:'কার্বন-১৪ ও তেজস্ক্রিয় আইসোটোপ',ch:'৩য় অধ্যায়',d:'স্থিতিশীল ও অস্থিতিশীল আইসোটোপ, তেজস্ক্রিয় ক্ষয়, কার্বন ডেটিং'},
+  {id:'m11',t:'ইলেকট্রোলাইসিস প্রক্রিয়া',ch:'৮ম অধ্যায়',d:'তড়িৎ বিশ্লেষণ, অ্যানোড-ক্যাথোড, ধাতুর পরিশোধন, ইলেকট্রোপ্লেটিং'},
+  {id:'m12',t:'পলিমার ও প্লাস্টিক',ch:'১২শ অধ্যায়',d:'পলিথিন, নাইলন, পলিস্টার, পলিমারাইজেশন, জৈব ও কৃত্রিম পলিমার'},
+ ]
+},
+'biology':{label:'জীববিজ্ঞান (৯ম-১০ম)',emoji:'🧬',parent:'৯-১০',
+ chapters:[
+  {id:'c1',n:'১',t:'জীবনপাঠ',e:'📖'},{id:'c2',n:'২',t:'জীবকোষ ও টিস্যু',e:'🔬'},
+  {id:'c3',n:'৩',t:'কোষ বিভাজন',e:'🔄'},{id:'c4',n:'৪',t:'জীবনীশক্তি',e:'☀️'},
+  {id:'c5',n:'৫',t:'খাদ্য, পুষ্টি এবং পরিপাক',e:'🍎'},{id:'c6',n:'৬',t:'জীবে পরিবহণ',e:'❤️'},
+  {id:'c7',n:'৭',t:'গ্যাসীয় বিনিময়',e:'💨'},{id:'c8',n:'৮',t:'রেচন প্রক্রিয়া',e:'🫘'},
+  {id:'c9',n:'৯',t:'দৃঢ়তা প্রদান ও চলন',e:'🦴'},{id:'c10',n:'১০',t:'সমন্বয়',e:'🧠'},
+  {id:'c11',n:'১১',t:'জীবের প্রজনন',e:'🌱'},{id:'c12',n:'১২',t:'জীবের বংশগতি ও জৈব অভিব্যক্তি',e:'🧬'},
+  {id:'c13',n:'১৩',t:'জীবের পরিবেশ',e:'🌍'},{id:'c14',n:'১৪',t:'জীবপ্রযুক্তি',e:'⚗️'},
+ ],
+ exp:[
+  {id:'e1',t:'জীবের শ্রেণিবিন্যাসের পাঁচ রাজ্য পোস্টার',ch:'১ম অধ্যায়',m:['পোস্টার কাগজ','রঙিন কলম'],s:['মনেরা, প্রোটিস্টা, ফানজাই, প্ল্যান্টি, অ্যানিমেলিয়া','প্রতিটি রাজ্যের বৈশিষ্ট্য লেখো','উদাহরণ সহ ছবি আঁকো','পোস্টারে সুন্দরভাবে উপস্থাপন করো']},
+  {id:'e2',t:'উদ্ভিদ ও প্রাণী কোষের মডেল তৈরি',ch:'২য় অধ্যায়',m:['রঙিন মাটি বা জেলি','বিভিন্ন রঙের বীজ ও কাঠি'],s:['উদ্ভিদ কোষ: কোষপ্রাচীর, ক্লোরোপ্লাস্ট, কেন্দ্রীয় ভ্যাকুওল দেখাও','প্রাণী কোষ: সেন্ট্রিওল, লাইসোজোম দেখাও','দুটির পার্থক্য চিহ্নিত করো','লেবেল করো']},
+  {id:'e3',t:'মাইটোসিস কোষ বিভাজনের ধাপ পর্যবেক্ষণ',ch:'৩য় অধ্যায়',m:['পেঁয়াজের শিকড়','মাইক্রোস্কোপ (থাকলে)','রঙিন কাগজ'],s:['পেঁয়াজের শিকড়ের অগ্রভাগ কাটো','স্লাইড তৈরি করো','মাইটোসিসের ধাপগুলো খোঁজো','বা চিত্র দেখে ধাপগুলো আঁকো','প্রোফেজ, মেটাফেজ, অ্যানাফেজ, টেলোফেজ চিহ্নিত করো']},
+  {id:'e4',t:'সালোকসংশ্লেষণে CO₂ ও আলোর প্রয়োজনীয়তা',ch:'৪র্থ অধ্যায়',m:['জলজ উদ্ভিদ (হাইড্রিলা)','পানির পাত্র','আলো','NaHCO₃'],s:['হাইড্রিলা পানিতে রাখো','আলোতে রাখলে বুদবুদ দেখো (O₂)','অন্ধকারে রাখলে বুদবুদ কম','NaHCO₃ যোগ করলে বেশি বুদবুদ','CO₂ ও আলো প্রয়োজন প্রমাণিত']},
+  {id:'e5',t:'খাদ্যে পুষ্টিগুণ পরীক্ষা (৪ ধরনের পরীক্ষা)',ch:'৫ম অধ্যায়',m:['ভাত','ডিম','তেল','আয়োডিন','নাইলহাইড্রিন','সুদান রঞ্জক','বেনেডিক্ট দ্রবণ'],s:['আয়োডিন দিয়ে শর্করা পরীক্ষা করো (নীল)','নাইলহাইড্রিন দিয়ে প্রোটিন পরীক্ষা করো (বেগুনি)','সুদান রঞ্জক দিয়ে চর্বি পরীক্ষা করো (কমলা)','বেনেডিক্ট দিয়ে শর্করা পরীক্ষা করো (লাল)','ফলাফল সারণিতে লেখো']},
+  {id:'e6',t:'রক্তের গ্রুপ নির্ণয়ের পদ্ধতি পর্যবেক্ষণ',ch:'৬ষ্ঠ অধ্যায়',m:['ABO ও Rh অ্যান্টিবডি (দেখার জন্য)','মডেল বা ডায়াগ্রাম'],s:['A অ্যান্টিবডি ও B অ্যান্টিবডি বুঝো','A, B, AB, O গ্রুপ নির্ণয়ের নিয়ম','Rh ফ্যাক্টর কী তা বোঝো','রক্ত দেওয়া-নেওয়ার সামঞ্জস্য শেখো','চার্ট তৈরি করো']},
+  {id:'e7',t:'উদ্ভিদের প্রস্বেদন পর্যবেক্ষণ (পলিথিন পদ্ধতি)',ch:'৭ম অধ্যায়',m:['টবের গাছ','স্বচ্ছ পলিথিন ব্যাগ','সুতা'],s:['সকালে সুস্থ পাতাযুক্ত ডালে পলিথিন বাঁধো','রোদে কয়েকঘণ্টা রাখো','পলিথিনের ভেতরে পানির ফোঁটা দেখো','প্রস্বেদন প্রমাণিত','পাতার সংখ্যার সাথে পরিমাণ তুলনা করো']},
+  {id:'e8',t:'ইস্টের শ্বসন পরীক্ষা',ch:'৭ম অধ্যায়',m:['ইস্ট','চিনি পানি','চুনের পানি','কাচের নল','বিকার'],s:['চিনি পানিতে ইস্ট মেশাও','উৎপন্ন গ্যাস চুনের পানিতে পাঠাও','চুনের পানি ঘোলা হয় — CO₂ প্রমাণিত','বায়বীয় ও অবায়বীয় শ্বসন ব্যাখ্যা করো']},
+  {id:'e9',t:'মানব কঙ্কালের হাড়ের চিত্র অঙ্কন ও লেবেলিং',ch:'৯ম অধ্যায়',m:['সাদা কাগজ','পেন্সিল'],s:['মানব কঙ্কালের চিত্র আঁকো','করোটি, মেরুদণ্ড, পাঁজর, বাহু, পা চিহ্নিত করো','হাড়ের সংখ্যা লেখো','অস্থিসন্ধির ধরন লেখো']},
+  {id:'e10',t:'মুলের ভূ-অভিমুখিতা পরীক্ষা',ch:'১০ম অধ্যায়',m:['অঙ্কুরিত বীজ','টবস ও মাটি'],s:['অঙ্কুরিত বীজ মাটিতে লাগাও','শিকড় কোন দিকে যাচ্ছে দেখো','একসপ্তাহ পর্যবেক্ষণ করো','মুল সবসময় মাটির দিকে যায় — মহাকর্ষ অভিমুখিতা']},
+  {id:'e11',t:'ফুলের অংশ পর্যবেক্ষণ ও পরাগায়ন',ch:'১১শ অধ্যায়',m:['বিভিন্ন ফুল','ম্যাগনিফাইং গ্লাস','চিমটি'],s:['ফুল ব্যবচ্ছেদ করো','পাপড়ি, বৃতি, পুংকেশর, গর্ভপত্র আলাদা করো','পরাগরেণু পরীক্ষা করো','পরাগায়নের ধরন ব্যাখ্যা করো']},
+  {id:'e12',t:'DNA মডেল তৈরি',ch:'১২শ অধ্যায়',m:['রঙিন মাটি বা কাগজ','কাঠি'],s:['ডিঅক্সিরাইবোজ চিনি (লাল)','ফসফেট গ্রুপ (নীল)','চারটি বেস (চার রঙ)','ডবল হেলিক্স গঠন তৈরি করো','বেস পেয়ারিং (A-T, G-C) দেখাও']},
+ ],
+ m3d:[
+    {id:'m1',t:'উদ্ভিদ ও প্রাণী কোষের বিস্তারিত গঠন',ch:'২য় অধ্যায়',d:'কোষঝিল্লি, নিউক্লিয়াস, মাইটোকন্ড্রিয়া, ক্লোরোপ্লাস্ট, গলজি বস্তু, লাইসোজোম, ভ্যাকুওল'},
+  {id:'m2',t:'মাইটোসিস কোষ বিভাজন',ch:'৩য় অধ্যায়',d:'ইন্টারফেজ, প্রোফেজ, মেটাফেজ, অ্যানাফেজ, টেলোফেজ, সাইটোকাইনেসিস'},
+  {id:'m3',t:'মিয়োসিস কোষ বিভাজন',ch:'৩য় অধ্যায়',d:'মিয়োসিস-১ (বিজোড় বিভাজন) ও মিয়োসিস-২, জনন কোষ তৈরি, ক্রসিং ওভার'},
+  {id:'m4',t:'ক্লোরোপ্লাস্টে সালোকসংশ্লেষণ',ch:'৪র্থ অধ্যায়',d:'থাইলাকয়েড, গ্রানা, স্ট্রোমা, আলোক বিক্রিয়া, ক্যালভিন চক্র (C₃ ও C₄)'},
+  {id:'m5',t:'মানবদেহের পাচনতন্ত্র বিস্তারিত',ch:'৫ম অধ্যায়',d:'মুখগহ্বর, ফ্যারিংক্স, অন্ননালী, পাকস্থলী, ক্ষুদ্রান্ত্র, লিভার, পিত্তথলি, অগ্ন্যাশয়'},
+  {id:'m6',t:'হৃদযন্ত্র ও রক্ত সংবহন',ch:'৬ষ্ঠ অধ্যায়',d:'হৃদযন্ত্রের চার প্রকোষ্ঠ, ফুসফুসীয় ও সিস্টেমিক সংবহন, ভাল্ব, হৃদস্পন্দন'},
+  {id:'m7',t:'মানব শ্বসনতন্ত্র ও গ্যাসীয় বিনিময়',ch:'৭ম অধ্যায়',d:'ফুসফুস, অ্যালভিওলাস, O₂ ও CO₂ বিনিময়, হিমোগ্লোবিন, শ্বসন নিয়ন্ত্রণ'},
+  {id:'m8',t:'বৃক্ক ও নেফ্রন',ch:'৮ম অধ্যায়',d:'কর্টেক্স, মেডুলা, গ্লোমেরুলাস, বোম্যানস ক্যাপসুল, রেনাল টিউবিউল, মূত্র গঠন'},
+  {id:'m9',t:'মানব মস্তিষ্কের গঠন',ch:'১০ম অধ্যায়',d:'সেরিব্রাম, সেরিবেলাম, মেডুলা অবলংগাটা, হাইপোথ্যালামাস, স্নায়ু সংকেত'},
+  {id:'m10',t:'DNA ও RNA গঠন',ch:'১২শ অধ্যায়',d:'ডবল হেলিক্স, নিউক্লিওটাইড, বেস পেয়ার, প্রতিলিপি, প্রোটিন সংশ্লেষণ'},
+  {id:'m11',t:'ফুলের গঠন ও পরাগায়ন',ch:'১১শ অধ্যায়',d:'পাপড়ি, পুংকেশর, গর্ভপত্র, পরাগরেণু, পরাগনালিকা, নিষেক প্রক্রিয়া'},
+  {id:'m12',t:'বাস্তুতন্ত্র ও জৈব বৈচিত্র্য',ch:'১৩শ অধ্যায়',d:'জলজ ও স্থলজ বাস্তুতন্ত্র, খাদ্যজাল, শক্তিপ্রবাহ, পুষ্টিচক্র, জীববৈচিত্র্য সংরক্ষণ'},
+  {id:'m13',t:'জীবপ্রযুক্তির প্রয়োগ',ch:'১৪শ অধ্যায়',d:'রিকম্বিনেন্ট DNA, জিন ক্লোনিং, PCR, ট্রান্সজেনিক উদ্ভিদ, ইনসুলিন উৎপাদন'},
+ ]
+}
 };
 
-let state = { screen:'home', cls:null, mode:null, subject:null };
+let st={scr:'home',cls:null,mode:null,sub:null};
 
-function render() {
-  const c = document.getElementById('mainContent');
-  const d = document.createElement('div');
-  d.style.animation = 'screenIn 0.45s cubic-bezier(0.16,1,0.3,1) forwards';
-  if (state.screen==='home') renderHome(d);
-  else if (state.screen==='classMode') renderClassMode(d);
-  else if (state.screen==='subjects') renderSubjects(d);
-  else if (state.screen==='subjectMode') renderSubjectMode(d);
-  else if (state.screen==='content') renderContent(d);
-  c.innerHTML=''; c.appendChild(d);
-  updateBreadcrumb();
+function render(){
+  const c=document.getElementById('sc');
+  const d=document.createElement('div');
+  d.style.animation='si .45s cubic-bezier(.16,1,.3,1) forwards';
+  if(st.scr==='home') rHome(d);
+  else if(st.scr==='clsMode') rClsMode(d);
+  else if(st.scr==='subs') rSubs(d);
+  else if(st.scr==='content') rContent(d);
+  c.innerHTML='';c.appendChild(d);updateBC();
 }
 
-function renderHome(d) {
+function rHome(d){
   d.innerHTML=`
-    <h2 class="screen-title">তোমার শ্রেণি বেছে নাও</h2>
-    <p class="screen-desc">NCTB দাখিল পাঠ্যক্রম অনুযায়ী ভার্চুয়াল বিজ্ঞান ল্যাব</p>
-    <div class="class-grid">
-      <div class="class-card card-blue" onclick="selectClass('৬')">
-        <span class="card-emoji">📘</span>
-        <div class="card-label">ষষ্ঠ শ্রেণি</div>
-        <div class="card-sub">Dakhil Class Six</div>
-        <div class="card-badge">১৪ অধ্যায় · ১৫ এক্সপেরিমেন্ট</div>
+    <h2 class="st">তোমার শ্রেণি বেছে নাও</h2>
+    <p class="sd">NCTB দাখিল পাঠ্যক্রম অনুযায়ী ভার্চুয়াল বিজ্ঞান ল্যাব</p>
+    <div class="cg">
+      <div class="cc c1" onclick="sel('৬')"><span class="ce">📘</span><div class="cl">ষষ্ঠ শ্রেণি</div><div class="cs2">Dakhil Class Six</div><div class="cb">১৪ অধ্যায় · ১২ পরীক্ষা · ১২ মডেল</div></div>
+      <div class="cc c2" onclick="sel('৭')"><span class="ce">📗</span><div class="cl">সপ্তম শ্রেণি</div><div class="cs2">Dakhil Class Seven</div><div class="cb">১৪ অধ্যায় · ১০ পরীক্ষা · ১২ মডেল</div></div>
+      <div class="cc c3" onclick="sel('৮')"><span class="ce">📙</span><div class="cl">অষ্টম শ্রেণি</div><div class="cs2">Dakhil Class Eight</div><div class="cb">১৪ অধ্যায় · ১১ পরীক্ষা · ১২ মডেল</div></div>
+      <div class="cc c4" onclick="sel('৯-১০')"><span class="ce">📕</span><div class="cl">নবম ও দশম শ্রেণি</div><div class="cs2">Dakhil Class 9 & 10</div><div class="cb">পদার্থ · রসায়ন · জীববিজ্ঞান</div></div>
+    </div>`;
+}
+
+function rClsMode(d){
+  const cls=D[st.cls];
+  d.innerHTML=`
+    <button class="bb" onclick="goHome()">← হোম</button>
+    <h2 class="st">${cls.label} — কী দেখতে চাও?</h2>
+    <p class="sd">এক্সপেরিমেন্ট করো অথবা থ্রিডি মডেলে দেখো</p>
+    <div class="mg">
+      <div class="mc ec" onclick="selMode('exp')">
+        <span class="mi">⚗️</span>
+        <div class="mt">এক্সপেরিমেন্ট</div>
+        <div class="md">বইয়ের সব পরীক্ষা-নিরীক্ষা ভার্চুয়ালি করো। উপকরণ ও ধাপে ধাপে নির্দেশনা সহ।</div>
+        <span class="mtg">🧪 ${cls.exp.length}টি এক্সপেরিমেন্ট</span>
       </div>
-      <div class="class-card card-purple" onclick="selectClass('৭')">
-        <span class="card-emoji">📗</span>
-        <div class="card-label">সপ্তম শ্রেণি</div>
-        <div class="card-sub">Dakhil Class Seven</div>
-        <div class="card-badge">শীঘ্রই আসছে</div>
-      </div>
-      <div class="class-card card-green" onclick="selectClass('৮')">
-        <span class="card-emoji">📙</span>
-        <div class="card-label">অষ্টম শ্রেণি</div>
-        <div class="card-sub">Dakhil Class Eight</div>
-        <div class="card-badge">শীঘ্রই আসছে</div>
-      </div>
-      <div class="class-card card-gold" onclick="selectClass('৯-১০')">
-        <span class="card-emoji">📕</span>
-        <div class="card-label">নবম ও দশম শ্রেণি</div>
-        <div class="card-sub">Dakhil Class 9 & 10</div>
-        <div class="card-badge">শীঘ্রই আসছে</div>
+      <div class="mc dc" onclick="selMode('3d')">
+        <span class="mi">🌐</span>
+        <div class="mt">থ্রিডি মডেল</div>
+        <div class="md">বইয়ের সকল বিষয় থ্রিডিতে দেখো। ঘোরাও, জুম করো, বিস্তারিত জানো।</div>
+        <span class="mtg">🔮 ${cls.m3d.length}টি থ্রিডি মডেল</span>
       </div>
     </div>`;
 }
 
-function renderClassMode(d) {
-  const cls = DATA[state.cls];
+function rSubs(d){
   d.innerHTML=`
-    <button class="back-btn" onclick="goHome()">← হোম</button>
-    <h2 class="screen-title">${cls.label} — কী দেখতে চাও?</h2>
-    <p class="screen-desc">১৪টি অধ্যায়ের এক্সপেরিমেন্ট ও থ্রিডি মডেল</p>
-    <div class="mode-grid">
-      <div class="mode-card exp-card" onclick="selectMode('experiment')">
-        <span class="mode-icon">⚗️</span>
-        <div class="mode-title">এক্সপেরিমেন্ট</div>
-        <div class="mode-desc">বইয়ের সব পরীক্ষা-নিরীক্ষা ভার্চুয়ালি করো। উপকরণ, পদ্ধতি ও ধাপে ধাপে নির্দেশনা সহ।</div>
-        <span class="mode-tag">🧪 ${cls.experiments.length}টি এক্সপেরিমেন্ট</span>
+    <button class="bb" onclick="goHome()">← হোম</button>
+    <h2 class="st">নবম ও দশম শ্রেণি — বিষয় বেছে নাও</h2>
+    <p class="sd">পদার্থবিজ্ঞান, রসায়ন ও জীববিজ্ঞানের সম্পূর্ণ ল্যাব</p>
+    <div class="sg">
+      <div class="scard sphy" onclick="selSub('physics')">
+        <span class="si2">⚡</span>
+        <div class="stt">পদার্থবিজ্ঞান</div>
+        <div class="sdd">১৩ অধ্যায় · ১৩ পরীক্ষা · ১৩ মডেল</div>
       </div>
-      <div class="mode-card model-card" onclick="selectMode('3d')">
-        <span class="mode-icon">🌐</span>
-        <div class="mode-title">থ্রিডি মডেল</div>
-        <div class="mode-desc">বইয়ের সকল বিষয় থ্রিডিতে দেখো। ঘোরাও, জুম করো, বিস্তারিত জানো।</div>
-        <span class="mode-tag">🔮 ${cls.models3d.length}টি থ্রিডি মডেল</span>
+      <div class="scard sche" onclick="selSub('chemistry')">
+        <span class="si2">🧪</span>
+        <div class="stt">রসায়ন</div>
+        <div class="sdd">১২ অধ্যায় · ১২ পরীক্ষা · ১২ মডেল</div>
+      </div>
+      <div class="scard sbio" onclick="selSub('biology')">
+        <span class="si2">🧬</span>
+        <div class="stt">জীববিজ্ঞান</div>
+        <div class="sdd">১৪ অধ্যায় · ১২ পরীক্ষা · ১৩ মডেল</div>
       </div>
     </div>`;
 }
 
-function renderSubjects(d) {
+function rContent(d){
+  const k=st.sub||st.cls;
+  const cls=D[k];
+  const isE=st.mode==='exp';
+  const items=isE?cls.exp:cls.m3d;
+  const ic=isE?'var(--a3)':'#a78bfa';
+  const ib=isE?'rgba(16,185,129,.1)':'rgba(124,58,237,.1)';
+  const ibr=isE?'rgba(16,185,129,.25)':'rgba(124,58,237,.25)';
+  const back=st.sub?`selSub('${st.sub}')`:`sel('${st.cls}')`;
   d.innerHTML=`
-    <button class="back-btn" onclick="goHome()">← হোম</button>
-    <h2 class="screen-title">নবম ও দশম শ্রেণি — বিষয় বেছে নাও</h2>
-    <p class="screen-desc">পদার্থবিজ্ঞান, রসায়ন ও জীববিজ্ঞানের সম্পূর্ণ ল্যাব</p>
-    <div class="subject-grid">
-      <div class="subject-card sub-physics" onclick="selectSubject('physics')">
-        <span class="sub-icon">⚡</span>
-        <div class="sub-title">পদার্থবিজ্ঞান</div>
-        <div class="sub-desc">শীঘ্রই আসছে</div>
-      </div>
-      <div class="subject-card sub-chemistry" onclick="selectSubject('chemistry')">
-        <span class="sub-icon">🧪</span>
-        <div class="sub-title">রসায়ন</div>
-        <div class="sub-desc">শীঘ্রই আসছে</div>
-      </div>
-      <div class="subject-card sub-biology" onclick="selectSubject('biology')">
-        <span class="sub-icon">🧬</span>
-        <div class="sub-title">জীববিজ্ঞান</div>
-        <div class="sub-desc">শীঘ্রই আসছে</div>
-      </div>
-    </div>`;
-}
-
-function renderSubjectMode(d) {
-  d.innerHTML=`
-    <button class="back-btn" onclick="selectClass('৯-১০')">← বিষয়সমূহ</button>
-    <h2 class="screen-title">শীঘ্রই আসছে!</h2>
-    <div class="coming-soon"><span class="big">🚧</span>নবম-দশম শ্রেণির কন্টেন্ট তৈরি হচ্ছে</div>`;
-}
-
-function renderContent(d) {
-  const cls = DATA[state.cls];
-  const isExp = state.mode==='experiment';
-  const items = isExp ? cls.experiments : cls.models3d;
-
-  d.innerHTML=`
-    <button class="back-btn" onclick="selectClass('${state.cls}')">← পেছনে</button>
-    <h2 class="screen-title">${isExp?'⚗️ এক্সপেরিমেন্ট':'🌐 থ্রিডি মডেল'} — ${cls.label}</h2>
-    <p class="screen-desc">${isExp?'একটি এক্সপেরিমেন্টে ক্লিক করো বিস্তারিত দেখতে':'একটি মডেলে ক্লিক করো বিস্তারিত দেখতে'}</p>
-    <div class="section-title">${isExp?'📋':'🔮'} ${items.length}টি ${isExp?'এক্সপেরিমেন্ট':'থ্রিডি মডেল'}</div>
-    <div class="${isExp?'exp-list':'chapter-grid'}">
-      ${items.map((item,i)=>`
-        <div class="${isExp?'exp-item':'chapter-item'}" onclick="${isExp?`showExp('${item.id}')`:`show3D('${item.id}')`}">
-          <div class="${isExp?'exp-num':'ch-num'}">${String(i+1).padStart(2,'0')}</div>
-          <div class="${isExp?'':'ch-info'}">
-            <div class="${isExp?'exp-name':'ch-title'}">${item.title}</div>
-            <div class="${isExp?'exp-ch':'ch-sub'}">${item.chapter}</div>
-          </div>
+    <button class="bb" onclick="${back}">← পেছনে</button>
+    <h2 class="st">${isE?'⚗️ এক্সপেরিমেন্ট':'🌐 থ্রিডি মডেল'} — ${cls.label}</h2>
+    <p class="sd">${isE?'একটিতে ক্লিক করো বিস্তারিত পদ্ধতি দেখতে':'একটিতে ক্লিক করো বিস্তারিত বিষয়বস্তু দেখতে'}</p>
+    <div class="sect">${isE?'📋':'🔮'} ${items.length}টি ${isE?'এক্সপেরিমেন্ট':'থ্রিডি মডেল'}</div>
+    <div class="ig">
+      ${items.map((x,i)=>`
+        <div class="li" style="--ic:${ic};--ib:${ib};--ibr:${ibr}" onclick="${isE?`showE('${x.id}')`:`show3('${x.id}')`}">
+          <div class="in">${String(i+1).padStart(2,'0')}</div>
+          <div><div class="it">${x.t}</div><div class="is">${x.ch}</div></div>
         </div>`).join('')}
     </div>`;
 }
 
-function showExp(id) {
-  const cls = DATA[state.cls];
-  const exp = cls.experiments.find(e=>e.id===id);
-  if(!exp) return;
-  const html=`
-    <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
-      <div class="modal">
-        <button class="modal-close" onclick="closeModal()">✕</button>
-        <div class="modal-title">⚗️ ${exp.title}</div>
-        <div class="modal-chapter">📖 ${exp.chapter}</div>
-        <div class="modal-section">
-          <div class="modal-section-title">🧰 প্রয়োজনীয় উপকরণ</div>
-          <div class="materials-list">${exp.materials.map(m=>`<span class="material-tag">${m}</span>`).join('')}</div>
-        </div>
-        <div class="modal-section">
-          <div class="modal-section-title">📝 পদ্ধতি</div>
-          <ul class="step-list">${exp.steps.map((s,i)=>`<li><span class="step-num">${i+1}</span><span>${s}</span></li>`).join('')}</ul>
-        </div>
+function showE(id){
+  const k=st.sub||st.cls;
+  const x=D[k].exp.find(e=>e.id===id);
+  if(!x)return;
+  const h=`<div class="ov" onclick="if(event.target===this)closeM()">
+    <div class="mo">
+      <button class="mc2" onclick="closeM()">✕</button>
+      <div class="mtt">⚗️ ${x.t}</div>
+      <div class="mch">📖 ${x.ch}</div>
+      <div class="ms">
+        <div class="mst">🧰 প্রয়োজনীয় উপকরণ</div>
+        <div class="ml">${x.m.map(m=>`<span class="mt2">${m}</span>`).join('')}</div>
       </div>
-    </div>`;
-  document.body.insertAdjacentHTML('beforeend', html);
-}
-
-function show3D(id) {
-  const cls = DATA[state.cls];
-  const m = cls.models3d.find(x=>x.id===id);
-  if(!m) return;
-  const html=`
-    <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
-      <div class="modal">
-        <button class="modal-close" onclick="closeModal()">✕</button>
-        <div class="modal-title">🌐 ${m.title}</div>
-        <div class="modal-chapter">📖 ${m.chapter}</div>
-        <div class="modal-section">
-          <div class="modal-section-title">📋 বিষয়বস্তু</div>
-          <div class="modal-text">${m.desc}</div>
-        </div>
-        <div class="coming-soon" style="padding:30px 0 0">
-          <span style="font-size:2rem;display:block;margin-bottom:10px">🚧</span>
-          <div style="font-size:0.85rem;color:var(--text-dim)">থ্রিডি মডেলটি তৈরি হচ্ছে — শীঘ্রই যোগ করা হবে!</div>
-        </div>
+      <div class="ms">
+        <div class="mst">📝 ধাপে ধাপে পদ্ধতি</div>
+        <ul class="sl">${x.s.map((s,i)=>`<li><span class="sn">${i+1}</span><span>${s}</span></li>`).join('')}</ul>
       </div>
-    </div>`;
-  document.body.insertAdjacentHTML('beforeend', html);
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend',h);
 }
 
-function closeModal() {
-  const m = document.querySelector('.modal-overlay');
-  if(m) m.remove();
+function show3(id){
+  const k=st.sub||st.cls;
+  const x=D[k].m3d.find(m=>m.id===id);
+  if(!x)return;
+  const h=`<div class="ov" onclick="if(event.target===this)closeM()">
+    <div class="mo">
+      <button class="mc2" onclick="closeM()">✕</button>
+      <div class="mtt">🌐 ${x.t}</div>
+      <div class="mch">📖 ${x.ch}</div>
+      <div class="ms">
+        <div class="mst">📋 বিষয়বস্তু</div>
+        <div class="mtxt">${x.d}</div>
+      </div>
+      <div class="cs" style="padding:20px 0 0">
+        <span style="font-size:2rem;display:block;margin-bottom:8px">🚧</span>
+        <div style="font-size:.8rem;color:var(--dim)">থ্রিডি মডেলটি শীঘ্রই যোগ হবে!</div>
+      </div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend',h);
 }
 
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+function closeM(){const m=document.querySelector('.ov');if(m)m.remove();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
 
-function selectClass(cls) {
-  state.cls = cls;
-  if(cls==='৯-১০') { state.screen='subjects'; }
-  else if(DATA[cls]) { state.screen='classMode'; }
-  else { alert('এই শ্রেণির কন্টেন্ট শীঘ্রই আসছে!'); return; }
+function sel(c){
+  st.cls=c;st.sub=null;
+  if(c==='৯-১০'){st.scr='subs';}
+  else if(D[c]){st.scr='clsMode';}
+  else{alert('শীঘ্রই আসছে!');return;}
   render();
 }
 
-function selectMode(mode) { state.mode=mode; state.screen='content'; render(); }
-function selectSubject(sub) { state.subject=sub; state.screen='subjectMode'; render(); }
-function goHome() { state={screen:'home',cls:null,mode:null,subject:null}; render(); }
-
-function updateBreadcrumb() {
-  const bc = document.getElementById('breadcrumb');
-  let html=`<span class="bc-item" onclick="goHome()">🏠 হোম</span>`;
-  if(state.cls) html+=`<span>›</span><span class="bc-item">${state.cls==='৯-১০'?'নবম-দশম':state.cls+' শ্রেণি'}</span>`;
-  if(state.subject) { const sl={physics:'পদার্থ',chemistry:'রসায়ন',biology:'জীব'}; html+=`<span>›</span><span class="bc-item">${sl[state.subject]}</span>`; }
-  if(state.mode) html+=`<span>›</span><span class="bc-item active">${state.mode==='experiment'?'এক্সপেরিমেন্ট':'থ্রিডি মডেল'}</span>`;
-  bc.innerHTML=html;
+function selSub(s){
+  st.sub=s;st.scr='clsMode';
+  const cls=D[s];
+  const c=document.getElementById('sc');
+  const d=document.createElement('div');
+  d.style.animation='si .45s cubic-bezier(.16,1,.3,1) forwards';
+  d.innerHTML=`
+    <button class="bb" onclick="goSubs()">← বিষয়সমূহ</button>
+    <h2 class="st">${cls.label} — কী দেখতে চাও?</h2>
+    <p class="sd">এক্সপেরিমেন্ট করো অথবা থ্রিডি মডেলে দেখো</p>
+    <div class="mg">
+      <div class="mc ec" onclick="selMode('exp')">
+        <span class="mi">⚗️</span>
+        <div class="mt">এক্সপেরিমেন্ট</div>
+        <div class="md">বইয়ের সব পরীক্ষা-নিরীক্ষা ভার্চুয়ালি করো। উপকরণ ও পদ্ধতি সহ।</div>
+        <span class="mtg">🧪 ${cls.exp.length}টি এক্সপেরিমেন্ট</span>
+      </div>
+      <div class="mc dc" onclick="selMode('3d')">
+        <span class="mi">🌐</span>
+        <div class="mt">থ্রিডি মডেল</div>
+        <div class="md">সকল বিষয় থ্রিডিতে দেখো। ঘোরাও, জুম করো, বিস্তারিত জানো।</div>
+        <span class="mtg">🔮 ${cls.m3d.length}টি থ্রিডি মডেল</span>
+      </div>
+    </div>`;
+  c.innerHTML='';c.appendChild(d);updateBC();
 }
 
+function selMode(m){st.mode=m;st.scr='content';render();}
+function goHome(){st={scr:'home',cls:null,mode:null,sub:null};render();}
+function goSubs(){st.sub=null;st.scr='subs';render();}
+
+function updateBC(){
+  const bc=document.getElementById('bc');
+  const sl={physics:'পদার্থবিজ্ঞান',chemistry:'রসায়ন',biology:'জীববিজ্ঞান'};
+  let h=`<span class="bi" onclick="goHome()">🏠 হোম</span>`;
+  if(st.cls) h+=`<span>›</span><span class="bi">${st.cls==='৯-১০'?'নবম-দশম':st.cls+' শ্রেণি'}</span>`;
+  if(st.sub) h+=`<span>›</span><span class="bi">${sl[st.sub]}</span>`;
+  if(st.mode) h+=`<span>›</span><span class="bi a">${st.mode==='exp'?'এক্সপেরিমেন্ট':'থ্রিডি মডেল'}</span>`;
+  bc.innerHTML=h;
+}
 render();
 </script>
 </body>
 </html>
+HTMLEOF
+wc -c /mnt/user-data/outputs/index.html && echo "Done
