@@ -1,569 +1,1149 @@
-cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'
+cat > /mnt/user-data/outputs/index.html << 'EOF'
 <!DOCTYPE html>
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</title>বিজ্ঞানের পাঠশালা</title>
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+<title>বিজ্ঞানের পাঠশালা</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Tiro+Bangla&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1a2235;--accent:#00d4ff;--a2:#7c3aed;--a3:#10b981;--gold:#f59e0b;--text:#e2e8f0;--dim:#94a3b8}
+:root{--bg:#0a0e1a;--s1:#111827;--s2:#1a2235;--ac:#00d4ff;--pu:#7c3aed;--gr:#10b981;--go:#f59e0b;--tx:#e2e8f0;--dm:#94a3b8}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Hind Siliguri',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-.bg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(124,58,237,.12),transparent 60%),radial-gradient(ellipse 60% 50% at 80% 80%,rgba(0,212,255,.1),transparent 60%),#0a0e1a}
-.grid{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);background-size:60px 60px}
-.wrap{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center}
-header{width:100%;text-align:center;padding:35px 20px 8px}
-.logo{font-size:2.5rem;display:block;animation:float 4s ease-in-out infinite;margin-bottom:8px}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-h1{font-family:'Tiro Bangla',serif;font-size:clamp(1.6rem,5vw,2.7rem);background:linear-gradient(135deg,#00d4ff,#7c3aed,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:5px}
-.sub{font-size:.8rem;color:var(--dim);letter-spacing:3px;text-transform:uppercase}
-.pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--a3);margin-right:5px;animation:pulse 2s ease-in-out infinite}
+body{font-family:'Hind Siliguri',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden}
+.bgfx{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(124,58,237,.12),transparent 60%),radial-gradient(ellipse 60% 50% at 80% 80%,rgba(0,212,255,.1),transparent 60%),#0a0e1a;pointer-events:none}
+.gridline{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+header{width:100%;text-align:center;padding:32px 20px 6px}
+.logo{font-size:2.4rem;display:block;animation:bob 4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+h1{font-family:'Tiro Bangla',serif;font-size:clamp(1.5rem,5vw,2.6rem);background:linear-gradient(135deg,#00d4ff,#7c3aed,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.25;margin-bottom:4px}
+.sub{font-size:.78rem;color:var(--dm);letter-spacing:3px;text-transform:uppercase}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gr);margin-right:5px;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(16,185,129,.4)}50%{transform:scale(1.3);box-shadow:0 0 0 6px rgba(16,185,129,0)}}
-.bc{width:90%;max-width:800px;display:flex;align-items:center;gap:8px;margin:18px 0 0;padding:9px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:50px;font-size:.78rem;color:var(--dim);flex-wrap:wrap}
-.bc .bi{cursor:pointer;color:var(--dim);transition:color .2s}
-.bc .bi:hover,.bc .bi.a{color:var(--accent)}
-.sc{width:90%;max-width:1100px;margin:26px auto 60px;animation:si .45s cubic-bezier(.16,1,.3,1) forwards}
-@keyframes si{from{opacity:0;transform:translateY(28px) scale(.97)}to{opacity:1;transform:none}}
-.st{font-family:'Tiro Bangla',serif;font-size:clamp(1.2rem,3vw,1.8rem);text-align:center;margin-bottom:7px}
-.sd{text-align:center;color:var(--dim);font-size:.87rem;margin-bottom:34px;line-height:1.7}
-/* CLASS GRID */
-.cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px}
-.cc{position:relative;background:var(--surface);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:28px 20px;cursor:pointer;transition:all .4s cubic-bezier(.16,1,.3,1);overflow:hidden;text-align:center}
-.cc::before{content:'';position:absolute;inset:0;background:var(--cg);opacity:0;transition:opacity .4s;border-radius:18px}
-.cc:hover::before{opacity:1}
-.cc:hover{transform:translateY(-8px) scale(1.02);border-color:var(--ca);box-shadow:0 20px 60px var(--cs)}
-.cc .ce{font-size:2.2rem;margin-bottom:12px;display:block;transition:transform .4s}
+#bc{width:90%;max-width:800px;display:flex;align-items:center;gap:8px;margin:16px 0 0;padding:8px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:50px;font-size:.76rem;color:var(--dm);flex-wrap:wrap}
+.bi{cursor:pointer;transition:color .2s}.bi:hover,.bi.on{color:var(--ac)}
+#sc{width:90%;max-width:1100px;margin:24px auto 60px;transition:opacity .3s,transform .3s}
+.tt{font-family:'Tiro Bangla',serif;font-size:clamp(1.1rem,3vw,1.75rem);text-align:center;margin-bottom:6px}
+.dd{text-align:center;color:var(--dm);font-size:.85rem;margin-bottom:30px;line-height:1.7}
+/* class cards */
+.cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.cc{position:relative;background:var(--s1);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:26px 18px;cursor:pointer;transition:all .35s cubic-bezier(.16,1,.3,1);overflow:hidden;text-align:center}
+.cc:before{content:'';position:absolute;inset:0;background:var(--cg,transparent);opacity:0;transition:opacity .35s}
+.cc:hover:before{opacity:1}
+.cc:hover{transform:translateY(-7px) scale(1.02);border-color:var(--ca,var(--ac));box-shadow:0 18px 50px var(--cs,rgba(0,212,255,.15))}
+.ce{font-size:2.1rem;display:block;margin-bottom:10px;transition:transform .35s}
 .cc:hover .ce{transform:scale(1.2) rotate(-5deg)}
-.cc .cl{font-family:'Tiro Bangla',serif;font-size:1.1rem;color:var(--text);margin-bottom:5px}
-.cc .cs2{font-size:.73rem;color:var(--dim);letter-spacing:1px}
-.cc .cb{display:inline-block;margin-top:10px;padding:3px 11px;border-radius:20px;font-size:.68rem;background:rgba(255,255,255,.07);color:var(--ca);border:1px solid var(--ca);opacity:.8}
+.cl{font-family:'Tiro Bangla',serif;font-size:1.05rem;margin-bottom:4px}
+.cs{font-size:.7rem;color:var(--dm);letter-spacing:1px}
+.cb{display:inline-block;margin-top:8px;padding:2px 10px;border-radius:20px;font-size:.66rem;background:rgba(255,255,255,.07);color:var(--ca,var(--ac));border:1px solid var(--ca,var(--ac));opacity:.85}
 .c1{--ca:#00d4ff;--cg:linear-gradient(135deg,rgba(0,212,255,.06),transparent);--cs:rgba(0,212,255,.15)}
 .c2{--ca:#a78bfa;--cg:linear-gradient(135deg,rgba(167,139,250,.06),transparent);--cs:rgba(167,139,250,.15)}
 .c3{--ca:#10b981;--cg:linear-gradient(135deg,rgba(16,185,129,.06),transparent);--cs:rgba(16,185,129,.15)}
-.c4{--ca:#f59e0b;--cg:linear-gradient(135deg,rgba(245,158,11,.08),transparent);--cs:rgba(245,158,11,.2)}
-/* MODE */
-.mg{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:22px;max-width:680px;margin:0 auto}
-.mc{position:relative;border-radius:20px;padding:38px 28px;cursor:pointer;text-align:center;transition:all .4s cubic-bezier(.16,1,.3,1)}
+.c4{--ca:#f59e0b;--cg:linear-gradient(135deg,rgba(245,158,11,.07),transparent);--cs:rgba(245,158,11,.18)}
+/* mode */
+.mg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;max-width:680px;margin:0 auto}
+.mc{border-radius:20px;padding:36px 26px;cursor:pointer;text-align:center;transition:all .35s cubic-bezier(.16,1,.3,1)}
 .ec{background:linear-gradient(135deg,#0d1f3c,#1a3a5c);border:1px solid rgba(0,212,255,.2)}
 .dc{background:linear-gradient(135deg,#1a0d3c,#2d1a5c);border:1px solid rgba(124,58,237,.2)}
 .mc:hover{transform:translateY(-10px)}
-.ec:hover{box-shadow:0 30px 80px rgba(0,212,255,.2);border-color:rgba(0,212,255,.5)}
-.dc:hover{box-shadow:0 30px 80px rgba(124,58,237,.25);border-color:rgba(124,58,237,.5)}
-.mi{font-size:3.2rem;margin-bottom:16px;display:block;animation:float 4s ease-in-out infinite}
+.ec:hover{box-shadow:0 28px 70px rgba(0,212,255,.2);border-color:rgba(0,212,255,.5)}
+.dc:hover{box-shadow:0 28px 70px rgba(124,58,237,.22);border-color:rgba(124,58,237,.5)}
+.mi{font-size:3rem;margin-bottom:14px;display:block;animation:bob 4s ease-in-out infinite}
 .dc .mi{animation-delay:-2s}
-.mt{font-family:'Tiro Bangla',serif;font-size:1.35rem;margin-bottom:9px;color:#fff}
-.md{font-size:.84rem;color:var(--dim);line-height:1.7}
-.mtg{display:inline-block;margin-top:15px;padding:5px 14px;border-radius:30px;font-size:.71rem;letter-spacing:1px;font-weight:500}
-.ec .mtg{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:var(--accent)}
-.dc .mtg{background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);color:#a78bfa}
-/* SUBJECT */
-.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;max-width:840px;margin:0 auto}
-.scard{border-radius:18px;padding:36px 24px;cursor:pointer;text-align:center;border:1px solid transparent;transition:all .4s cubic-bezier(.16,1,.3,1)}
-.sphy{background:linear-gradient(135deg,#0d2137,#132d4a);border-color:rgba(0,212,255,.15)}
-.sche{background:linear-gradient(135deg,#1a1a0d,#2a2a0f);border-color:rgba(234,179,8,.15)}
-.sbio{background:linear-gradient(135deg,#0d200d,#0f2b0f);border-color:rgba(16,185,129,.15)}
-.scard:hover{transform:translateY(-10px) scale(1.03)}
-.sphy:hover{box-shadow:0 30px 70px rgba(0,212,255,.2);border-color:rgba(0,212,255,.4)}
-.sche:hover{box-shadow:0 30px 70px rgba(234,179,8,.2);border-color:rgba(234,179,8,.4)}
-.sbio:hover{box-shadow:0 30px 70px rgba(16,185,129,.2);border-color:rgba(16,185,129,.4)}
-.si2{font-size:2.8rem;display:block;margin-bottom:12px;animation:float 5s ease-in-out infinite}
-.sche .si2{animation-delay:-1.5s}.sbio .si2{animation-delay:-3s}
-.stt{font-family:'Tiro Bangla',serif;font-size:1.3rem;color:#fff;margin-bottom:5px}
-.sdd{font-size:.8rem;color:var(--dim);line-height:1.5}
-/* LIST */
-.ig{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:11px;margin-bottom:28px}
-.li{background:var(--surface);border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:13px 15px;cursor:pointer;transition:all .3s;display:flex;align-items:flex-start;gap:11px}
-.li:hover{background:var(--surface2);border-color:var(--ic,var(--accent));transform:translateX(5px)}
-.in{width:30px;height:30px;border-radius:8px;background:var(--ib,rgba(0,212,255,.1));border:1px solid var(--ibr,rgba(0,212,255,.25));display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--ic,var(--accent));font-weight:700;flex-shrink:0;margin-top:2px}
-.it{font-size:.84rem;color:var(--text);line-height:1.4}
-.is{font-size:.68rem;color:var(--dim);margin-top:2px}
-/* BACK */
-.bb{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:30px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--dim);cursor:pointer;font-size:.84rem;font-family:'Hind Siliguri',sans-serif;transition:all .3s;margin-bottom:24px}
-.bb:hover{background:rgba(0,212,255,.08);border-color:rgba(0,212,255,.3);color:var(--accent)}
-.sect{font-family:'Tiro Bangla',serif;font-size:1.05rem;margin-bottom:14px;color:var(--text);display:flex;align-items:center;gap:10px}
-.sect::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.1),transparent)}
-/* MODAL */
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;animation:fo .2s}
-@keyframes fo{from{opacity:0}to{opacity:1}}
-.mo{background:var(--surface2);border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:28px;max-width:580px;width:100%;max-height:88vh;overflow-y:auto;position:relative}
-.mc2{position:absolute;top:13px;right:13px;background:rgba(255,255,255,.08);border:none;color:var(--dim);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:sans-serif}
-.mc2:hover{background:rgba(255,0,0,.2);color:#fff}
-.mtt{font-family:'Tiro Bangla',serif;font-size:1.3rem;margin-bottom:6px;color:var(--text);padding-right:36px}
-.mch{font-size:.76rem;color:var(--accent);margin-bottom:16px;letter-spacing:1px}
-.ms{margin-bottom:15px}
-.mst{font-size:.78rem;color:var(--a3);font-weight:600;margin-bottom:7px;text-transform:uppercase;letter-spacing:1px}
-.mtxt{font-size:.84rem;color:var(--dim);line-height:1.8}
+.mh{font-family:'Tiro Bangla',serif;font-size:1.3rem;margin-bottom:8px;color:#fff}
+.md{font-size:.82rem;color:var(--dm);line-height:1.7}
+.mt{display:inline-block;margin-top:13px;padding:4px 13px;border-radius:30px;font-size:.7rem;letter-spacing:1px;font-weight:600}
+.ec .mt{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:var(--ac)}
+.dc .mt{background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);color:#a78bfa}
+/* subjects */
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;max-width:840px;margin:0 auto}
+.sc2{border-radius:18px;padding:34px 22px;cursor:pointer;text-align:center;border:1px solid transparent;transition:all .35s cubic-bezier(.16,1,.3,1)}
+.sp{background:linear-gradient(135deg,#0d2137,#132d4a);border-color:rgba(0,212,255,.14)}
+.sk{background:linear-gradient(135deg,#1a1a0d,#2a2a0e);border-color:rgba(234,179,8,.14)}
+.sb{background:linear-gradient(135deg,#0d1f0d,#0f290f);border-color:rgba(16,185,129,.14)}
+.sc2:hover{transform:translateY(-9px) scale(1.02)}
+.sp:hover{box-shadow:0 28px 65px rgba(0,212,255,.18);border-color:rgba(0,212,255,.4)}
+.sk:hover{box-shadow:0 28px 65px rgba(234,179,8,.18);border-color:rgba(234,179,8,.4)}
+.sb:hover{box-shadow:0 28px 65px rgba(16,185,129,.18);border-color:rgba(16,185,129,.4)}
+.si{font-size:2.6rem;display:block;margin-bottom:10px;animation:bob 5s ease-in-out infinite}
+.sk .si{animation-delay:-1.5s}.sb .si{animation-delay:-3s}
+.sh{font-family:'Tiro Bangla',serif;font-size:1.25rem;color:#fff;margin-bottom:4px}
+.sd2{font-size:.78rem;color:var(--dm);line-height:1.4}
+/* list */
+.ig{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:10px;margin-bottom:24px}
+.li{background:var(--s1);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .25s;display:flex;align-items:flex-start;gap:10px}
+.li:hover{background:var(--s2);border-color:var(--lc,var(--ac));transform:translateX(4px)}
+.ln{width:28px;height:28px;border-radius:7px;background:var(--lb,rgba(0,212,255,.1));border:1px solid var(--lbr,rgba(0,212,255,.25));display:flex;align-items:center;justify-content:center;font-size:.68rem;color:var(--lc,var(--ac));font-weight:700;flex-shrink:0;margin-top:1px}
+.lt{font-size:.82rem;line-height:1.4}.ls{font-size:.66rem;color:var(--dm);margin-top:2px}
+.bb{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:30px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--dm);cursor:pointer;font-size:.82rem;font-family:'Hind Siliguri',sans-serif;transition:all .25s;margin-bottom:22px}
+.bb:hover{background:rgba(0,212,255,.07);border-color:rgba(0,212,255,.3);color:var(--ac)}
+.sh2{font-family:'Tiro Bangla',serif;font-size:1rem;margin-bottom:12px;color:var(--tx);display:flex;align-items:center;gap:9px}
+.sh2:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.1),transparent)}
+/* modal */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:999;display:flex;align-items:center;justify-content:center;padding:14px;animation:fi .2s}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.mo{background:var(--s2);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:26px;max-width:700px;width:100%;max-height:92vh;overflow-y:auto;position:relative}
+.mx{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.08);border:none;color:var(--dm);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.9rem;transition:all .2s;font-family:sans-serif}
+.mx:hover{background:rgba(239,68,68,.25);color:#fff}
+.mh2{font-family:'Tiro Bangla',serif;font-size:1.25rem;margin-bottom:5px;color:var(--tx);padding-right:36px}
+.mc2{font-size:.74rem;color:var(--ac);margin-bottom:14px;letter-spacing:1px}
+.ms{margin-bottom:14px}
+.mk{font-size:.76rem;color:var(--gr);font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+.mtx{font-size:.83rem;color:var(--dm);line-height:1.8}
 .sl{list-style:none}
-.sl li{display:flex;gap:9px;margin-bottom:8px;font-size:.83rem;color:var(--dim);line-height:1.6}
-.sn{width:20px;height:20px;border-radius:50%;background:rgba(0,212,255,.15);border:1px solid rgba(0,212,255,.3);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--accent);flex-shrink:0;margin-top:2px}
-.ml{display:flex;flex-wrap:wrap;gap:7px}
-.mt2{padding:3px 11px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.25);border-radius:20px;font-size:.73rem;color:#a78bfa}
-.cs{text-align:center;padding:32px 20px;color:var(--dim);font-size:.86rem}
-footer{position:relative;z-index:1;text-align:center;padding:18px;color:var(--dim);font-size:.71rem;border-top:1px solid rgba(255,255,255,.05);width:100%}
-@media(max-width:600px){.mg{grid-template-columns:1fr}.cg{grid-template-columns:repeat(2,1fr);gap:12px}.cc{padding:20px 12px}}
+.sl li{display:flex;gap:8px;margin-bottom:7px;font-size:.81rem;color:var(--dm);line-height:1.6}
+.sn2{width:19px;height:19px;border-radius:50%;background:rgba(0,212,255,.15);border:1px solid rgba(0,212,255,.3);display:flex;align-items:center;justify-content:center;font-size:.63rem;color:var(--ac);flex-shrink:0;margin-top:2px}
+.ml{display:flex;flex-wrap:wrap;gap:6px}
+.tg{padding:3px 10px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.25);border-radius:20px;font-size:.71rem;color:#a78bfa}
+/* sim / 3d containers */
+.sb2{background:#060c16;border:1px solid rgba(0,212,255,.18);border-radius:14px;overflow:hidden;margin-top:14px}
+.sh3{padding:9px 14px;background:rgba(0,212,255,.06);font-size:.78rem;color:var(--ac);font-weight:700;letter-spacing:1px;border-bottom:1px solid rgba(0,212,255,.1)}
+#p5host canvas{display:block!important;max-width:100%}
+.ctrls{padding:10px 14px;display:flex;flex-wrap:wrap;gap:7px;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.18)}
+.cbtn{padding:5px 13px;border-radius:20px;border:1px solid rgba(0,212,255,.3);background:rgba(0,212,255,.07);color:var(--ac);font-size:.73rem;cursor:pointer;font-family:'Hind Siliguri',sans-serif;transition:all .2s}
+.cbtn:hover,.cbtn.on{background:rgba(0,212,255,.2)}
+.srow{display:flex;align-items:center;gap:8px;width:100%}
+.srow label{font-size:.73rem;color:var(--dm);white-space:nowrap;min-width:95px}
+.srow input[type=range]{flex:1;accent-color:var(--ac)}
+.srow span{font-size:.73rem;color:var(--ac);min-width:40px;text-align:right}
+.tip{padding:7px 14px;font-size:.76rem;color:var(--dm);background:rgba(0,0,0,.12);border-top:1px solid rgba(255,255,255,.05)}
+/* 3d wrap */
+.tdw{position:relative;border-radius:12px;overflow:hidden;border:1px solid rgba(124,58,237,.22);margin-top:14px}
+#tdcanvas{width:100%;height:300px;display:block;background:#04070f}
+.tdlbl{position:absolute;top:7px;left:10px;font-size:.68rem;color:#a78bfa;background:rgba(0,0,0,.5);padding:2px 9px;border-radius:20px;pointer-events:none}
+.tdhint{position:absolute;bottom:7px;right:10px;font-size:.63rem;color:rgba(255,255,255,.3);pointer-events:none}
+.legend{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.leg{padding:3px 10px;border-radius:20px;font-size:.7rem;border:1px solid transparent;cursor:pointer}
+footer{position:relative;z-index:1;text-align:center;padding:16px;color:var(--dm);font-size:.7rem;border-top:1px solid rgba(255,255,255,.05);width:100%}
+@media(max-width:600px){.mg{grid-template-columns:1fr}.cg{grid-template-columns:repeat(2,1fr);gap:10px}.cc{padding:18px 11px}}
 </style>
-<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
 <body>
-<div class="bg"></div><div class="grid"></div>
+<div class="bgfx"></div>
+<div class="gridline"></div>
 <div class="wrap">
 <header>
   <span class="logo">🔬</span>
   <h1>বিজ্ঞানের পাঠশালা</h1>
-  <p class="sub"><span class="pulse"></span>ভার্চুয়াল বিজ্ঞানাগার · বিজ্ঞান কে বানাও সহজ</p>
+  <p class="sub"><span class="dot"></span>ভার্চুয়াল বিজ্ঞানাগার · বিজ্ঞান কে বানাও সহজ</p>
 </header>
-<nav class="bc" id="bc"></nav>
-<div class="sc" id="sc">
-
-  <h2 class="st">3D বিজ্ঞান মডেল</h2>
-
-  <model-viewer 
-    src="model.glb"
-    camera-controls
-    auto-rotate
-    style="width: 100%; height: 400px; background: #111827; border-radius: 15px;">
-  </model-viewer>
-
-</div>
+<nav id="bc"></nav>
+<div id="sc"></div>
 <footer>© ২০২৬ বিজ্ঞানের পাঠশালা — মোঃ শোয়াইব হাসান</footer>
 </div>
-<script>
-const D={
-'৬':{label:'ষষ্ঠ শ্রেণি',emoji:'📘',
- chapters:[
-  {id:'c1',n:'১',t:'বৈজ্ঞানিক প্রক্রিয়া ও পরিমাপ',e:'📏'},
-  {id:'c2',n:'২',t:'জীবজগৎ',e:'🌿'},
-  {id:'c3',n:'৩',t:'উদ্ভিদ ও প্রাণীর কোষীয় সংগঠন',e:'🔬'},
-  {id:'c4',n:'৪',t:'উদ্ভিদের বাহ্যিক বৈশিষ্ট্য',e:'🌱'},
-  {id:'c5',n:'৫',t:'সালোকসংশ্লেষণ',e:'☀️'},
-  {id:'c6',n:'৬',t:'সংবেদি অঙ্গ',e:'👁️'},
-  {id:'c7',n:'৭',t:'পদার্থের বৈশিষ্ট্য ও বাহ্যিক প্রভাব',e:'⚗️'},
-  {id:'c8',n:'৮',t:'মিশণ',e:'🧪'},
-  {id:'c9',n:'৯',t:'আলোর ঘটনা',e:'💡'},
-  {id:'c10',n:'১০',t:'গতি',e:'🚀'},
-  {id:'c11',n:'১১',t:'বল এবং সরল যন্ত্র',e:'⚙️'},
-  {id:'c12',n:'১২',t:'পৃথিবীর উৎপত্তি ও গঠন',e:'🌍'},
-  {id:'c13',n:'১৩',t:'খাদ্য ও পুষ্টি',e:'🍎'},
-  {id:'c14',n:'১৪',t:'পরিবেশের ভারসাম্য ও আমাদের জীবন',e:'🌳'},
- ],
- exp:[
-  {id:'e1',t:'বৈজ্ঞানিক পদ্ধতিতে পরীক্ষা — ফুলগাছের পানির প্রয়োজনীয়তা',ch:'১ম অধ্যায়',m:['দুটি পাত্র','দুটি চারাগাছ','মাটি','পানি'],s:['দুই পাত্রে মাটি ভরে চারা লাগাও','এক পাত্রে পানি দাও, অন্যটিতে দিও না','প্রতিদিন পর্যবেক্ষণ ও নোট রাখো','কয়েকদিন পর দুটি গাছের তুলনা করো','সিদ্ধান্ত লেখো']},
-  {id:'e2',t:'থার্মোমিটার দিয়ে তাপমাত্রা পরিমাপ',ch:'১ম অধ্যায়',m:['ক্লিনিক্যাল থার্মোমিটার'],s:['থার্মোমিটার ঝাঁকাও','জিহ্বার নিচে রাখো ১ মিনিট','পাঠ নাও ও রেকর্ড করো','বগলেও করে দেখো','তুলনা করো']},
-  {id:'e3',t:'পানি সরণ পদ্ধতিতে কঠিন বস্তুর আয়তন',ch:'১ম অধ্যায়',m:['মেজারিং সিলিন্ডার','পানি','পাথর'],s:['সিলিন্ডারে পানি নাও (V1)','পাথর ডুবাও','নতুন পাঠ নাও (V2)','আয়তন = V2 − V1']},
-  {id:'e4',t:'নিউক্লিয়াসের মডেল তৈরি (মাটি দিয়ে)',ch:'৩য় অধ্যায়',m:['রঙিন মাটি','প্লাস্টিসিন'],s:['নিউক্লিয়ার মেমব্রেন তৈরি করো','নিউক্লিওপ্লাজম দেখাও','ক্রোমাটিন তন্তু ও নিউক্লিওলাস যোগ করো','লেবেল করো']},
-  {id:'e5',t:'উদ্ভিদ কোষ ও প্রাণী কোষের পার্থক্য চার্ট',ch:'৩য় অধ্যায়',m:['কাগজ','রঙিন পেন্সিল'],s:['উদ্ভিদ কোষ আঁকো','প্রাণী কোষ আঁকো','মিল ও পার্থক্য ছকে লেখো']},
-  {id:'e6',t:'সালোকসংশ্লেষণে আলোর প্রয়োজনীয়তা (বেলজার পরীক্ষা)',ch:'৫ম অধ্যায়',m:['দুটি বেলজার','দুটি গাছ','মোমবাতি'],s:['P বেলজারে মোমবাতি রাখো (CO₂ শেষ হবে)','Q বেলজার স্বাভাবিক রাখো','কিছুক্ষণ পর পর্যবেক্ষণ করো','Q সুস্থ কারণ CO₂ আছে']},
-  {id:'e7',t:'ধাতুর বিদ্যুৎ পরিবাহিতা পরীক্ষা',ch:'৭ম অধ্যায়',m:['ব্যাটারি','বাল্ব','তার','লোহা','রাবার','কাঠ'],s:['সার্কিট তৈরি করো ফাঁক রেখে','বিভিন্ন বস্তু ফাঁকে রাখো','বাল্ব জ্বলে কিনা দেখো','পরিবাহী ও অপরিবাহী তালিকা তৈরি করো']},
-  {id:'e8',t:'মোমের গলনাঙ্ক নির্ণয়',ch:'৭ম অধ্যায়',m:['মোম','বিকার','পানি','থার্মোমিটার','স্পিরিট ল্যাম্প'],s:['টেস্টটিউবে মোম নাও','পানির বিকারে তাপ দাও','মোম গলতে শুরু হলে তাপমাত্রা রেকর্ড করো','এটি গলনাঙ্ক']},
-  {id:'e9',t:'লবণ পানি থেকে লবণ পৃথক (বাষ্পীভবন)',ch:'৮ম অধ্যায়',m:['লবণ পানি','চুলা','পাত্র'],s:['লবণ পানি পাত্রে নাও','তাপ দাও','পানি উড়ে যাবে','লবণের কেলাস থাকবে']},
-  {id:'e10',t:'আলোর প্রতিফলন — সমতল দর্পণ',ch:'৯ম অধ্যায়',m:['সমতল দর্পণ','টর্চলাইট'],s:['অন্ধকারে টর্চ দর্পণে ফেলো','প্রতিফলিত রশ্মি দেখো','আপতন ও প্রতিফলন কোণ মাপো','সিদ্ধান্ত লেখো']},
-  {id:'e11',t:'দ্রুতি নির্ণয় — স্টপওয়াচ দিয়ে',ch:'১০ম অধ্যায়',m:['মেজারিং টেপ','মোবাইল টাইমার'],s:['১০ মিটার চিহ্নিত করো','হাঁটা ও দৌড়ানোর সময় মাপো','দ্রুতি = দূরত্ব ÷ সময়','তুলনা করো']},
-  {id:'e12',t:'লিভার যন্ত্র পর্যবেক্ষণ',ch:'১১শ অধ্যায়',m:['কাঠের শাসন','পেন্সিল','বই'],s:['পেন্সিলের উপর শাসন রাখো','এক প্রান্তে বই রাখো','অন্য প্রান্তে চাপ দাও','ফালক্রাম পরিবর্তন করে দেখো']},
- ],
- m3d:[
-  {id:'m1',t:'উদ্ভিদ কোষের বিস্তারিত গঠন',ch:'৩য় অধ্যায়',d:'কোষপ্রাচীর, কোষঝিল্লি, নিউক্লিয়াস, ক্লোরোপ্লাস্ট, মাইটোকন্ড্রিয়া, ভ্যাকুওল, এন্ডোপ্লাজমিক রেটিকুলাম'},
-  {id:'m2',t:'প্রাণী কোষের বিস্তারিত গঠন',ch:'৩য় অধ্যায়',d:'কোষঝিল্লি, নিউক্লিয়াস, মাইটোকন্ড্রিয়া, রাইবোজোম, গলজি বস্তু, লাইসোজোম'},
-  {id:'m3',t:'নিউক্লিয়াসের অভ্যন্তরীণ গঠন',ch:'৩য় অধ্যায়',d:'নিউক্লিয়ার মেমব্রেন, নিউক্লিওপ্লাজম, ক্রোমাটিন তন্তু, নিউক্লিওলাস'},
-  {id:'m4',t:'উদ্ভিদের মূল, কাণ্ড ও পাতার গঠন',ch:'৪র্থ অধ্যায়',d:'মূলের প্রকার, সতজুমূল, বায়বীয় মূল, কাণ্ডের অভ্যন্তরীণ গঠন'},
-  {id:'m5',t:'সালোকসংশ্লেষণ প্রক্রিয়া',ch:'৫ম অধ্যায়',d:'CO₂ + H₂O + আলো → গ্লুকোজ + O₂, ক্লোরোপ্লাস্টের ভূমিকা'},
-  {id:'m6',t:'চোখের গঠন ও কাজ',ch:'৬ষ্ঠ অধ্যায়',d:'কর্নিয়া, আইরিস, লেন্স, রেটিনা, অপটিক নার্ভ, রড ও কোন কোষ'},
-  {id:'m7',t:'কানের গঠন ও কাজ',ch:'৬ষ্ঠ অধ্যায়',d:'বাহ্যিক কান, কানের পর্দা, মধ্যকর্ণ, অন্তঃকর্ণ, শ্রবণ প্রক্রিয়া'},
-  {id:'m8',t:'সমতল দর্পণে আলোর প্রতিফলন',ch:'৯ম অধ্যায়',d:'আপতন কোণ = প্রতিফলন কোণ, প্রতিবিম্ব তৈরি'},
-  {id:'m9',t:'পৃথিবীর অভ্যন্তরীণ গঠন',ch:'১২শ অধ্যায়',d:'ভূত্বক, ম্যান্টল, বাইরের কোর, ভেতরের কোর, ভূমিকম্পের কারণ'},
-  {id:'m10',t:'সৌরজগতের গ্রহগুলো',ch:'১২শ অধ্যায়',d:'সূর্য থেকে দূরত্ব অনুযায়ী আটটি গ্রহ, তাদের কক্ষপথ ও বৈশিষ্ট্য'},
-  {id:'m11',t:'সরল যন্ত্র — লিভার, পুলি, হেলানো তল',ch:'১১শ অধ্যায়',d:'তিন শ্রেণির লিভার, যান্ত্রিক সুবিধা, দৈনন্দিন ব্যবহার'},
-  {id:'m12',t:'মানবদেহের পাচনতন্ত্র',ch:'১৩শ অধ্যায়',d:'মুখ, অন্ননালী, পাকস্থলী, ক্ষুদ্রান্ত্র, বৃহদান্ত্র, লিভার, অগ্ন্যাশয়'},
- ]
-},
-'৭':{label:'সপ্তম শ্রেণি',emoji:'📗',
- chapters:[
-  {id:'c1',n:'১',t:'নিম্নশেণির জীব',e:'🦠'},{id:'c2',n:'২',t:'উদ্ভিদ ও প্রাণীর কোষীয় সংগঠন',e:'🔬'},
-  {id:'c3',n:'৩',t:'উদ্ভিদের বাহ্যিক বৈশিষ্ট্য',e:'🌱'},{id:'c4',n:'৪',t:'শ্বসন',e:'💨'},
-  {id:'c5',n:'৫',t:'পরিপাকতন্ত্র এবং রক্ত সংবহনতন্ত্র',e:'❤️'},{id:'c6',n:'৬',t:'পদার্থের গঠন',e:'⚛️'},
-  {id:'c7',n:'৭',t:'শক্তির ব্যবহার',e:'⚡'},{id:'c8',n:'৮',t:'শব্দের কথা',e:'🔊'},
-  {id:'c9',n:'৯',t:'তাপ ও তাপমাত্রা',e:'🌡️'},{id:'c10',n:'১০',t:'বিদ্যুৎ ও চুম্বকের ঘটনা',e:'🔌'},
-  {id:'c11',n:'১১',t:'পারিপার্শ্বিক পরিবর্তন ও বিভিন্ন ঘটনা',e:'🔥'},{id:'c12',n:'১২',t:'সৌরজগৎ ও আমাদের পৃথিবী',e:'🌍'},
-  {id:'c13',n:'১৩',t:'প্রাকৃতিক পরিবেশ এবং দূষণ',e:'🌿'},{id:'c14',n:'১৪',t:'জলবায়ু পরিবর্তন',e:'🌡️'},
- ],
- exp:[
-  {id:'e1',t:'ভাজক ও স্থায়ী টিস্যুর বৈশিষ্ট্য পোস্টারে উপস্থাপন',ch:'২য় অধ্যায়',m:['পোস্টার কাগজ','রঙিন কলম'],s:['ভাজক টিস্যুর বৈশিষ্ট্য লেখো','স্থায়ী টিস্যুর বৈশিষ্ট্য লেখো','উভয়ের মিল ও পার্থক্য তুলনা করো','পোস্টারে সুন্দরভাবে উপস্থাপন করো']},
-  {id:'e2',t:'উদ্ভিদের মূলের প্রকার পর্যবেক্ষণ ও শ্রেণিবিন্যাস',ch:'৩য় অধ্যায়',m:['বিভিন্ন গাছের মূল','ম্যাগনিফাইং গ্লাস','নোটবুক'],s:['বিভিন্ন গাছের মূল সংগ্রহ করো','সরল মূল, শাখামূল, বায়বীয় মূল চেনো','প্রতিটির বৈশিষ্ট্য লেখো','চিত্র অঙ্কন ও লেবেল করো']},
-  {id:'e3',t:'শ্বসনতন্ত্রের চিহ্নিত চিত্র অঙ্কন',ch:'৪র্থ অধ্যায়',m:['সাদা কাগজ','পেন্সিল','রঙ'],s:['নাক থেকে ফুসফুস পর্যন্ত চিত্র আঁকো','শ্বাসনালী, ব্রংকাস, ব্রংকিওল লেবেল করো','ফুসফুসের অংশগুলো দেখাও','শ্বসন প্রক্রিয়া ব্যাখ্যা করো']},
-  {id:'e4',t:'নলের দৈর্ঘ্যের সাথে শব্দের তীক্ষ্ণতার পরিবর্তন',ch:'৮ম অধ্যায়',m:['পান করার নল','কাঁচি'],s:['নলের এক প্রান্ত চেপ্টা করো','কাটো ও মুখে নিয়ে ফুঁ দাও','শব্দ শোনো','নল কেটে খাটো করো','শব্দের তীক্ষ্ণতার পার্থক্য শোনো']},
-  {id:'e5',t:'বায়বীয় পদার্থের প্রসারণ পরীক্ষা (বোতল-বেলুন)',ch:'৯ম অধ্যায়',m:['কাচের বোতল','বেলুন','সুতা','গরম ও ঠান্ডা পানি'],s:['বেলুন বোতলের মুখে সুতা দিয়ে বাঁধো','গরম পানিতে বোতল ডুবাও','বেলুন ফুলে উঠছে লক্ষ্য করো','ঠান্ডা পানিতে রাখো','বেলুন চুপসে যাচ্ছে — কারণ ব্যাখ্যা করো']},
-  {id:'e6',t:'মোমবাতির দহন পর্যবেক্ষণ (রাসায়নিক vs ভৌত পরিবর্তন)',ch:'১১শ অধ্যায়',m:['মোমবাতি','দিয়াশলাই'],s:['মোমবাতি জ্বালাও','মোম গলা — ভৌত পরিবর্তন','মোম পোড়া — রাসায়নিক পরিবর্তন','দুটির পার্থক্য খাতায় লেখো']},
-  {id:'e7',t:'পরমাণুর মডেল তৈরি',ch:'৬ষ্ঠ অধ্যায়',m:['রঙিন মাটি বা বল','কাঠি','কার্ডবোর্ড'],s:['নিউক্লিয়াস তৈরি করো (প্রোটন+নিউট্রন)','কক্ষপথে ইলেকট্রন সাজাও','কার্বন বা অক্সিজেন মডেল তৈরি করো','চিহ্নিত করো']},
-  {id:'e8',t:'চুম্বকের ক্ষেত্ররেখা পর্যবেক্ষণ',ch:'১০ম অধ্যায়',m:['একটি চুম্বক','লোহার গুঁড়া','কাগজ'],s:['কাগজে লোহার গুঁড়া ছড়াও','নিচে চুম্বক রাখো','চৌম্বক ক্ষেত্ররেখা দেখো','উত্তর ও দক্ষিণ মেরু চিহ্নিত করো']},
-  {id:'e9',t:'পরিবেশ দূষণ পর্যবেক্ষণ ও প্রতিবেদন',ch:'১৩শ অধ্যায়',m:['নোটবুক','কলম'],s:['বায়ু, পানি ও মাটি দূষণের উৎস চিহ্নিত করো','দূষণের প্রভাব লেখো','প্রতিকারের উপায় লেখো','প্রতিবেদন তৈরি করো']},
-  {id:'e10',t:'গ্রহের কক্ষপথ মডেল তৈরি',ch:'১২শ অধ্যায়',m:['কার্ডবোর্ড','রঙিন কাগজ','কম্পাস'],s:['সূর্যকে মাঝখানে রাখো','গ্রহগুলোর কক্ষপথ আঁকো','সঠিক দূরত্ব বজায় রাখো','গ্রহের নাম লেবেল করো']},
- ],
- m3d:[
-  {id:'m1',t:'অ্যামিবার গঠন',ch:'১ম অধ্যায়',d:'ক্ষণপদ, নিউক্লিয়াস, খাদ্যগহ্বর, পানিগহ্বর, প্লাজমামেলা, অ্যামিবার চলাচল'},
-  {id:'m2',t:'ব্যাকটেরিয়ার গঠন',ch:'১ম অধ্যায়',d:'কোষপ্রাচীর, সাইটোপ্লাজম, ক্রোমাটিন বস্তু, ফ্লাজেলা, পিলি, ক্যাপসুল'},
-  {id:'m3',t:'ভাইরাসের গঠন',ch:'১ম অধ্যায়',d:'প্রোটিন আবরণ (ক্যাপসিড), নিউক্লিক এসিড, ব্যাকটেরিওফাজ গঠন'},
-  {id:'m4',t:'উদ্ভিদ ও প্রাণী টিস্যু',ch:'২য় অধ্যায়',d:'ভাজক টিস্যু, স্থায়ী টিস্যু, আবরণী টিস্যু, পেশি টিস্যু, স্নায়ু টিস্যু'},
-  {id:'m5',t:'মানব শ্বসনতন্ত্র',ch:'৪র্থ অধ্যায়',d:'নাসারন্ধ্র, শ্বাসনালী, ব্রংকাস, ব্রংকিওল, অ্যালভিওলাস, ফুসফুস, মধ্যচ্ছদা'},
-  {id:'m6',t:'পরিপাকতন্ত্র বিস্তারিত',ch:'৫ম অধ্যায়',d:'মুখগহ্বর, অন্ননালী, পাকস্থলী, ক্ষুদ্রান্ত্র, বৃহদান্ত্র, লিভার, অগ্ন্যাশয়, পিত্তথলি'},
-  {id:'m7',t:'হৃদযন্ত্র ও রক্ত সংবহনতন্ত্র',ch:'৫ম অধ্যায়',d:'হৃদযন্ত্রের চারটি প্রকোষ্ঠ, ধমনী, শিরা, কৈশিক নালী, রক্ত সংবহন চক্র'},
-  {id:'m8',t:'পরমাণুর গঠন মডেল',ch:'৬ষ্ঠ অধ্যায়',d:'নিউক্লিয়াস (প্রোটন+নিউট্রন), ইলেকট্রন কক্ষপথ, বোর মডেল, বিভিন্ন মৌলের পরমাণু'},
-  {id:'m9',t:'সৌরজগৎ ও গ্রহগুলো',ch:'১২শ অধ্যায়',d:'৮টি গ্রহের কক্ষপথ, বৈশিষ্ট্য, সূর্য থেকে দূরত্ব, উপগ্রহ'},
-  {id:'m10',t:'রক্তকণিকার গঠন',ch:'৫ম অধ্যায়',d:'লোহিত রক্তকণিকা, শ্বেত রক্তকণিকা, অণুচক্রিকা, হিমোগ্লোবিন'},
-  {id:'m11',t:'শব্দ তরঙ্গের বিস্তার',ch:'৮ম অধ্যায়',d:'শব্দ তরঙ্গ, কম্পাঙ্ক, বিস্তার, শব্দের বেগ, প্রতিধ্বনি'},
-  {id:'m12',t:'চুম্বক ও চৌম্বক ক্ষেত্র',ch:'১০ম অধ্যায়',d:'চুম্বকের মেরু, চৌম্বক ক্ষেত্ররেখা, ইলেকট্রোম্যাগনেট, পৃথিবীর চৌম্বক ক্ষেত্র'},
- ]
-},
-  '৮':{label:'অষ্টম শ্রেণি',emoji:'📙',
- chapters:[
-  {id:'c1',n:'১',t:'প্রাণিজগতের শ্রেণিবিন্যাস',e:'🐾'},{id:'c2',n:'২',t:'জীবের বৃদ্ধি ও বংশগতি',e:'🧬'},
-  {id:'c3',n:'৩',t:'ব্যাপন, অভিস্রবণ ও প্রস্বেদন',e:'💧'},{id:'c4',n:'৪',t:'উদ্ভিদের বংশ বৃদ্ধি',e:'🌱'},
-  {id:'c5',n:'৫',t:'সমন্বয় ও নিঃসরণ',e:'🧠'},{id:'c6',n:'৬',t:'পরমাণুর গঠন',e:'⚛️'},
-  {id:'c7',n:'৭',t:'পৃথিবী ও মহাকর্ষ',e:'🌍'},{id:'c8',n:'৮',t:'রাসায়নিক বিক্রিয়া',e:'⚗️'},
-  {id:'c9',n:'৯',t:'বর্তনী ও চলবিদ্যুৎ',e:'🔌'},{id:'c10',n:'১০',t:'অম্ল, ক্ষারক ও লবণ',e:'🧪'},
-  {id:'c11',n:'১১',t:'আলো',e:'💡'},{id:'c12',n:'১২',t:'মহাকাশ ও উপগ্রহ',e:'🚀'},
-  {id:'c13',n:'১৩',t:'খাদ্য ও পুষ্টি',e:'🍎'},{id:'c14',n:'১৪',t:'পরিবেশ এবং বাস্তুতন্ত্র',e:'🌳'},
- ],
- exp:[
-  {id:'e1',t:'মাইটোসিস ও মিয়োসিসের তুলনামূলক ছক',ch:'২য় অধ্যায়',m:['কাগজ','রঙিন পেন্সিল'],s:['মাইটোসিসের ধাপ আঁকো (প্রোফেজ→মেটাফেজ→অ্যানাফেজ→টেলোফেজ)','মিয়োসিসের ধাপ আঁকো','মিল ও পার্থক্য ছকে লেখো','কোথায় কোনটি হয় বলো']},
-  {id:'e2',t:'প্রস্বেদনের পরীক্ষা (পলিথিন পদ্ধতি)',ch:'৩য় অধ্যায়',m:['টবের গাছ','পলিথিন মোড়ক','সুতা','ভেসলিন'],s:['পাতায় পলিথিন মোড়ক দিয়ে ঢাকো','সুতা বেঁধে ভেসলিন লাগাও','কিছুক্ষণ রোদে রাখো','পলিথিনের ভেতরে পানির বিন্দু দেখো','প্রস্বেদন প্রমাণিত']},
-  {id:'e3',t:'পরমাণুর মডেল তৈরি (Na, Cl, Fe)',ch:'৬ষ্ঠ অধ্যায়',m:['রঙিন মাটি','কার্ডবোর্ড','কাঠি'],s:['প্রোটন (লাল) ও নিউট্রন (নীল) নিউক্লিয়াস তৈরি','ইলেকট্রন কক্ষপথ সাজাও','সোডিয়াম (Na) মডেল তৈরি করো','ক্লোরিন (Cl) মডেল তৈরি করো','লেবেল করো']},
-  {id:'e4',t:'লিটমাস পরীক্ষা — অম্ল ও ক্ষার শনাক্ত করো',ch:'১০ম অধ্যায়',m:['চুন বা NaOH','HCl বা ভিনেগার','লাল ও নীল লিটমাস কাগজ','পানি','বিকার'],s:['চুনের দ্রবণ তৈরি করো','লাল লিটমাস ডুবাও — নীল হবে (ক্ষার)','ভিনেগারে নীল লিটমাস ডুবাও — লাল হবে (অম্ল)','বিভিন্ন তরলে পরীক্ষা করো','ফলাফল সারণিতে লেখো']},
-  {id:'e5',t:'ভৌত ও রাসায়নিক পরিবর্তনের পার্থক্য',ch:'৮ম অধ্যায়',m:['কাগজ','মোমবাতি','লবণ','পানি','কাঁচি'],s:['কাগজ কাটো — ভৌত পরিবর্তন','কাগজ পোড়াও — রাসায়নিক পরিবর্তন','লবণ পানিতে মেশাও — ভৌত পরিবর্তন','মোম গলাও — ভৌত পরিবর্তন','পার্থক্য ছকে লেখো']},
-  {id:'e6',t:'আলোর পূর্ণ অভ্যন্তরীণ প্রতিফলন পর্যবেক্ষণ',ch:'১১শ অধ্যায়',m:['টর্চলাইট','পানিভরা পাত্র','কাচের গ্লাস'],s:['পাত্রে পানি নাও','বিভিন্ন কোণে টর্চ ফেলো','একটি নির্দিষ্ট কোণে আলো পানি থেকে বের হয় না','এটি পূর্ণ অভ্যন্তরীণ প্রতিফলন','অপটিক্যাল ফাইবারের নীতি ব্যাখ্যা করো']},
-  {id:'e7',t:'মহাকর্ষ পর্যবেক্ষণ — বিভিন্ন ভরের বস্তু',ch:'৭ম অধ্যায়',m:['বিভিন্ন ভরের বস্তু','সুতা'],s:['একই উচ্চতা থেকে বিভিন্ন বস্তু ছাড়ো','কে আগে পড়ে লক্ষ্য করো','ভারী ও হালকা বস্তু একসাথে ছাড়ো','ফলাফল রেকর্ড করো','মহাকর্ষ সম্পর্কে সিদ্ধান্ত নাও']},
-  {id:'e8',t:'খাদ্যে পুষ্টি পরীক্ষা — আয়োডিন টেস্ট',ch:'১৩শ অধ্যায়',m:['ভাত','রুটি','আলু','আয়োডিন দ্রবণ'],s:['ভাতে আয়োডিন দাও','নীল/কালো হলে শর্করা আছে','বিভিন্ন খাদ্যে পরীক্ষা করো','ফলাফল সারণিতে লেখো','সুষম খাদ্য তালিকা তৈরি করো']},
-  {id:'e9',t:'বাস্তুতন্ত্রের খাদ্যশৃঙ্খল ও খাদ্যজাল',ch:'১৪শ অধ্যায়',m:['কাগজ','কলম'],s:['একটি খাদ্যশৃঙ্খল লেখো (ঘাস→ঘাসফড়িং→ব্যাঙ→সাপ→ঈগল)','উৎপাদক ও বিভিন্ন শ্রেণির ভোক্তা চিহ্নিত করো','খাদ্যজাল তৈরি করো','কোনো একটি বাদ গেলে কী হবে ব্যাখ্যা করো']},
-  {id:'e10',t:'সিরিজ ও প্যারালাল বর্তনী তৈরি',ch:'৯ম অধ্যায়',m:['ব্যাটারি','তার','দুটি বাল্ব','সুইচ'],s:['সিরিজ সংযোগ করো — দুটি বাল্ব লাগাও','একটি বাল্ব খুলে দেখো কী হয়','প্যারালাল সংযোগ করো','একটি বাল্ব খুলে দেখো কী হয়','পার্থক্য লেখো']},
-  {id:'e11',t:'উদ্ভিদের অঙ্গজ জনন পর্যবেক্ষণ',ch:'৪র্থ অধ্যায়',m:['মিষ্টি আলু','পেঁয়াজ','জলের পাত্র'],s:['মিষ্টি আলু পানিতে রাখো','পেঁয়াজ পানিতে রাখো','কয়েকদিন পর কুঁড়ি ও শিকড় দেখো','অঙ্গজ জনন ব্যাখ্যা করো']},
- ],
- m3d:[
-  {id:'m1',t:'DNA ও RNA এর গঠন',ch:'২য় অধ্যায়',d:'ডবল হেলিক্স, নিউক্লিওটাইড, বেস পেয়ার (A-T, G-C), RNA এর একক সূত্র'},
-  {id:'m2',t:'মাইটোসিস কোষ বিভাজনের ধাপ',ch:'২য় অধ্যায়',d:'প্রোফেজ, মেটাফেজ, অ্যানাফেজ, টেলোফেজ — প্রতিটি ধাপের বিস্তারিত চিত্র'},
-  {id:'m3',t:'মিয়োসিস কোষ বিভাজন',ch:'২য় অধ্যায়',d:'মিয়োসিস-১ ও মিয়োসিস-২ এর ধাপ, জনন কোষ তৈরি'},
-  {id:'m4',t:'পরমাণুর গঠন ও আইসোটোপ',ch:'৬ষ্ঠ অধ্যায়',d:'নিউক্লিয়াস, ইলেকট্রন কক্ষপথ, পারমাণবিক সংখ্যা, ভর সংখ্যা, আইসোটোপ'},
-  {id:'m5',t:'পৃথিবী ও চাঁদের গতি',ch:'৭ম অধ্যায়',d:'মহাকর্ষ, কক্ষপথ, জোয়ার-ভাটা, চন্দ্রগ্রহণ, সূর্যগ্রহণ'},
-  {id:'m6',t:'রাসায়নিক বিক্রিয়ার মডেল',ch:'৮ম অধ্যায়',d:'বিক্রিয়ক → বিক্রিয়াজাত, সমতাকরণ, তাপ উৎপাদী ও তাপগ্রাহী বিক্রিয়া'},
-  {id:'m7',t:'বৈদ্যুতিক বর্তনী — সিরিজ ও প্যারালাল',ch:'৯ম অধ্যায়',d:'সিরিজ ও প্যারালাল সংযোগ, রোধ, তড়িৎপ্রবাহ, ওহমের সূত্র'},
-  {id:'m8',t:'লেন্স ও আলোর প্রতিসরণ',ch:'১১শ অধ্যায়',d:'উত্তল ও অবতল লেন্স, ফোকাস দূরত্ব, চোখের গঠন ও দোষ, চশমা'},
-  {id:'m9',t:'কৃত্রিম উপগ্রহ ও মহাকাশ',ch:'১২শ অধ্যায়',d:'LEO, MEO, GEO কক্ষপথ, যোগাযোগ উপগ্রহ, আবহাওয়া উপগ্রহ'},
-  {id:'m10',t:'খাদ্য পিরামিড ও পুষ্টি',ch:'১৩শ অধ্যায়',d:'শর্করা, প্রোটিন, চর্বি, ভিটামিন, খনিজ লবণ, পানির সঠিক অনুপাত'},
-  {id:'m11',t:'বাস্তুতন্ত্র ও খাদ্যজাল',ch:'১৪শ অধ্যায়',d:'উৎপাদক, প্রথম/দ্বিতীয়/তৃতীয় শ্রেণির ভোক্তা, বিয়োজক, শক্তির প্রবাহ'},
-  {id:'m12',t:'মানব কঙ্কালতন্ত্র',ch:'৭ম অধ্যায়',d:'হাড়ের সংখ্যা ও প্রকার, অস্থিসন্ধি, তরুণাস্থি, পেশির সংযোগ'},
- ]
-},
-'physics':{label:'পদার্থবিজ্ঞান (৯ম-১০ম)',emoji:'⚡',parent:'৯-১০',
- chapters:[
-  {id:'c1',n:'১',t:'ভৌত রাশি এবং তাদের পরিমাপ',e:'📏'},{id:'c2',n:'২',t:'গতি',e:'🚀'},
-  {id:'c3',n:'৩',t:'বল',e:'💪'},{id:'c4',n:'৪',t:'কাজ, ক্ষমতা ও শক্তি',e:'⚡'},
-  {id:'c5',n:'৫',t:'পদার্থের অবস্থা ও চাপ',e:'🌊'},{id:'c6',n:'৬',t:'বস্তুর উপর তাপের প্রভাব',e:'🔥'},
-  {id:'c7',n:'৭',t:'তরঙ্গ ও শব্দ',e:'🔊'},{id:'c8',n:'৮',t:'আলোর প্রতিফলন',e:'💡'},
-  {id:'c9',n:'৯',t:'আলোর প্রতিসরণ',e:'🔭'},{id:'c10',n:'১০',t:'স্থির বিদ্যুৎ',e:'⚡'},
-  {id:'c11',n:'১১',t:'চল বিদ্যুৎ',e:'🔌'},{id:'c12',n:'১২',t:'বিদ্যুতের চৌম্বক ক্রিয়া',e:'🧲'},
-  {id:'c13',n:'১৩',t:'তেজস্ক্রিয়তা ও ইলেকট্রনিকস',e:'☢️'},
- ],
- exp:[
-  {id:'e1',t:'স্লাইড ক্যালিপার্স দিয়ে বস্তুর দৈর্ঘ্য, প্রস্থ ও উচ্চতা মাপো',ch:'১ম অধ্যায়',m:['স্লাইড ক্যালিপার্স (বা তৈরি করো)','মাচবাক্স বা ছোট বস্তু'],s:['স্লাইড ক্যালিপার্সের প্রধান স্কেল পাঠ নাও (M)','ভার্নিয়ার সমপাতন দাগ খোঁজো (V)','পাঠ = M + (V × VC)','বস্তুর দৈর্ঘ্য, প্রস্থ ও উচ্চতা মাপো','ভলিউম = দৈর্ঘ্য × প্রস্থ × উচ্চতা']},
-  {id:'e2',t:'গতির সমীকরণ যাচাই — মুক্তভাবে পড়ন্ত বস্তু',ch:'২য় অধ্যায়',m:['বিভিন্ন ভরের বল','স্টপওয়াচ','মেজারিং টেপ'],s:['একটি নির্দিষ্ট উচ্চতা (h) থেকে বল ছাড়ো','সময় (t) মাপো','v = gt সূত্র যাচাই করো','h = ½gt² যাচাই করো','বিভিন্ন উচ্চতায় পরীক্ষা করো']},
-  {id:'e3',t:'জড়তার পরীক্ষা — কার্ড সরানো',ch:'৩য় অধ্যায়',m:['একটি গ্লাস','কার্ড','একটি কয়েন'],s:['গ্লাসের উপর কার্ড রাখো','কার্ডের উপর কয়েন রাখো','কার্ড দ্রুত সরিয়ে দাও','কয়েন গ্লাসে পড়বে','জড়তার সূত্র ব্যাখ্যা করো']},
-  {id:'e4',t:'কাজ ও শক্তির রূপান্তর পর্যবেক্ষণ',ch:'৪র্থ অধ্যায়',m:['একটি রাবার বল','মেজারিং টেপ'],s:['বল একটি উচ্চতা থেকে ফেলো','কতটুকু ফিরে আসে মাপো','বিভব শক্তি → গতিশক্তি → বিভব শক্তি','শক্তির রূপান্তর ব্যাখ্যা করো']},
-  {id:'e5',t:'বায়ুর চাপ পরীক্ষা — পানি ভর্তি গ্লাস',ch:'৫ম অধ্যায়',m:['একটি গ্লাস','পানি','কার্ড'],s:['গ্লাস পুরো পানিতে ভরো','কার্ড দিয়ে ঢাকো','উল্টে দাও — পানি পড়বে না','কারণ: বায়ুর চাপ ব্যাখ্যা করো']},
-  {id:'e6',t:'পদার্থের তাপীয় প্রসারণ পর্যবেক্ষণ',ch:'৬ষ্ঠ অধ্যায়',m:['ধাতব রিং','ধাতব বল','মোমবাতি'],s:['ঠান্ডায় বল রিংয়ের ভেতর দিয়ে যায়','মোমবাতিতে বল গরম করো','এখন বল রিংয়ের ভেতর দিয়ে যাবে না','তাপীয় প্রসারণ প্রমাণিত']},
-  {id:'e7',t:'সুর-শলাকা দিয়ে শব্দ তরঙ্গ পর্যবেক্ষণ',ch:'৭ম অধ্যায়',m:['সুর-শলাকা বা শাসন','পানির পাত্র'],s:['সুর-শলাকা বা শাসন আঘাত করো','পানির পাত্রে ছুঁইয়ে দাও','পানিতে তরঙ্গ তৈরি হয়','শব্দের কম্পন দৃশ্যমান হলো']},
-  {id:'e8',t:'সমতল দর্পণে প্রতিফলন — আপতন=প্রতিফলন কোণ',ch:'৮ম অধ্যায়',m:['সমতল দর্পণ','কাগজ','পেন্সিল','প্রট্র্যাক্টর'],s:['দর্পণ কাগজে রাখো','বিভিন্ন কোণে আলো ফেলো','প্রতিফলিত রশ্মি দেখো','আপতন ও প্রতিফলন কোণ মাপো','দুটি সমান — সূত্র প্রমাণ করো']},
-  {id:'e9',t:'উত্তল লেন্স দিয়ে আলোর প্রতিসরণ ও ফোকাস',ch:'৯ম অধ্যায়',m:['উত্তল লেন্স','সাদা স্ক্রিন','টর্চলাইট'],s:['টর্চের আলো লেন্সে ফেলো','স্ক্রিনে ফোকাস বিন্দু খোঁজো','ফোকাস দূরত্ব মাপো','বস্তু দূরত্ব পরিবর্তন করো','প্রতিবিম্বের পরিবর্তন লক্ষ্য করো']},
-  {id:'e10',t:'ঘর্ষণ বিদ্যুৎ ও স্থির বিদ্যুৎ পরীক্ষা',ch:'১০ম অধ্যায়',m:['প্লাস্টিক রড বা চিরুনি','পশমী কাপড়','ছোট কাগজের টুকরা'],s:['প্লাস্টিক রড পশমী কাপড়ে ঘষো','ছোট কাগজের টুকরার কাছে ধরো','কাগজ আকর্ষণ করছে','চিরুনি চুলে ঘষো','কাগজ আকর্ষণ পর্যবেক্ষণ করো']},
-  {id:'e11',t:'সিরিজ ও প্যারালাল বর্তনীতে রোধের পরিবর্তন',ch:'১১শ অধ্যায়',m:['ব্যাটারি','তার','দুটি বাল্ব','মাল্টিমিটার (থাকলে)'],s:['সিরিজে দুটি বাল্ব লাগাও','বাল্বের উজ্জ্বলতা দেখো','প্যারালালে লাগাও','উজ্জ্বলতার পার্থক্য লক্ষ্য করো','ওহমের সূত্র যাচাই করো']},
-  {id:'e12',t:'বৈদ্যুতিক চুম্বক তৈরি',ch:'১২শ অধ্যায়',m:['লোহার পেরেক','তামার তার','ব্যাটারি','ছোট ধাতব বস্তু'],s:['পেরেকে তার পেঁচাও (কমপক্ষে ৫০ পাক)','ব্যাটারির সাথে সংযুক্ত করো','পেরেক এখন চুম্বক হয়ে গেছে','ছোট ধাতব বস্তু আকর্ষণ করে','তার খুললে চুম্বকত্ব নষ্ট হয়']},
-  {id:'e13',t:'ট্রানজিস্টর সুইচ পর্যবেক্ষণ',ch:'১৩শ অধ্যায়',m:['NPN ট্রানজিস্টর','ব্যাটারি','তার','বাল্ব','রেজিস্টর'],s:['ট্রানজিস্টরের বেস, কালেক্টর, ইমিটার চিনো','বেসে ছোট কারেন্ট দাও','কালেক্টর-ইমিটার বর্তনীতে বড় কারেন্ট প্রবাহ দেখো','বাল্ব জ্বলে — এটি সুইচ বা অ্যাম্পলিফায়ার']},
- ],
- m3d:[
-  {id:'m1',t:'ভার্নিয়ার ক্যালিপার্সের গঠন ও কাজ',ch:'১ম অধ্যায়',d:'প্রধান স্কেল, ভার্নিয়ার স্কেল, ভার্নিয়ার ধ্রুবক, পাঠ নেওয়ার পদ্ধতি'},
-  {id:'m2',t:'গতির লেখচিত্র বিশ্লেষণ',ch:'২য় অধ্যায়',d:'দূরত্ব-সময় গ্রাফ, বেগ-সময় গ্রাফ, ত্বরণ, গতির সমীকরণ'},
-  {id:'m3',t:'নিউটনের গতিসূত্র',ch:'৩য় অধ্যায়',d:'প্রথম সূত্র (জড়তা), দ্বিতীয় সূত্র (F=ma), তৃতীয় সূত্র (ক্রিয়া-প্রতিক্রিয়া)'},
-  {id:'m4',t:'পদার্থের তিন অবস্থা ও চাপ',ch:'৫ম অধ্যায়',d:'কঠিন, তরল, বায়বীয় অবস্থা, বয়েলের সূত্র, প্যাসকেলের সূত্র, আর্কিমিডিসের নীতি'},
-  {id:'m5',t:'তাপ ও তাপমাত্রা',ch:'৬ষ্ঠ অধ্যায়',d:'তাপ, তাপমাত্রা, তাপ পরিবাহিতা, তাপমাত্রিক প্রসারণ, গলন-বাষ্পীভবন'},
-  {id:'m6',t:'তরঙ্গ ও শব্দ',ch:'৭ম অধ্যায়',d:'সরল স্পন্দন, তরঙ্গদৈর্ঘ্য, কম্পাঙ্ক, বিস্তার, শব্দের বেগ, আনুনাদ'},
-  {id:'m7',t:'আলোর প্রতিফলন — সমতল ও গোলীয় দর্পণ',ch:'৮ম অধ্যায়',d:'সমতল, উত্তল, অবতল দর্পণ, ফোকাস, প্রতিবিম্ব তৈরি, রশ্মিচিত্র'},
-  {id:'m8',t:'আলোর প্রতিসরণ ও লেন্স',ch:'৯ম অধ্যায়',d:'স্নেলের সূত্র, প্রতিসরণাঙ্ক, উত্তল-অবতল লেন্স, পূর্ণ অভ্যন্তরীণ প্রতিফলন'},
-  {id:'m9',t:'স্থির বিদ্যুৎ ও কুলম্বের সূত্র',ch:'১০ম অধ্যায়',d:'বৈদ্যুতিক চার্জ, কুলম্বের সূত্র, বৈদ্যুতিক ক্ষেত্র, বিভব'},
-  {id:'m10',t:'বৈদ্যুতিক বর্তনী ও ওহমের সূত্র',ch:'১১শ অধ্যায়',d:'তড়িৎপ্রবাহ, রোধ, ওহমের সূত্র, কির্শফের সূত্র, তড়িৎশক্তি'},
-  {id:'m11',t:'বিদ্যুতের চৌম্বক ক্রিয়া',ch:'১২শ অধ্যায়',d:'বৈদ্যুতিক চুম্বক, তড়িৎচৌম্বক আবেশ, মোটর, জেনারেটর, ট্রান্সফর্মার'},
-  {id:'m12',t:'ট্রানজিস্টর ও ইলেকট্রনিক্স',ch:'১৩শ অধ্যায়',d:'p-n জংশন, ডায়োড, ট্রানজিস্টর, লজিক গেট, ডিজিটাল সার্কিট'},
-  {id:'m13',t:'তেজস্ক্রিয়তা',ch:'১৩শ অধ্যায়',d:'আলফা, বিটা, গামা রশ্মি, অর্ধায়ু, নিউক্লিয়ার বিক্রিয়া, পারমাণবিক শক্তি'},
- ]
-},
-'chemistry':{label:'রসায়ন (৯ম-১০ম)',emoji:'🧪',parent:'৯-১০',
- chapters:[
-  {id:'c1',n:'১',t:'রসায়নের ধারণা',e:'🔬'},{id:'c2',n:'২',t:'পদার্থের অবস্থা',e:'⚗️'},
-  {id:'c3',n:'৩',t:'পদার্থের গঠন',e:'⚛️'},{id:'c4',n:'৪',t:'পর্যায় সারণি',e:'📊'},
-  {id:'c5',n:'৫',t:'রাসায়নিক বন্ধন',e:'🔗'},{id:'c6',n:'৬',t:'মোলের ধারণা ও রাসায়নিক গণনা',e:'🔢'},
-  {id:'c7',n:'৭',t:'রাসায়নিক বিক্রিয়া',e:'💥'},{id:'c8',n:'৮',t:'রসায়ন ও শক্তি',e:'⚡'},
-  {id:'c9',n:'৯',t:'এসিড-ক্ষারক সমতা',e:'🧫'},{id:'c10',n:'১০',t:'খনিজ সম্পদ: ধাতু-অধাতু',e:'⛏️'},
-  {id:'c11',n:'১১',t:'খনিজ সম্পদ: জীবাশ্মা',e:'🛢️'},{id:'c12',n:'১২',t:'আমাদের জীবনে রসায়ন',e:'🌍'},
- ],
- exp:[
-  {id:'e1',t:'লিটমাস পরীক্ষা — বিভিন্ন পদার্থের অম্লতা/ক্ষারকতা',ch:'১ম অধ্যায়',m:['লাল ও নীল লিটমাস কাগজ','ভিনেগার','সাবান পানি','লেবুর রস','চুনের পানি'],s:['বিভিন্ন পদার্থ আলাদা পাত্রে নাও','লিটমাস কাগজ ডুবাও','রং পরিবর্তন লক্ষ্য করো','অম্ল, ক্ষার, নিরপেক্ষ চিহ্নিত করো','ফলাফল সারণিতে লেখো']},
-  {id:'e2',t:'পদার্থের অবস্থা পরিবর্তন পর্যবেক্ষণ',ch:'২য় অধ্যায়',m:['বরফ','তাপ উৎস','থার্মোমিটার','বিকার'],s:['বরফ নাও ও তাপমাত্রা মাপো','আস্তে তাপ দাও','বরফ গলার সময় তাপমাত্রা নাও','পানি ফোটার সময় তাপমাত্রা নাও','গ্রাফ তৈরি করো']},
-  {id:'e3',t:'পরমাণুর মডেল তৈরি (বোর মডেল)',ch:'৩য় অধ্যায়',m:['রঙিন মাটি বা বল','কার্ডবোর্ড'],s:['নিউক্লিয়াস তৈরি করো','ইলেকট্রন কক্ষপথ বসাও','সোডিয়াম (Na-11) মডেল তৈরি করো','ক্লোরিন (Cl-17) মডেল তৈরি করো','আয়নিক বন্ধন দেখাও']},
-  {id:'e4',t:'পর্যায় সারণিতে মৌলের বৈশিষ্ট্য বিশ্লেষণ',ch:'৪র্থ অধ্যায়',m:['পর্যায় সারণির চার্ট','নোটবুক'],s:['একই পর্যায়ের মৌল দেখো','পারমাণবিক ব্যাসার্ধের পরিবর্তন লক্ষ্য করো','একই গ্রুপের মৌল দেখো','ধাতব ধর্মের পরিবর্তন লেখো','সারণি তৈরি করো']},
-  {id:'e5',t:'রাসায়নিক বিক্রিয়া পর্যবেক্ষণ (ভিনেগার + বেকিং সোডা)',ch:'৭ম অধ্যায়',m:['ভিনেগার','বেকিং সোডা','বিকার','গ্যাস সংগ্রাহক'],s:['বিকারে ভিনেগার নাও','বেকিং সোডা যোগ করো','বুদবুদ দেখো — CO₂ উৎপন্ন হচ্ছে','গ্যাস চুনের পানিতে পাঠাও — ঘোলা হবে','CO₂ প্রমাণিত']},
-  {id:'e6',t:'ধাতু-অধাতু তাপ ও বিদ্যুৎ পরিবাহিতা',ch:'১০ম অধ্যায়',m:['লোহা','তামা','অ্যালুমিনিয়াম','রাবার','কাঠ','ব্যাটারি','বাল্ব'],s:['সার্কিট তৈরি করো','বিভিন্ন পদার্থ সার্কিটে রাখো','বাল্ব জ্বলে কিনা দেখো','ধাতু ও অধাতু আলাদা করো','তুলনামূলক সারণি লেখো']},
-  {id:'e7',t:'মোলার দ্রবণ তৈরি',ch:'৬ষ্ঠ অধ্যায়',m:['খাবার লবণ (NaCl)','নির্ভুল দাঁড়িপাল্লা','ভলিউমেট্রিক ফ্লাস্ক','পানি'],s:['NaCl-এর আণবিক ভর বের করো (58.5 g/mol)','58.5 গ্রাম NaCl ওজন করো','ফ্লাস্কে পানিতে দ্রবীভূত করো','1 লিটার পর্যন্ত পানি যোগ করো','1 মোলার NaCl দ্রবণ তৈরি হলো']},
-  {id:'e8',t:'জারণ-বিজারণ বিক্রিয়া — তামার তার ও সালফিউরিক এসিড',ch:'৭ম অধ্যায়',m:['তামার তার','তনু H₂SO₄','বিকার'],s:['বিকারে তনু H₂SO₄ নাও','তামার তার যোগ করো','তামার রং পরিবর্তন দেখো','দ্রবণের রং পরিবর্তন লক্ষ্য করো','জারণ-বিজারণ ব্যাখ্যা করো']},
-  {id:'e9',t:'ক্রোমাটোগ্রাফি — মিশ্রণ পৃথক করা',ch:'১ম অধ্যায়',m:['ফিল্টার কাগজ','রঙিন কালি','পানি','বিকার'],s:['ফিল্টার কাগজে কালির বিন্দু রাখো','কাগজের প্রান্ত পানিতে ডুবাও','পানি উপরে উঠছে দেখো','বিভিন্ন রং আলাদা হয়ে যাচ্ছে','ক্রোমাটোগ্রাফি নীতি ব্যাখ্যা করো']},
-  {id:'e10',t:'চুনের পানি দিয়ে CO₂ শনাক্তকরণ',ch:'৭ম অধ্যায়',m:['চুনের পানি','স্ট্র','বিকার'],s:['বিকারে চুনের পানি নাও','স্ট্র দিয়ে ফুঁ দাও','চুনের পানি ঘোলা হয় — CO₂ উপস্থিত','আরো ফুঁ দাও — আবার পরিষ্কার হয়','Ca(OH)₂ + CO₂ → CaCO₃ + H₂O']},
-  {id:'e11',t:'ইলেকট্রোলাইসিস — পানি ভেঙে H₂ ও O₂',ch:'৮ম অধ্যায়',m:['বিদ্যুৎ উৎস','তার','গ্রাফাইট ইলেক্ট্রোড','NaOH পানি','টেস্টটিউব'],s:['NaOH মেশানো পানিতে ইলেক্ট্রোড বসাও','বিদ্যুৎ সংযোগ দাও','দুই ইলেক্ট্রোডে গ্যাস উৎপন্ন দেখো','ক্যাথোডে H₂, অ্যানোডে O₂','পরীক্ষা করে নিশ্চিত করো']},
-  {id:'e12',t:'সাবান তৈরি (সাপোনিফিকেশন)',ch:'১২শ অধ্যায়',m:['নারিকেল তেল','NaOH','পানি','তাপ উৎস','ছাঁচ'],s:['NaOH দ্রবণ তৈরি করো','নারিকেল তেলে মেশাও','আস্তে গরম করো','মিশ্রণ ঘন হলে ছাঁচে ঢালো','ঠান্ডায় রাখো — সাবান তৈরি']},
- ],
- m3d:[
-  {id:'m1',t:'পর্যায় সারণির বিস্তারিত',ch:'৪র্থ অধ্যায়',d:'১৮টি গ্রুপ, ৭টি পর্যায়, ধাতু-অধাতু-মেটালয়েড, ইলেকট্রন বিন্যাস প্রবণতা'},
-  {id:'m2',t:'আয়নিক বন্ধন — NaCl গঠন',ch:'৫ম অধ্যায়',d:'Na ইলেকট্রন দেয়, Cl ইলেকট্রন নেয়, Na⁺ ও Cl⁻ আয়ন গঠন, স্ফটিক জালি'},
-  {id:'m3',t:'সমযোজী বন্ধন — H₂O ও CH₄',ch:'৫ম অধ্যায়',d:'ইলেকট্রন ভাগাভাগি, একক-দ্বি-ত্রিবন্ধন, বন্ধন কোণ, অণুর আকৃতি'},
-  {id:'m4',t:'রাসায়নিক বিক্রিয়ার এনার্জি ডায়াগ্রাম',ch:'৭ম অধ্যায়',d:'তাপ উৎপাদী ও তাপগ্রাহী বিক্রিয়া, অ্যাক্টিভেশন এনার্জি, বিক্রিয়ার গতি'},
-  {id:'m5',t:'অম্ল-ক্ষার প্রশমন বিক্রিয়া',ch:'৯ম অধ্যায়',d:'HCl + NaOH → NaCl + H₂O, pH স্কেল, নির্দেশক, বাফার দ্রবণ'},
-  {id:'m6',t:'ধাতু নিষ্কাশন প্রক্রিয়া',ch:'১০ম অধ্যায়',d:'আকরিক থেকে ধাতু নিষ্কাশন, বিজারণ, ইলেকট্রোলাইসিস, পরিশোধন'},
-  {id:'m7',t:'জীবাশ্মা জ্বালানির গঠন',ch:'১১শ অধ্যায়',d:'পেট্রোলিয়াম, প্রাকৃতিক গ্যাস, কয়লা, হাইড্রোকার্বনের গঠন, পাতন প্রক্রিয়া'},
-  {id:'m8',t:'কার্বনের যৌগ সমূহ',ch:'১২শ অধ্যায়',d:'মিথেন, ইথেন, ইথিলিন, অ্যাসিটিলিন, বেনজিন, পলিমার গঠন'},
-  {id:'m9',t:'পরমাণুর ইলেকট্রন বিন্যাস',ch:'৩য় অধ্যায়',d:'শক্তিস্তর, উপস্তর (s,p,d,f), ইলেকট্রন বিন্যাসের নিয়ম, পলির নিয়ম'},
-  {id:'m10',t:'কার্বন-১৪ ও তেজস্ক্রিয় আইসোটোপ',ch:'৩য় অধ্যায়',d:'স্থিতিশীল ও অস্থিতিশীল আইসোটোপ, তেজস্ক্রিয় ক্ষয়, কার্বন ডেটিং'},
-  {id:'m11',t:'ইলেকট্রোলাইসিস প্রক্রিয়া',ch:'৮ম অধ্যায়',d:'তড়িৎ বিশ্লেষণ, অ্যানোড-ক্যাথোড, ধাতুর পরিশোধন, ইলেকট্রোপ্লেটিং'},
-  {id:'m12',t:'পলিমার ও প্লাস্টিক',ch:'১২শ অধ্যায়',d:'পলিথিন, নাইলন, পলিস্টার, পলিমারাইজেশন, জৈব ও কৃত্রিম পলিমার'},
- ]
-},
-'biology':{label:'জীববিজ্ঞান (৯ম-১০ম)',emoji:'🧬',parent:'৯-১০',
- chapters:[
-  {id:'c1',n:'১',t:'জীবনপাঠ',e:'📖'},{id:'c2',n:'২',t:'জীবকোষ ও টিস্যু',e:'🔬'},
-  {id:'c3',n:'৩',t:'কোষ বিভাজন',e:'🔄'},{id:'c4',n:'৪',t:'জীবনীশক্তি',e:'☀️'},
-  {id:'c5',n:'৫',t:'খাদ্য, পুষ্টি এবং পরিপাক',e:'🍎'},{id:'c6',n:'৬',t:'জীবে পরিবহণ',e:'❤️'},
-  {id:'c7',n:'৭',t:'গ্যাসীয় বিনিময়',e:'💨'},{id:'c8',n:'৮',t:'রেচন প্রক্রিয়া',e:'🫘'},
-  {id:'c9',n:'৯',t:'দৃঢ়তা প্রদান ও চলন',e:'🦴'},{id:'c10',n:'১০',t:'সমন্বয়',e:'🧠'},
-  {id:'c11',n:'১১',t:'জীবের প্রজনন',e:'🌱'},{id:'c12',n:'১২',t:'জীবের বংশগতি ও জৈব অভিব্যক্তি',e:'🧬'},
-  {id:'c13',n:'১৩',t:'জীবের পরিবেশ',e:'🌍'},{id:'c14',n:'১৪',t:'জীবপ্রযুক্তি',e:'⚗️'},
- ],
- exp:[
-  {id:'e1',t:'জীবের শ্রেণিবিন্যাসের পাঁচ রাজ্য পোস্টার',ch:'১ম অধ্যায়',m:['পোস্টার কাগজ','রঙিন কলম'],s:['মনেরা, প্রোটিস্টা, ফানজাই, প্ল্যান্টি, অ্যানিমেলিয়া','প্রতিটি রাজ্যের বৈশিষ্ট্য লেখো','উদাহরণ সহ ছবি আঁকো','পোস্টারে সুন্দরভাবে উপস্থাপন করো']},
-  {id:'e2',t:'উদ্ভিদ ও প্রাণী কোষের মডেল তৈরি',ch:'২য় অধ্যায়',m:['রঙিন মাটি বা জেলি','বিভিন্ন রঙের বীজ ও কাঠি'],s:['উদ্ভিদ কোষ: কোষপ্রাচীর, ক্লোরোপ্লাস্ট, কেন্দ্রীয় ভ্যাকুওল দেখাও','প্রাণী কোষ: সেন্ট্রিওল, লাইসোজোম দেখাও','দুটির পার্থক্য চিহ্নিত করো','লেবেল করো']},
-  {id:'e3',t:'মাইটোসিস কোষ বিভাজনের ধাপ পর্যবেক্ষণ',ch:'৩য় অধ্যায়',m:['পেঁয়াজের শিকড়','মাইক্রোস্কোপ (থাকলে)','রঙিন কাগজ'],s:['পেঁয়াজের শিকড়ের অগ্রভাগ কাটো','স্লাইড তৈরি করো','মাইটোসিসের ধাপগুলো খোঁজো','বা চিত্র দেখে ধাপগুলো আঁকো','প্রোফেজ, মেটাফেজ, অ্যানাফেজ, টেলোফেজ চিহ্নিত করো']},
-  {id:'e4',t:'সালোকসংশ্লেষণে CO₂ ও আলোর প্রয়োজনীয়তা',ch:'৪র্থ অধ্যায়',m:['জলজ উদ্ভিদ (হাইড্রিলা)','পানির পাত্র','আলো','NaHCO₃'],s:['হাইড্রিলা পানিতে রাখো','আলোতে রাখলে বুদবুদ দেখো (O₂)','অন্ধকারে রাখলে বুদবুদ কম','NaHCO₃ যোগ করলে বেশি বুদবুদ','CO₂ ও আলো প্রয়োজন প্রমাণিত']},
-  {id:'e5',t:'খাদ্যে পুষ্টিগুণ পরীক্ষা (৪ ধরনের পরীক্ষা)',ch:'৫ম অধ্যায়',m:['ভাত','ডিম','তেল','আয়োডিন','নাইলহাইড্রিন','সুদান রঞ্জক','বেনেডিক্ট দ্রবণ'],s:['আয়োডিন দিয়ে শর্করা পরীক্ষা করো (নীল)','নাইলহাইড্রিন দিয়ে প্রোটিন পরীক্ষা করো (বেগুনি)','সুদান রঞ্জক দিয়ে চর্বি পরীক্ষা করো (কমলা)','বেনেডিক্ট দিয়ে শর্করা পরীক্ষা করো (লাল)','ফলাফল সারণিতে লেখো']},
-  {id:'e6',t:'রক্তের গ্রুপ নির্ণয়ের পদ্ধতি পর্যবেক্ষণ',ch:'৬ষ্ঠ অধ্যায়',m:['ABO ও Rh অ্যান্টিবডি (দেখার জন্য)','মডেল বা ডায়াগ্রাম'],s:['A অ্যান্টিবডি ও B অ্যান্টিবডি বুঝো','A, B, AB, O গ্রুপ নির্ণয়ের নিয়ম','Rh ফ্যাক্টর কী তা বোঝো','রক্ত দেওয়া-নেওয়ার সামঞ্জস্য শেখো','চার্ট তৈরি করো']},
-  {id:'e7',t:'উদ্ভিদের প্রস্বেদন পর্যবেক্ষণ (পলিথিন পদ্ধতি)',ch:'৭ম অধ্যায়',m:['টবের গাছ','স্বচ্ছ পলিথিন ব্যাগ','সুতা'],s:['সকালে সুস্থ পাতাযুক্ত ডালে পলিথিন বাঁধো','রোদে কয়েকঘণ্টা রাখো','পলিথিনের ভেতরে পানির ফোঁটা দেখো','প্রস্বেদন প্রমাণিত','পাতার সংখ্যার সাথে পরিমাণ তুলনা করো']},
-  {id:'e8',t:'ইস্টের শ্বসন পরীক্ষা',ch:'৭ম অধ্যায়',m:['ইস্ট','চিনি পানি','চুনের পানি','কাচের নল','বিকার'],s:['চিনি পানিতে ইস্ট মেশাও','উৎপন্ন গ্যাস চুনের পানিতে পাঠাও','চুনের পানি ঘোলা হয় — CO₂ প্রমাণিত','বায়বীয় ও অবায়বীয় শ্বসন ব্যাখ্যা করো']},
-  {id:'e9',t:'মানব কঙ্কালের হাড়ের চিত্র অঙ্কন ও লেবেলিং',ch:'৯ম অধ্যায়',m:['সাদা কাগজ','পেন্সিল'],s:['মানব কঙ্কালের চিত্র আঁকো','করোটি, মেরুদণ্ড, পাঁজর, বাহু, পা চিহ্নিত করো','হাড়ের সংখ্যা লেখো','অস্থিসন্ধির ধরন লেখো']},
-  {id:'e10',t:'মুলের ভূ-অভিমুখিতা পরীক্ষা',ch:'১০ম অধ্যায়',m:['অঙ্কুরিত বীজ','টবস ও মাটি'],s:['অঙ্কুরিত বীজ মাটিতে লাগাও','শিকড় কোন দিকে যাচ্ছে দেখো','একসপ্তাহ পর্যবেক্ষণ করো','মুল সবসময় মাটির দিকে যায় — মহাকর্ষ অভিমুখিতা']},
-  {id:'e11',t:'ফুলের অংশ পর্যবেক্ষণ ও পরাগায়ন',ch:'১১শ অধ্যায়',m:['বিভিন্ন ফুল','ম্যাগনিফাইং গ্লাস','চিমটি'],s:['ফুল ব্যবচ্ছেদ করো','পাপড়ি, বৃতি, পুংকেশর, গর্ভপত্র আলাদা করো','পরাগরেণু পরীক্ষা করো','পরাগায়নের ধরন ব্যাখ্যা করো']},
-  {id:'e12',t:'DNA মডেল তৈরি',ch:'১২শ অধ্যায়',m:['রঙিন মাটি বা কাগজ','কাঠি'],s:['ডিঅক্সিরাইবোজ চিনি (লাল)','ফসফেট গ্রুপ (নীল)','চারটি বেস (চার রঙ)','ডবল হেলিক্স গঠন তৈরি করো','বেস পেয়ারিং (A-T, G-C) দেখাও']},
- ],
- m3d:[
-   {id:'m1',t:'উদ্ভিদ ও প্রাণী কোষের বিস্তারিত গঠন',ch:'২য় অধ্যায়',d:'কোষঝিল্লি, নিউক্লিয়াস, মাইটোকন্ড্রিয়া, ক্লোরোপ্লাস্ট, গলজি বস্তু, লাইসোজোম, ভ্যাকুওল'},
-  {id:'m2',t:'মাইটোসিস কোষ বিভাজন',ch:'৩য় অধ্যায়',d:'ইন্টারফেজ, প্রোফেজ, মেটাফেজ, অ্যানাফেজ, টেলোফেজ, সাইটোকাইনেসিস'},
-  {id:'m3',t:'মিয়োসিস কোষ বিভাজন',ch:'৩য় অধ্যায়',d:'মিয়োসিস-১ (বিজোড় বিভাজন) ও মিয়োসিস-২, জনন কোষ তৈরি, ক্রসিং ওভার'},
-  {id:'m4',t:'ক্লোরোপ্লাস্টে সালোকসংশ্লেষণ',ch:'৪র্থ অধ্যায়',d:'থাইলাকয়েড, গ্রানা, স্ট্রোমা, আলোক বিক্রিয়া, ক্যালভিন চক্র (C₃ ও C₄)'},
-  {id:'m5',t:'মানবদেহের পাচনতন্ত্র বিস্তারিত',ch:'৫ম অধ্যায়',d:'মুখগহ্বর, ফ্যারিংক্স, অন্ননালী, পাকস্থলী, ক্ষুদ্রান্ত্র, লিভার, পিত্তথলি, অগ্ন্যাশয়'},
-  {id:'m6',t:'হৃদযন্ত্র ও রক্ত সংবহন',ch:'৬ষ্ঠ অধ্যায়',d:'হৃদযন্ত্রের চার প্রকোষ্ঠ, ফুসফুসীয় ও সিস্টেমিক সংবহন, ভাল্ব, হৃদস্পন্দন'},
-  {id:'m7',t:'মানব শ্বসনতন্ত্র ও গ্যাসীয় বিনিময়',ch:'৭ম অধ্যায়',d:'ফুসফুস, অ্যালভিওলাস, O₂ ও CO₂ বিনিময়, হিমোগ্লোবিন, শ্বসন নিয়ন্ত্রণ'},
-  {id:'m8',t:'বৃক্ক ও নেফ্রন',ch:'৮ম অধ্যায়',d:'কর্টেক্স, মেডুলা, গ্লোমেরুলাস, বোম্যানস ক্যাপসুল, রেনাল টিউবিউল, মূত্র গঠন'},
-  {id:'m9',t:'মানব মস্তিষ্কের গঠন',ch:'১০ম অধ্যায়',d:'সেরিব্রাম, সেরিবেলাম, মেডুলা অবলংগাটা, হাইপোথ্যালামাস, স্নায়ু সংকেত'},
-  {id:'m10',t:'DNA ও RNA গঠন',ch:'১২শ অধ্যায়',d:'ডবল হেলিক্স, নিউক্লিওটাইড, বেস পেয়ার, প্রতিলিপি, প্রোটিন সংশ্লেষণ'},
-  {id:'m11',t:'ফুলের গঠন ও পরাগায়ন',ch:'১১শ অধ্যায়',d:'পাপড়ি, পুংকেশর, গর্ভপত্র, পরাগরেণু, পরাগনালিকা, নিষেক প্রক্রিয়া'},
-  {id:'m12',t:'বাস্তুতন্ত্র ও জৈব বৈচিত্র্য',ch:'১৩শ অধ্যায়',d:'জলজ ও স্থলজ বাস্তুতন্ত্র, খাদ্যজাল, শক্তিপ্রবাহ, পুষ্টিচক্র, জীববৈচিত্র্য সংরক্ষণ'},
-  {id:'m13',t:'জীবপ্রযুক্তির প্রয়োগ',ch:'১৪শ অধ্যায়',d:'রিকম্বিনেন্ট DNA, জিন ক্লোনিং, PCR, ট্রান্সজেনিক উদ্ভিদ, ইনসুলিন উৎপাদন'},
- ]
-}
-};
 
-let st={scr:'home',cls:null,mode:null,sub:null};
+<script>
+/* ═══════════ DATA ═══════════ */
+const D={
+'৬':{label:'ষষ্ঠ শ্রেণি',
+ exp:[
+  {id:'vernier',t:'ভার্নিয়ার ক্যালিপার্স দিয়ে পরিমাপ',ch:'১ম অধ্যায়',m:['স্লাইড ক্যালিপার্স','মাচবাক্স'],s:['প্রধান স্কেল পাঠ নাও (M)','ভার্নিয়ার সমপাতন দাগ খোঁজো (V)','পাঠ = M + (V × 0.02)','বস্তুর মাপ নাও']},
+  {id:'reflection',t:'আলোর প্রতিফলন',ch:'৯ম অধ্যায়',m:['সমতল দর্পণ','টর্চলাইট'],s:['অন্ধকারে টর্চ দর্পণে ফেলো','আপতন ও প্রতিফলন কোণ মাপো','দুটো সমান দেখো']},
+  {id:'lever',t:'লিভার যন্ত্র পর্যবেক্ষণ',ch:'১১শ অধ্যায়',m:['কাঠের শাসন','পেন্সিল','বই'],s:['পেন্সিলের উপর শাসন রাখো','এক প্রান্তে বই রাখো','ফালক্রাম পরিবর্তন করো']},
+  {id:'conductivity',t:'ধাতুর বিদ্যুৎ পরিবাহিতা',ch:'৭ম অধ্যায়',m:['ব্যাটারি','বাল্ব','তার','বিভিন্ন পদার্থ'],s:['সার্কিট তৈরি করো','বিভিন্ন পদার্থ রাখো','বাল্ব জ্বলে কিনা দেখো']},
+  {id:'evaporation',t:'লবণ পানি থেকে লবণ পৃথক',ch:'৮ম অধ্যায়',m:['লবণ পানি','চুলা','পাত্র'],s:['তাপ দাও','পানি উড়ে যাবে','লবণের কেলাস থাকবে']},
+ ],
+ m3d:[
+  {id:'plant_cell',t:'উদ্ভিদ কোষের গঠন',ch:'৩য় অধ্যায়',parts:['কোষপ্রাচীর','নিউক্লিয়াস','ক্লোরোপ্লাস্ট','মাইটোকন্ড্রিয়া','ভ্যাকুওল']},
+  {id:'solar_system',t:'সৌরজগতের গ্রহগুলো',ch:'১২শ অধ্যায়',parts:['সূর্য','বুধ','শুক্র','পৃথিবী','মঙ্গল','বৃহস্পতি','শনি']},
+  {id:'earth_layers',t:'পৃথিবীর অভ্যন্তরীণ গঠন',ch:'১২শ অধ্যায়',parts:['ভূত্বক','ম্যান্টল','বাইরের কোর','ভেতরের কোর']},
+ ]
+},
+'৭':{label:'সপ্তম শ্রেণি',
+ exp:[
+  {id:'balloon',t:'বায়বীয় পদার্থের প্রসারণ',ch:'৯ম অধ্যায়',m:['বোতল','বেলুন','গরম/ঠান্ডা পানি'],s:['বেলুন বোতলে বাঁধো','গরম পানিতে দাও','বেলুন ফোলে দেখো']},
+  {id:'atom_sim',t:'পরমাণুর মডেল',ch:'৬ষ্ঠ অধ্যায়',m:['রঙিন মাটি','কাঠি'],s:['নিউক্লিয়াস তৈরি করো','কক্ষপথে ইলেকট্রন সাজাও']},
+  {id:'magnet_sim',t:'চুম্বকের ক্ষেত্ররেখা',ch:'১০ম অধ্যায়',m:['চুম্বক','লোহার গুঁড়া','কাগজ'],s:['কাগজে লোহার গুঁড়া ছড়াও','নিচে চুম্বক রাখো','ক্ষেত্ররেখা দেখো']},
+ ],
+ m3d:[
+  {id:'atom',t:'পরমাণুর গঠন মডেল',ch:'৬ষ্ঠ অধ্যায়',parts:['নিউক্লিয়াস','প্রোটন','নিউট্রন','ইলেকট্রন']},
+  {id:'solar_system',t:'সৌরজগৎ',ch:'১২শ অধ্যায়',parts:['সূর্য','বুধ','শুক্র','পৃথিবী','মঙ্গল','বৃহস্পতি','শনি']},
+  {id:'magnet',t:'চুম্বক ও ক্ষেত্র',ch:'১০ম অধ্যায়',parts:['উত্তর মেরু','দক্ষিণ মেরু','ক্ষেত্ররেখা']},
+ ]
+},
+'৮':{label:'অষ্টম শ্রেণি',
+ exp:[
+  {id:'litmus',t:'লিটমাস পরীক্ষা',ch:'১০ম অধ্যায়',m:['লিটমাস কাগজ','ভিনেগার','সাবান পানি'],s:['লিটমাস কাগজ ডুবাও','রং পরিবর্তন দেখো','অম্ল ও ক্ষার চিহ্নিত করো']},
+  {id:'circuit',t:'সিরিজ ও প্যারালাল বর্তনী',ch:'৯ম অধ্যায়',m:['ব্যাটারি','তার','দুটি বাল্ব'],s:['সিরিজ সংযোগ করো','প্যারালাল সংযোগ করো','পার্থক্য দেখো']},
+  {id:'freefall',t:'মুক্তভাবে পড়ন্ত বস্তু',ch:'৭ম অধ্যায়',m:['বিভিন্ন ভরের বল','স্টপওয়াচ'],s:['উচ্চতা থেকে বল ছাড়ো','সময় মাপো','h = ½gt² যাচাই করো']},
+ ],
+ m3d:[
+  {id:'dna',t:'DNA-র গঠন',ch:'২য় অধ্যায়',parts:['অ্যাডেনিন (A)','থাইমিন (T)','গুয়ানিন (G)','সাইটোসিন (C)','ডবল হেলিক্স']},
+  {id:'atom',t:'পরমাণুর গঠন',ch:'৬ষ্ঠ অধ্যায়',parts:['নিউক্লিয়াস','প্রোটন','নিউট্রন','ইলেকট্রন']},
+  {id:'earth_layers',t:'পৃথিবীর গঠন',ch:'৭ম অধ্যায়',parts:['ভূত্বক','ম্যান্টল','বাইরের কোর','ভেতরের কোর']},
+ ]
+},
+physics:{label:'পদার্থবিজ্ঞান (৯ম-১০ম)',parent:'৯-১০',
+ exp:[
+  {id:'vernier',t:'ভার্নিয়ার ক্যালিপার্স',ch:'১ম অধ্যায়',m:['স্লাইড ক্যালিপার্স','ছোট বস্তু'],s:['প্রধান স্কেল পাঠ নাও (M)','V দাগ খোঁজো','পাঠ = M + V×0.02']},
+  {id:'freefall',t:'মুক্তভাবে পড়ন্ত বস্তু',ch:'২য় অধ্যায়',m:['বল','স্টপওয়াচ'],s:['উচ্চতা থেকে ছাড়ো','সময় মাপো','g = 9.8 m/s² যাচাই']},
+  {id:'reflection',t:'আলোর প্রতিফলন',ch:'৮ম অধ্যায়',m:['দর্পণ','টর্চ'],s:['কোণ পরিবর্তন করো','আপতন = প্রতিফলন দেখো']},
+  {id:'circuit',t:'সিরিজ ও প্যারালাল বর্তনী',ch:'১১শ অধ্যায়',m:['ব্যাটারি','বাল্ব','তার'],s:['সিরিজে সংযোগ করো','প্যারালালে সংযোগ করো']},
+  {id:'lever',t:'লিভার যন্ত্র',ch:'৩য় অধ্যায়',m:['শাসন','পেন্সিল'],s:['ফালক্রাম সরাও','যান্ত্রিক সুবিধা দেখো']},
+  {id:'electromagnet',t:'বৈদ্যুতিক চুম্বক',ch:'১২শ অধ্যায়',m:['পেরেক','তামার তার','ব্যাটারি'],s:['পেরেকে তার পেঁচাও','বিদ্যুৎ দাও','ধাতু আকর্ষণ দেখো']},
+ ],
+ m3d:[
+  {id:'solar_system',t:'সৌরজগৎ',ch:'৯ম অধ্যায়',parts:['সূর্য','বুধ','শুক্র','পৃথিবী','মঙ্গল','বৃহস্পতি','শনি']},
+  {id:'atom',t:'পরমাণু মডেল',ch:'১০ম অধ্যায়',parts:['নিউক্লিয়াস','প্রোটন','নিউট্রন','ইলেকট্রন']},
+  {id:'magnet',t:'চুম্বক ও চৌম্বক ক্ষেত্র',ch:'১২শ অধ্যায়',parts:['উত্তর মেরু','দক্ষিণ মেরু','ক্ষেত্ররেখা']},
+ ]
+},
+chemistry:{label:'রসায়ন (৯ম-১০ম)',parent:'৯-১০',
+ exp:[
+  {id:'litmus',t:'লিটমাস পরীক্ষা',ch:'৯ম অধ্যায়',m:['লিটমাস কাগজ','বিভিন্ন দ্রবণ'],s:['দ্রবণে লিটমাস ডুবাও','রং দেখো','pH নির্ধারণ করো']},
+  {id:'vinegar_soda',t:'ভিনেগার + বেকিং সোডা',ch:'৭ম অধ্যায়',m:['ভিনেগার','বেকিং সোডা'],s:['বিকারে ভিনেগার নাও','বেকিং সোডা যোগ করো','CO₂ দেখো']},
+  {id:'state_change',t:'পদার্থের অবস্থা পরিবর্তন',ch:'২য় অধ্যায়',m:['বরফ','তাপ','থার্মোমিটার'],s:['বরফ গরম করো','গলনাঙ্ক দেখো','ফোটার তাপমাত্রা দেখো']},
+ ],
+ m3d:[
+  {id:'atom',t:'পরমাণুর ইলেকট্রন বিন্যাস',ch:'৩য় অধ্যায়',parts:['নিউক্লিয়াস','প্রথম কক্ষ','দ্বিতীয় কক্ষ','তৃতীয় কক্ষ']},
+  {id:'dna',t:'রাসায়নিক বন্ধন মডেল',ch:'৫ম অধ্যায়',parts:['আয়নিক বন্ধন','সমযোজী বন্ধন','Na⁺','Cl⁻']},
+  {id:'earth_layers',t:'পর্যায় সারণির মডেল',ch:'৪র্থ অধ্যায়',parts:['গ্রুপ','পর্যায়','ধাতু','অধাতু']},
+ ]
+},
+biology:{label:'জীববিজ্ঞান (৯ম-১০ম)',parent:'৯-১০',
+ exp:[
+  {id:'photosynthesis',t:'সালোকসংশ্লেষণ সিমুলেশন',ch:'৪র্থ অধ্যায়',m:['জলজ উদ্ভিদ','পানি','আলো'],s:['আলো দাও','বুদবুদ দেখো (O₂)','আলো কমাও — বুদবুদ কমে']},
+  {id:'transpiration',t:'উদ্ভিদের প্রস্বেদন',ch:'৭ম অধ্যায়',m:['গাছ','পলিথিন'],s:['পলিথিন বাঁধো','রোদে রাখো','পানির ফোঁটা দেখো']},
+  {id:'yeast',t:'ইস্টের শ্বসন',ch:'৭ম অধ্যায়',m:['ইস্ট','চিনি পানি','চুনের পানি'],s:['ইস্ট মেশাও','CO₂ সংগ্রহ করো','চুনের পানি ঘোলা করো']},
+ ],
+ m3d:[
+  {id:'plant_cell',t:'উদ্ভিদ কোষের গঠন',ch:'২য় অধ্যায়',parts:['কোষপ্রাচীর','ক্লোরোপ্লাস্ট','নিউক্লিয়াস','মাইটোকন্ড্রিয়া','ভ্যাকুওল']},
+  {id:'dna',t:'DNA ও RNA গঠন',ch:'১২শ অধ্যায়',parts:['অ্যাডেনিন (A)','থাইমিন (T)','গুয়ানিন (G)','সাইটোসিন (C)']},
+  {id:'mitosis',t:'মাইটোসিস কোষ বিভাজন',ch:'৩য় অধ্যায়',parts:['ইন্টারফেজ','প্রোফেজ','মেটাফেজ','অ্যানাফেজ','টেলোফেজ']},
+ ]
+}};
+
+/* ═══════════ STATE & NAV ═══════════ */
+let st={pg:'home',cls:null,sub:null,mode:null};
+const sc=document.getElementById('sc');
+
+function go(pg,extras={}){
+  Object.assign(st,{pg},extras);
+  sc.style.opacity='0';sc.style.transform='translateY(16px)';
+  setTimeout(()=>{
+    render();
+    sc.style.transition='opacity .35s,transform .35s';
+    sc.style.opacity='1';sc.style.transform='none';
+    updateBC();
+  },120);
+}
 
 function render(){
-  const c=document.getElementById('sc');
-  const d=document.createElement('div');
-  d.style.animation='si .45s cubic-bezier(.16,1,.3,1) forwards';
-  if(st.scr==='home') rHome(d);
-  else if(st.scr==='clsMode') rClsMode(d);
-  else if(st.scr==='subs') rSubs(d);
-  else if(st.scr==='content') rContent(d);
-  c.innerHTML='';c.appendChild(d);updateBC();
+  if(st.pg==='home')renderHome();
+  else if(st.pg==='mode')renderMode();
+  else if(st.pg==='subs')renderSubs();
+  else if(st.pg==='list')renderList();
 }
 
-function rHome(d){
-  d.innerHTML=`
-    <h2 class="st">তোমার শ্রেণি বেছে নাও</h2>
-    <p class="sd">NCTB দাখিল পাঠ্যক্রম অনুযায়ী ভার্চুয়াল বিজ্ঞান ল্যাব</p>
-    <div class="cg">
-      <div class="cc c1" onclick="sel('৬')"><span class="ce">📘</span><div class="cl">ষষ্ঠ শ্রেণি</div><div class="cs2">Dakhil Class Six</div><div class="cb">১৪ অধ্যায় · ১২ পরীক্ষা · ১২ মডেল</div></div>
-      <div class="cc c2" onclick="sel('৭')"><span class="ce">📗</span><div class="cl">সপ্তম শ্রেণি</div><div class="cs2">Dakhil Class Seven</div><div class="cb">১৪ অধ্যায় · ১০ পরীক্ষা · ১২ মডেল</div></div>
-      <div class="cc c3" onclick="sel('৮')"><span class="ce">📙</span><div class="cl">অষ্টম শ্রেণি</div><div class="cs2">Dakhil Class Eight</div><div class="cb">১৪ অধ্যায় · ১১ পরীক্ষা · ১২ মডেল</div></div>
-      <div class="cc c4" onclick="sel('৯-১০')"><span class="ce">📕</span><div class="cl">নবম ও দশম শ্রেণি</div><div class="cs2">Dakhil Class 9 & 10</div><div class="cb">পদার্থ · রসায়ন · জীববিজ্ঞান</div></div>
-    </div>`;
+function renderHome(){
+  sc.innerHTML=`<h2 class="tt">তোমার শ্রেণি বেছে নাও</h2>
+  <p class="dd">NCTB দাখিল পাঠ্যক্রম অনুযায়ী ভার্চুয়াল বিজ্ঞান ল্যাব</p>
+  <div class="cg">
+    ${[['৬','📘','ষষ্ঠ শ্রেণি','c1','5 সিমুলেশন · 3 থ্রিডি'],['৭','📗','সপ্তম শ্রেণি','c2','3 সিমুলেশন · 3 থ্রিডি'],['৮','📙','অষ্টম শ্রেণি','c3','3 সিমুলেশন · 3 থ্রিডি'],['৯-১০','📕','নবম-দশম শ্রেণি','c4','পদার্থ · রসায়ন · জীববিজ্ঞান']].map(([k,e,l,c,b])=>
+    `<div class="cc ${c}" onclick="selCls('${k}')"><span class="ce">${e}</span><div class="cl">${l}</div><div class="cs">Dakhil</div><div class="cb">${b}</div></div>`).join('')}
+  </div>`;
 }
 
-function rClsMode(d){
+function renderMode(){
   const cls=D[st.cls];
-  d.innerHTML=`
-    <button class="bb" onclick="goHome()">← হোম</button>
-    <h2 class="st">${cls.label} — কী দেখতে চাও?</h2>
-    <p class="sd">এক্সপেরিমেন্ট করো অথবা থ্রিডি মডেলে দেখো</p>
-    <div class="mg">
-      <div class="mc ec" onclick="selMode('exp')">
-        <span class="mi">⚗️</span>
-        <div class="mt">এক্সপেরিমেন্ট</div>
-        <div class="md">বইয়ের সব পরীক্ষা-নিরীক্ষা ভার্চুয়ালি করো। উপকরণ ও ধাপে ধাপে নির্দেশনা সহ।</div>
-        <span class="mtg">🧪 ${cls.exp.length}টি এক্সপেরিমেন্ট</span>
-      </div>
-      <div class="mc dc" onclick="selMode('3d')">
-        <span class="mi">🌐</span>
-        <div class="mt">থ্রিডি মডেল</div>
-        <div class="md">বইয়ের সকল বিষয় থ্রিডিতে দেখো। ঘোরাও, জুম করো, বিস্তারিত জানো।</div>
-        <span class="mtg">🔮 ${cls.m3d.length}টি থ্রিডি মডেল</span>
-      </div>
-    </div>`;
+  sc.innerHTML=`<button class="bb" onclick="go('home')">← হোম</button>
+  <h2 class="tt">${cls.label} — কী দেখতে চাও?</h2>
+  <p class="dd">ইন্টারেক্টিভ সিমুলেশন অথবা থ্রিডি মডেল</p>
+  <div class="mg">
+    <div class="mc ec" onclick="go('list',{mode:'exp'})">
+      <span class="mi">⚗️</span>
+      <div class="mh">এক্সপেরিমেন্ট সিমুলেশন</div>
+      <div class="md">বইয়ের পরীক্ষা-নিরীক্ষা ইন্টারেক্টিভভাবে করো। নিজে নিয়ন্ত্রণ করো, ফলাফল দেখো।</div>
+      <span class="mt">🧪 ${cls.exp.length}টি সিমুলেশন</span>
+    </div>
+    <div class="mc dc" onclick="go('list',{mode:'3d'})">
+      <span class="mi">🌐</span>
+      <div class="mh">থ্রিডি মডেল</div>
+      
+      <div class="md">সকল বিষয় থ্রিডিতে দেখো। ঘোরাও, জুম করো, বিস্তারিত দেখো।</div>
+      <span class="mt">🔮 ${cls.m3d.length}টি থ্রিডি মডেল</span>
+    </div>
+  </div>`;
 }
 
-function rSubs(d){
-  d.innerHTML=`
-    <button class="bb" onclick="goHome()">← হোম</button>
-    <h2 class="st">নবম ও দশম শ্রেণি — বিষয় বেছে নাও</h2>
-    <p class="sd">পদার্থবিজ্ঞান, রসায়ন ও জীববিজ্ঞানের সম্পূর্ণ ল্যাব</p>
-    <div class="sg">
-      <div class="scard sphy" onclick="selSub('physics')">
-        <span class="si2">⚡</span>
-        <div class="stt">পদার্থবিজ্ঞান</div>
-        <div class="sdd">১৩ অধ্যায় · ১৩ পরীক্ষা · ১৩ মডেল</div>
-      </div>
-      <div class="scard sche" onclick="selSub('chemistry')">
-        <span class="si2">🧪</span>
-        <div class="stt">রসায়ন</div>
-        <div class="sdd">১২ অধ্যায় · ১২ পরীক্ষা · ১২ মডেল</div>
-      </div>
-      <div class="scard sbio" onclick="selSub('biology')">
-        <span class="si2">🧬</span>
-        <div class="stt">জীববিজ্ঞান</div>
-        <div class="sdd">১৪ অধ্যায় · ১২ পরীক্ষা · ১৩ মডেল</div>
-      </div>
-    </div>`;
+function renderSubs(){
+  sc.innerHTML=`<button class="bb" onclick="go('home')">← হোম</button>
+  <h2 class="tt">নবম ও দশম শ্রেণি — বিষয় বেছে নাও</h2>
+  <p class="dd">পদার্থবিজ্ঞান, রসায়ন ও জীববিজ্ঞ
+  <div class="sg">
+    <div class="sc2 sp" onclick="go('mode',{cls:'physics',sub:'physics'})"><span class="si">⚡</span><div class="sh">পদার্থবিজ্ঞান</div><div class="sd2">৬ সিমুলেশন · ৩ থ্রিডি</div></div>
+    <div class="sc2 sk" onclick="go('mode',{cls:'chemistry',sub:'chemistry'})"><span class="si">🧪</span><div class="sh">রসায়ন</div><div class="sd2">৩ সিমুলেশন · ৩ থ্রিডি</div></div>
+    <div class="sc2 sb" onclick="go('mode',{cls:'biology',sub:'biology'})"><span class="si">🧬</span><div class="sh">জীববিজ্ঞান</div><div class="sd2">৩ সিমুলেশন · ৩ থ্রিডি</div></div>
+  </div>`;
 }
 
-function rContent(d){
-  const k=st.sub||st.cls;
-  const cls=D[k];
-  const isE=st.mode==='exp';
+function renderList(){
+  const k=st.cls,cls=D[k],isE=st.mode==='exp';
   const items=isE?cls.exp:cls.m3d;
-  const ic=isE?'var(--a3)':'#a78bfa';
-  const ib=isE?'rgba(16,185,129,.1)':'rgba(124,58,237,.1)';
-  const ibr=isE?'rgba(16,185,129,.25)':'rgba(124,58,237,.25)';
-  const back=st.sub?`selSub('${st.sub}')`:`sel('${st.cls}')`;
-  d.innerHTML=`
-    <button class="bb" onclick="${back}">← পেছনে</button>
-    <h2 class="st">${isE?'⚗️ এক্সপেরিমেন্ট':'🌐 থ্রিডি মডেল'} — ${cls.label}</h2>
-    <p class="sd">${isE?'একটিতে ক্লিক করো বিস্তারিত পদ্ধতি দেখতে':'একটিতে ক্লিক করো বিস্তারিত বিষয়বস্তু দেখতে'}</p>
-    <div class="sect">${isE?'📋':'🔮'} ${items.length}টি ${isE?'এক্সপেরিমেন্ট':'থ্রিডি মডেল'}</div>
-    <div class="ig">
-      ${items.map((x,i)=>`
-        <div class="li" style="--ic:${ic};--ib:${ib};--ibr:${ibr}" onclick="${isE?`showE('${x.id}')`:`show3('${x.id}')`}">
-          <div class="in">${String(i+1).padStart(2,'0')}</div>
-          <div><div class="it">${x.t}</div><div class="is">${x.ch}</div></div>
-        </div>`).join('')}
-    </div>`;
-}
-
-function showE(id){
-  const k=st.sub||st.cls;
-  const x=D[k].exp.find(e=>e.id===id);
-  if(!x)return;
-  const h=`<div class="ov" onclick="if(event.target===this)closeM()">
-    <div class="mo">
-      <button class="mc2" onclick="closeM()">✕</button>
-      <div class="mtt">⚗️ ${x.t}</div>
-      <div class="mch">📖 ${x.ch}</div>
-      <div class="ms">
-        <div class="mst">🧰 প্রয়োজনীয় উপকরণ</div>
-        <div class="ml">${x.m.map(m=>`<span class="mt2">${m}</span>`).join('')}</div>
-      </div>
-      <div class="ms">
-        <div class="mst">📝 ধাপে ধাপে পদ্ধতি</div>
-        <ul class="sl">${x.s.map((s,i)=>`<li><span class="sn">${i+1}</span><span>${s}</span></li>`).join('')}</ul>
-      </div>
-    </div>
+  const lc=isE?'var(--gr)':'#a78bfa',lb=isE?'rgba(16,185,129,.1)':'rgba(124,58,237,.1)',lbr=isE?'rgba(16,185,129,.25)':'rgba(124,58,237,.25)';
+  const back=st.sub?`go('mode',{cls:'${k}',sub:'${st.sub}'})`:`go('mode',{cls:'${k}'})`;
+  sc.innerHTML=`<button class="bb" onclick="${back}">← পেছনে</button>
+  <h2 class="tt">${isE?'⚗️ ইন্টারেক্টিভ সিমুলেশন':'🌐 থ্রিডি মডেল'} — ${cls.label}</h2>
+  <p class="dd">${isE?'ক্লিক করো — নিজে হাতে সিমুলেশন করো':'ক্লিক করো — থ্রিডিতে ঘোরাও'}</p>
+  <div class="sh2">${isE?'🔬':'🌐'} ${items.length}টি ${isE?'সিমুলেশন':'মডেল'}</div>
+  <div class="ig">${items.map((x,i)=>`
+    <div class="li" style="--lc:${lc};--lb:${lb};--lbr:${lbr}" onclick="${isE?`openSim('${x.id}','${k}')`:`open3D('${x.id}','${k}')`}">
+      <div class="ln">${String(i+1).padStart(2,'0')}</div>
+      <div><div class="lt">${x.t}</div><div class="ls">${x.ch}</div></div>
+    </div>`).join('')}
   </div>`;
-  document.body.insertAdjacentHTML('beforeend',h);
 }
 
-function show3(id){
-  const k=st.sub||st.cls;
-  const x=D[k].m3d.find(m=>m.id===id);
-  if(!x)return;
-  const h=`<div class="ov" onclick="if(event.target===this)closeM()">
-    <div class="mo">
-      <button class="mc2" onclick="closeM()">✕</button>
-      <div class="mtt">🌐 ${x.t}</div>
-      <div class="mch">📖 ${x.ch}</div>
-      <div class="ms">
-        <div class="mst">📋 বিষয়বস্তু</div>
-        <div class="mtxt">${x.d}</div>
-      </div>
-      <div class="cs" style="padding:20px 0 0">
-        <span style="font-size:2rem;display:block;margin-bottom:8px">🚧</span>
-        <div style="font-size:.8rem;color:var(--dim)">থ্রিডি মডেলটি শীঘ্রই যোগ হবে!</div>
-      </div>
-    </div>
-  </div>`;
-  document.body.insertAdjacentHTML('beforeend',h);
+function selCls(c){
+  st.cls=c;
+  if(c==='৯-১০') go('subs',{cls:null,sub:null});
+  else go('mode',{cls:c,sub:null});
 }
-
-function closeM(){const m=document.querySelector('.ov');if(m)m.remove();}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
-
-function sel(c){
-  st.cls=c;st.sub=null;
-  if(c==='৯-১০'){st.scr='subs';}
-  else if(D[c]){st.scr='clsMode';}
-  else{alert('শীঘ্রই আসছে!');return;}
-  render();
-}
-
-function selSub(s){
-  st.sub=s;st.scr='clsMode';
-  const cls=D[s];
-  const c=document.getElementById('sc');
-  const d=document.createElement('div');
-  d.style.animation='si .45s cubic-bezier(.16,1,.3,1) forwards';
-  d.innerHTML=`
-    <button class="bb" onclick="goSubs()">← বিষয়সমূহ</button>
-    <h2 class="st">${cls.label} — কী দেখতে চাও?</h2>
-    <p class="sd">এক্সপেরিমেন্ট করো অথবা থ্রিডি মডেলে দেখো</p>
-    <div class="mg">
-      <div class="mc ec" onclick="selMode('exp')">
-        <span class="mi">⚗️</span>
-        <div class="mt">এক্সপেরিমেন্ট</div>
-        <div class="md">বইয়ের সব পরীক্ষা-নিরীক্ষা ভার্চুয়ালি করো। উপকরণ ও পদ্ধতি সহ।</div>
-        <span class="mtg">🧪 ${cls.exp.length}টি এক্সপেরিমেন্ট</span>
-      </div>
-      <div class="mc dc" onclick="selMode('3d')">
-        <span class="mi">🌐</span>
-        <div class="mt">থ্রিডি মডেল</div>
-        <div class="md">সকল বিষয় থ্রিডিতে দেখো। ঘোরাও, জুম করো, বিস্তারিত জানো।</div>
-        <span class="mtg">🔮 ${cls.m3d.length}টি থ্রিডি মডেল</span>
-      </div>
-    </div>`;
-  c.innerHTML='';c.appendChild(d);updateBC();
-}
-
-function selMode(m){st.mode=m;st.scr='content';render();}
-function goHome(){st={scr:'home',cls:null,mode:null,sub:null};render();}
-function goSubs(){st.sub=null;st.scr='subs';render();}
 
 function updateBC(){
   const bc=document.getElementById('bc');
   const sl={physics:'পদার্থবিজ্ঞান',chemistry:'রসায়ন',biology:'জীববিজ্ঞান'};
-  let h=`<span class="bi" onclick="goHome()">🏠 হোম</span>`;
-  if(st.cls) h+=`<span>›</span><span class="bi">${st.cls==='৯-১০'?'নবম-দশম':st.cls+' শ্রেণি'}</span>`;
-  if(st.sub) h+=`<span>›</span><span class="bi">${sl[st.sub]}</span>`;
-  if(st.mode) h+=`<span>›</span><span class="bi a">${st.mode==='exp'?'এক্সপেরিমেন্ট':'থ্রিডি মডেল'}</span>`;
+  let h=`<span class="bi" onclick="go('home')">🏠 হোম</span>`;
+  if(st.cls&&st.cls!=='৯-১০') h+=`<span>›</span><span class="bi">${sl[st.cls]||st.cls+' শ্রেণি'}</span>`;
+  if(st.pg==='subs') h+=`<span>›</span><span class="bi">নবম-দশম</span>`;
+  if(st.mode) h+=`<span>›</span><span class="bi on">${st.mode==='exp'?'সিমুলেশন':'থ্রিডি মডেল'}</span>`;
   bc.innerHTML=h;
 }
+
+/* ═══════════ MODAL HELPER ═══════════ */
+function modal(html){
+  const ov=document.createElement('div');ov.className='ov';
+  ov.innerHTML=`<div class="mo">${html}</div>`;
+  ov.onclick=e=>{if(e.target===ov)closeModal();};
+  document.body.appendChild(ov);
+  return ov;
+}
+function closeModal(){
+  const ov=document.querySelector('.ov');
+  if(ov){
+    // destroy p5 sketch
+    if(window._p5inst){window._p5inst.remove();window._p5inst=null;}
+    // destroy three renderer
+    if(window._tdRenderer){window._tdRenderer.dispose();window._tdRenderer=null;cancelAnimationFrame(window._tdRaf);}
+    ov.remove();
+  }
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+/* ═══════════ SIM MODAL ═══════════ */
+function openSim(id,key){
+  const x=D[key].exp.find(e=>e.id===id);if(!x)return;
+  const ov=modal(`
+    <button class="mx" onclick="closeModal()">✕</button>
+    <div class="mh2">⚗️ ${x.t}</div>
+    <div class="mc2">📖 ${x.ch}</div>
+    <div class="ms"><div class="mk">🧰 উপকরণ</div><div class="ml">${x.m.map(m=>`<span class="tg">${m}</span>`).join('')}</div></div>
+    <div class="ms"><div class="mk">📝 পদ্ধতি</div><ul class="sl">${x.s.map((s,i)=>`<li><span class="sn2">${i+1}</span><span>${s}</span></li>`).join('')}</ul></div>
+    <div class="sb2">
+      <div class="sh3">🔬 ইন্টারেক্টিভ সিমুলেশন — নিজে করো!</div>
+      <div id="p5host"></div>
+      <div class="ctrls" id="ctrlbar"></div>
+      <div class="tip" id="simtip"></div>
+    </div>`);
+  setTimeout(()=>launchSim(id),80);
+}
+
+/* ═══════════ P5 SIMULATIONS ═══════════ */
+function launchSim(id){
+  const host=document.getElementById('p5host');
+  if(!host)return;
+  const simFns={vernier,reflection,lever,conductivity,evaporation,balloon,atom_sim,magnet_sim,litmus,circuit,freefall,electromagnet,photosynthesis,transpiration,yeast,vinegar_soda,state_change};
+  const fn=simFns[id];
+  if(fn){
+    if(window._p5inst){window._p5inst.remove();}
+    window._p5inst=new p5(fn,'p5host');
+  } else {
+    host.innerHTML=`<div style="padding:30px;text-align:center;color:#94a3b8;font-size:.85rem">সিমুলেশন লোড হচ্ছে…</div>`;
+  }
+}
+
+/* p5 sketch factories */
+function vernier(p){
+  let jaw=30;
+  p.setup=()=>{p.createCanvas(p.min(500,document.getElementById('p5host').offsetWidth||500),165);};
+  p.draw=()=>{
+    p.background(13,17,23);
+    // Main scale
+    p.fill(200,169,110);p.noStroke();p.rect(40,62,p.width-80,20);
+    p.fill(13,17,23);
+    for(let i=0;i<=(p.width-80)/10;i++){
+      const x=40+i*10,h=i%10===0?20:i%5===0?13:7;
+      p.rect(x,62+20-h,1.5,h);
+      if(i%10===0){p.fill(120,130,150);p.textSize(9);p.textAlign(p.CENTER);p.text(i/10,x,62+20+11);p.fill(13,17,23);}
+    }
+    // Vernier scale
+    p.fill(80,160,230);p.rect(40+jaw,40,52,22);
+    p.fill(20,40,60);
+    for(let i=0;i<=10;i++){const x=40+jaw+i*4.9,h=i===0?22:11;p.rect(x,40+22-h,1,h);if(i%5===0){p.textSize(8);p.textAlign(p.CENTER);p.text(i,x,38);}}
+    // Jaws
+    p.fill(80,90,105);p.rect(40,82,8,38);p.rect(40+jaw,82,8,32-jaw*0.15);
+    // Object
+    p.fill(245,158,11,180);p.rect(48,82,jaw,24);
+    // Reading
+    const M=Math.floor(jaw/10),V=Math.round((jaw%10)/4.9),r=(M+V*0.02).toFixed(2);
+    p.fill(0,212,255);p.textSize(14);p.textAlign(p.LEFT);p.text('পাঠ: '+r+' cm',40,30);
+    p.fill(148,163,184);p.textSize(11);p.text('M='+M+'.0  V='+V+'  VC=0.02',40,46);
+    // drag
+    if(p.mouseIsPressed&&p.mouseX>30&&p.mouseX<p.width-30) jaw=p.constrain(p.mouseX-40,0,100);
+  };
+  document.getElementById('simtip').textContent='👆 ক্যানভাসে ক্লিক করে চোয়াল সরাও — পাঠ স্বয়ংক্রিয়ভাবে হিসাব হবে।';
+}
+
+function reflection(p){
+  let ang=45;
+  const bar=document.getElementById('ctrlbar');
+  bar.innerHTML=`<div class="srow"><label>আপতন কোণ</label><input type="range" min="5" max="85" value="45" oninput="this.nextSibling.textContent=this.value+'°';window._refAng=parseInt(this.value)"><span>45°</span></div>`;
+  window._refAng=45;
+  p.setup=()=>{p.createCanvas(p.min(500,document.getElementById('p5host').offsetWidth||500),240);};
+  p.draw=()=>{
+    ang=window._refAng||45;
+    p.background(13,17,23);
+    const cx=p.width/2,my=p.height*0.58;
+    // Mirror
+    p.fill(192,192,192);p.rect(cx-75,my-3,150,6);
+    p.fill(192,192,192,30);p.rect(cx-75,my+3,150,8);
+    // Normal
+    p.stroke(255,255,255,40);p.strokeWeight(1);p.setLineDash?p.setLineDash([5,5]):null;
+    p.line(cx,my-80,cx,my+80);p.noStroke();
+    // Incident
+    const r=ang*Math.PI/180;
+    const ix=cx-Math.sin(r)*105,iy=my-Math.cos(r)*105;
+    p.stroke(245,158,11);p.strokeWeight(2.5);p.line(ix,iy,cx,my);
+    // Reflected
+    p.stroke(0,212,255);p.line(cx,my,cx+Math.sin(r)*105,my-Math.cos(r)*105);
+    p.noStroke();
+    // Arcs
+    p.noFill();p.stroke(245,158,11,130);p.strokeWeight(1.5);p.arc(cx,my,70,70,p.PI*1.5-r,p.PI*1.5);
+    p.stroke(0,212,255,130);p.arc(cx,my,70,70,p.PI*1.5,p.PI*1.5+r);
+    p.noStroke();
+    // Labels
+    p.fill(245,158,11);p.textSize(13);p.textAlign(p.LEFT);p.text('আপতন: '+ang+'°',10,22);
+    p.fill(0,212,255);p.text('প্রতিফলন: '+ang+'°',10,40);
+    p.fill(16,185,129);p.textSize(11);p.text('✓ আপতন = প্রতিফলন (সূত্র প্রমাণিত)',10,58);
+  };
+  document.getElementById('simtip').textContent='স্লাইডার টেনে কোণ বদলাও — প্রতিফলন কোণ সবসময় সমান থাকে।';
+}
+
+function lever(p){
+  let fp=50,load=50;
+  const bar=document.getElementById('ctrlbar');
+  bar.innerHTML=`
+    <div class="srow"><label>ফালক্রাম</label><input type="range" min="10" max="90" value="50" oninput="this.nextSibling.textContent=this.value+'%';window._lFP=parseInt(this.value)"><span>50%</span></div>
+    <div class="srow"><label>ভার (N)</label><input type="range" min="10" max="100" value="50" oninput="this.nextSibling.textContent=this.value+'N';window._lLD=parseInt(this.value)"><span>50N</span></div>`;
+  window._lFP=50;window._lLD=50;
+  p.setup=()=>{p.createCanvas(p.min(500,document.getElementById('p5host').offsetWidth||500),190);};
+  p.draw=()=>{
+    fp=window._lFP||50;load=window._lLD||50;
+    p.background(13,17,23);
+    const W=p.width,pivot=40+fp/100*(W-80),by=108;
+    const la=pivot-40,ea=(W-40)-pivot,effort=ea>0?(load*la/ea):0;
+    const tilt=Math.atan2((load-effort)*0.012,1);
+    p.push();p.translate(pivot,by);p.rotate(tilt);
+    p.fill(139,105,20);p.rect(-(pivot-40),-6,(W-80),12,2);
+    p.fill(245,158,11,220);p.rect(-(pivot-40),6,16,load*0.45);
+    p.fill(0,212,255,220);p.rect((W-40-pivot)-16,6,16,Math.abs(effort)*0.28);
+    p.pop();
+    // Fulcrum triangle
+    p.fill(167,139,250);p.triangle(pivot,by,pivot-11,by+34,pivot+11,by+34);
+    p.fill(71,85,105);p.rect(pivot-24,by+34,48,7,2);
+    // Labels
+    p.fill(245,158,11);p.textSize(12);p.textAlign(p.LEFT);p.text('ভার: '+load+'N',10,22);
+    p.fill(0,212,255);p.text('বল: '+Math.abs(effort).toFixed(1)+'N',10,38);
+    p.fill(16,185,129);p.text('যান্ত্রিক সুবিধা: '+(load>0?Math.abs(effort/load).toFixed(2):'—'),W-185,22);
+    p.fill(167,139,250);p.textSize(10);p.textAlign(p.CENTER);p.text('ফালক্রাম',pivot,by+60);
+  };
+  document.getElementById('simtip').textContent='ফালক্রাম ও ভার পরিবর্তন করো — যান্ত্রিক সুবিধা কীভাবে বদলায় দেখো।';
+}
+
+function conductivity(p){
+  const mats=[{n:'লোহা',c:true},{n:'তামা',c:true},{n:'রাবার',c:false},{n:'কাঠ',c:false},{n:'গ্রাফাইট',c:true},{n:'প্লাস্টিক',c:false}];
+  let sel=0,on=false;
+  const bar=document.getElementById('ctrlbar');
+  function buildCtrl(){
+    bar.innerHTML=`<button class="cbtn ${on?'on':''}" onclick="window._conOn=!window._conOn">${on?'সুইচ বন্ধ':'সুইচ চালু'}</button>`
+    +mats.map((m,i)=>`<button class="cbtn ${sel===i?'on':''}" onclick="window._conSel=${i}">${m.n}</button>`).join('');
+  }
+  window._conOn=false;window._conSel=0;
+  buildCtrl();
+  p.setup=()=>{p.createCanvas(p.min(500,document.getElementById('p5host').offsetWidth||500),180);};
+  p.draw=()=>{
+    on=window._conOn;sel=window._conSel;
+    const m=mats[sel],cd=on&&m.c;
+    p.background(13,17,23);
+    const W=p.width;
+    // Battery
+    p.fill(16,185,129);p.rect(25,78,34,34,3);p.fill(255);p.textSize(16);p.textAlign(p.CENTER);p.text('+',42,100);
+    // Wires
+    p.stroke(cd?p.color(0,212,255):p.color(51,65,85));p.strokeWeight(cd?3:2);p.noFill();
+    p.line(59,95,105,95);p.line(25,95,25,150);p.line(25,150,W-40,150);p.line(W-40,150,W-40,95);
+    p.line(W-85,95,W-40,95);
+    // Material bar
+    p.fill(120,113,108);p.noStroke();p.rect(105,85,W-190,20,2);
+    p.fill(255);p.textSize(10);p.textAlign(p.CENTER);p.text(m.n,105+(W-190)/2,99);
+    // Wire to bulb
+    p.stroke(cd?p.color(0,212,255):p.color(51,65,85));p.strokeWeight(cd?3:2);
+    p.line(105+(W-190),95,W-85,95);
+    p.noStroke();
+    // Bulb
+    p.fill(cd?p.color(255,255,100,90):p.color(80,80,80,40));p.circle(W-63,95,44);
+    p.noFill();p.stroke(cd?p.color(245,158,11):p.color(75,85,99));p.strokeWeight(2);p.circle(W-63,95,44);
+    if(cd){p.stroke(255,255,100,60);p.strokeWeight(0.5);p.circle(W-63,95,60);}
+    p.noStroke();p.fill(255);p.textSize(9);p.textAlign(p.CENTER);p.text('বাল্ব',W-63,126);
+    // Switch indicator
+    p.fill(on?p.color(100,150,95):p.color(80,80,80));p.circle(70,130,8);
+    p.fill(148,163,184);p.textSize(9);p.textAlign(p.LEFT);p.text(on?'চালু':'বন্ধ',80,133);
+    // Result
+    p.fill(cd?p.color(16,185,129):p.color(239,68,68));p.textSize(12);p.text(on?(m.c?m.n+' — পরিবাহী ✓':m.n+' — অপরিবাহী ✗'):'সুইচ চালু করো',10,22);
+  };
+  document.getElementById('simtip').textContent='সুইচ চালু করো, তারপর বিভিন্ন পদার্থ বেছে নাও।';
+}
+
+function evaporation(p){
+  let heat=0,wl=100,xtals=[],t=0,hting=false;
+  const bar=document.getElementById('ctrlbar');
+  bar.innerHTML=`<button class="cbtn" onclick="window._evHeat=!window._evHeat">তাপ দাও</button><button class="cbtn" onclick="window._evReset=true">রিসেট</button>`;
+  window._evHeat=false;window._evReset=false;
+  p.setup=()=>{p.createCanvas(p.min(500,document.getElementById('p5host').offsetWidth||500),200);};
+  p.draw=()=>{
+    if(window._evReset){heat=0;wl=100;xtals=[];t=0;hting=false;window._evReset=false;}
+    hting=window._evHeat;
+    if(hting&&wl>0){heat=p.min(heat+0.6,100);wl=p.max(wl-0.3,0);t+=0.1;if(wl<=30&&xtals.length<22&&p.random()<0.04)xtals.push({x:p.width/2-50+p.random(100),y:162+p.random(8),s:p.random(2,5)});}
+    p.background(p.map(heat,0,100,13,30),p.map(heat,0,100,17,15),p.map(heat,0,100,23,20));
+    const W=p.width;
+    // Pan
+    p.fill(146,64,14);p.rect(W/2-68,158,136,14,2);p.rect(W/2-58,153,116,8,2);
+    // Flame
+    if(hting)for(let i=0;i<5;i++){const fx=W/2-20+i*10,fy=152-Math.sin(t*5+i)*6;p.fill(255,100+i*20,0,180);p.noStroke();p.circle(fx,fy,15-i*2);}
+    // Water
+    if(wl>2){p.fill(59,130,246,p.map(wl,0,100,50,150));p.rect(W/2-56,168-wl*0.33,112,p.max(wl*0.33,2));}
+    // Steam
+    if(hting&&wl>0)for(let i=0;i<4;i++){p.fill(200,225,255,p.random(15,40));p.circle(W/2+(p.random()-0.5)*80,160-p.random(50),p.random(4,12));}
+    // Crystals
+    p.fill(255,255,255,200);xtals.forEach(x=>p.rect(x.x,x.y,x.s,x.s));
+    if(xtals.length>0){p.fill(245,158,11);p.textSize(12);p.textAlign(p.CENTER);p.text('লবণের কেলাস তৈরি! ✓',W/2,18);}
+    p.fill(245,158,11);p.textSize(11);p.textAlign(p.LEFT);p.text('তাপমাত্রা: '+(25+heat*1.5).toFixed(0)+'°C',10,22);
+    p.fill(59,130,246);p.text('পানি: '+Math.round(wl)+'%',10,38);
+  };
+  document.getElementById('simtip').textContent='তাপ দাও বোতামে ক্লিক করো — পানি উড়ে যাবে, লবণ থাকবে।';
+}
+
+function balloon(p){
+  let hot=false;
+  const bar=document.getElementById('ctrlbar');
+  bar.innerHTML=`<button class="cbtn" onclick="window._balHot=!window._balHot;this.textContent=window._balHot?'ঠান্ডা পানিতে দাও':'গরম পানিতে দাও'">গরম পানিতে দাও</button>`;
+  window._balHot=false;
+  p.setup=()=>{p.createCanvas(p.min(500,document.getElementById('p5host').offsetWidth||500),220);};
+  p.draw=()=>{
+    hot=window._balHot;
+    p.background(hot?p.color(26,8,0):p.color(0,13,24));
+    const W=p.width,r=hot?48:26;
+    // Water bath
+    p.fill(hot?p.color(239,68,68,60):p.color(59,130,246,60));p.rect(W/2-68,130,136,72,4);
+    p.stroke(hot?p.color(239,68,68,100):p.color(59,130,246,100));p.strokeWeight(2);p.rect(W/2-68,130,136,72,4);p.noStroke();
+    // Bottle
+    p.fill(255,255,255,20);p.rect(W/2-18,88,36,72,3);p.stroke(200,200,200,60);p.strokeWeight(1.5);p.rect(W/2-18,88,36,72,3);p.noStroke();
+    // Balloon
+    p.fill(239,68,68,hot?170:110);p.circle(W/2,88-r,r*2);p.stroke(239,68,68,180);p.strokeWeight(1.5);p.circle(W/2,88-r,r*2);p.noStroke();
+    // String
+    p.stroke(150,160,170);p.strokeWeight(2);p.line(W/2,88,W/2,88-r*0.3);p.noStroke();
+    // Label
+    p.fill(hot?p.color(239,68,68):p.color(59,130,246));p.textSize(12);p.textAlign(p.CENTER);
+    p.text(hot?'গরম পানি — বায়ু প্রসারিত — বেলুন ফোলে ✓':'ঠান্ডা পানি — বায়ু সংকুচিত — বেলুন ছোট',W/2,215);
+    p.fill(245,158,11);p.textSize(12);p.text('বেলুনের ব্যাসার্ধ: '+r+'px',W/2,22);
+  };
+  document.getElementById('simtip').textContent='বোতামে ক্লিক করো — গরম ও ঠান্ডা পানিতে বেলুনের পার্থক্য দেখো।';
+}
+
+function atom_sim(p){
+  let el='C',t=0;
+  const els={C:{p:6,n:6,sh:[2,4],c:[148,163,184],nm:'কার্বন'},O:{p:8,n:8,sh:[2,6],c:[239,68,68],nm:'অক্সিজেন'},Na:{p:11,n:12,sh:[2,8,1],c:[245,158,11],nm:'সোডিয়াম'},Cl:{p:17,n:18,sh:[2,8,7],c:[16,185,129],nm:'ক্লোরিন'}};
+  const bar=document.getElementById('ctrlbar');
+  bar.innerHTML=Object.keys(els).map(k=>`<button class="cbtn" onclick="window._atEl='${k}'">${els[k].nm}</button>`).join('');
+  window._atEl='C';
+  p.setup=()=>{p.createCanvas(p.min(480,document.getElementById('p5host').offsetWidth||480),240);};
+  p.draw=()=>{
+    el=window._atEl||'C';t+=0.025;
+    p.background(13,17,23);
+    const e=els[el],cx=p.width/2,cy=p.height/2;
+    // Nucleus glow
+    p.drawingContext.shadowBlur=22;p.drawingContext.shadowColor=`rgb(${e.c[0]},${e.c[1]},${e.c[2]})`;
+    p.fill(...e.c);p.circle(cx,cy,44);
+    p.drawingContext.shadowBlur=0;
+    p.fill(255);p.textSize(12);p.textAlign(p.CENTER);p.text(el,cx,cy+5);
+    p.fill(148,163,184);p.textSize(10);p.textAlign(p.LEFT);p.text('p:'+e.p+' n:'+e.n,10,18);
+    // Shells
+    e.sh.forEach((cnt,si)=>{
+      const r=50+si*34;
+      p.noFill();p.stroke(255,255,255,20);p.strokeWeight(1);p.circle(cx,cy,r*2);
+      for(let ei=0;ei<cnt;ei++){
+        const a=t*(1.6/(si+1))+ei*(p.TWO_PI/cnt);
+        p.drawingContext.shadowBlur=8;p.drawingContext.shadowColor='#60a5fa';
+        p.fill(96,165,250);p.noStroke();p.circle(cx+Math.cos(a)*r,cy+Math.sin(a)*r,8);
+        p.drawingContext.shadowBlur=0;
+      }
+    });
+    p.fill(245,158,11);p.noStroke();p.textSize(13);p.textAlign(p.CENTER);p.text(e.nm+' পরমাণু',cx,p.height-8);
+  };
+  document.getElementById('simtip').textContent='বিভিন্ন মৌল বেছে নাও — ইলেকট্রন ঘুরছে দেখো।';
+}
+
+function magnet_sim(p){
+  let show=true,str=1;
+  const bar=document.getElementById('ctrlbar');
+  bar.innerHTML=`<button class="cbtn on" onclick="window._mgShow=!window._mgShow">ক্ষেত্ররেখা লুকাও</button><div class="srow"><label>শক্তি</label><input type="range" min="0.5" max="2" step="0.1" value="1" oninput="this.nextSibling.textContent=this.value;window._mgStr=parseFloat(this.value)"><span>1</span></div>`;
+  window._mgShow=true;window._mgStr=1;
+  p.setup=()=>{p.createCanvas(p.min(480,document.getElementById('p5host').offsetWidth||480),240);};
+  p.draw=()=>{
+    show=window._mgShow;str=window._mgStr||1;
+    p.background(13,17,23);
+    const W=p.width,H=p.height,cx=W/2,cy=H/2;
+    // Field lines
+    if(show){
+      for(let i=0;i<9;i++){
+        const off=(i-4)*18*str;
+        p.stroke(0,212,255,p.map(Math.abs(i-4),0,4,180,40));p.strokeWeight(1.5);p.noFill();
+        p.beginShape();
+        for(let tx=0;tx<=1;tx+=0.05){const a=tx*p.PI;p.vertex(cx-80+tx*160,cy+off+Math.sin(a)*off*0.25);}
+        p.endShape();
+      }
+    }
+    // Magnet
+    const mw=55,mh=72;
+    p.fill(220,38,38);p.noStroke();p.rect(cx-mw,cy-mh/2,mw,mh,3);
+    p.fill(37,99,235);p.rect(cx,cy-mh/2,mw,mh,3);
+    p.fill(255);p.textSize(18);p.textAlign(p.CENTER);p.text('N',cx-mw/2,cy+7);p.text('S',cx+mw/2,cy+7);
+    p.fill(148,163,184);p.textSize(11);p.textAlign(p.LEFT);p.text('N মেরু থেকে S মেরুতে ক্ষেত্ররেখা প্রবাহিত',10,18);
+  };
+  document.getElementById('simtip').textContent='চুম্বকের ক্ষেত্ররেখা N মেরু থেকে বের হয়ে S মেরুতে প্রবেশ করে।';
+}
+
+function litmus(p){
+  const sub=[{n:'ভিনেগার',ph:2.5},{n:'লেবুর রস',ph:2},{n:'পানি',ph:7},{n:'সাবান পানি',ph:9},{n:'চুনের পানি',ph:12}];
+  let sel=0;
+  const bar=document.getElementById('ctrlbar');
+  bar.innerHTML=sub.map((s,i)=>`<button class="cbtn" onclick="window._ltSel=${i}">${s.n}</button>`).join('');
+  window._ltSel=0;
+  p.setup=()=>{p.createCanvas(p.min(500,document.getElementById('p5host').offsetWidth||500),220);};
+  p.draw=()=>{
+    sel=window._ltSel||0;
+    const s=sub[sel];
+    p.background(13,17,23);
+    const W=p.width;
+    // pH gradient bar
+    const grad=p.drawingContext.createLinearGradient(20,0,W-20,0);
+    grad.addColorStop(0,'#ef4444');grad.addColorStop(.3,'#f97316');grad.addColorStop(.5,'#6b7280');grad.addColorStop(.7,'#06b6d4');grad.addColorStop(1,'#8b5cf6');
+    p.drawingContext.fillStyle=grad;p.drawingContext.fillRect(20,20,W-40,16);
+    // Indicator
+    const ix=20+(s.ph/14)*(W-40);
+    p.fill(255);p.noStroke();p.triangle(ix,16,ix-6,10,ix+6,10);
+    // pH labels
+    p.fill(255,255,255,120);p.textSize(8);p.textAlign(p.CENTER);
+    [0,2,4,6,7,8,10,12,14].forEach(v=>p.text(v,20+(v/14)*(W-40),48));
+    // Reading
+    p.fill(245,158,11);p.textSize(13);p.textAlign(p.LEFT);p.text('pH = '+s.ph,20,64);
+    const type=s.ph<7?'অম্ল (Acid)':s.ph>7?'ক্ষার (Base)':'নিরপেক্ষ';
+    
+     p.fill(s.ph<7?p.color(239,68,68):s.ph>7?p.color(59,130,246):p.color(107,114,128));p.text(type,90,64);
+    // Test papers
+    [[W/2-80,'লাল লিটমাস',s.ph>7?p.color(29,78,216):p.color(220,38,38),s.ph>7?'নীল':'লাল'],[W/2+10,'নীল লিটমাস',s.ph<7?p.color(220,38,38):p.color(29,78,216),s.ph<7?'লাল':'নীল']].forEach(([tx,lbl,col,res])=>{
+      p.fill(col);p.rect(tx,75,55,65,3);p.stroke(col);p.strokeWeight(1);p.rect(tx,75,55,65,3);p.noStroke();
+      p.fill(255);p.textSize(9);p.textAlign(p.CENTER);p.text(lbl,tx+27,152);p.text('→ '+res,tx+27,165);
+    });
+    p.fill(148,163,184);p.textSize(10);p.textAlign(p.LEFT);p.text('বর্তমান: '+s.n,W-130,75);
+  };
+  document.getElementById('simtip').textContent='বিভিন্ন পদার্থ বেছে নাও — লিটমাস কাগজের রং পরিবর্তন দেখো।';
+}
+
+function circuit(p){
+  let mode='series',sw1=true,sw2=true;
+  const bar=document.getElementById('ctrlbar');
+  function rebuildCtrl(){
+    bar.innerHTML=`<button class="cbtn on" onclick="window._cMode=window._cMode==='series'?'parallel':'series'">${mode==='series'?'প্যারালাল দেখাও':'সিরিজ দেখাও'}</button><button class="cbtn" onclick="window._cSw1=!window._cSw1">সুইচ ১ ${sw1?'বন্ধ':'চালু'}</button><button class="cbtn" onclick="window._cSw2=!window._cSw2">সুইচ ২ ${sw2?'বন্ধ':'চালু'}</button>`;
+  }
+  window._cMode='series';window._cSw1=true;window._cSw2=true;
+  rebuildCtrl();
+  p.setup=()=>{p.createCanvas(p.min(500,document.getElementById('p5host').offsetWidth||500),215);};
+  p.draw=()=>{
+    mode=window._cMode||'series';sw1=window._cSw1!==undefined?window._cSw1:true;sw2=window._cSw2!==undefined?window._cSw2:true;
+    p.background(13,17,23);
+    const W=p.width,H=p.height;
+    const drawBulb=(x,y,on,lbl)=>{
+      p.fill(on?p.color(255,255,100,80):p.color(80,80,80,40));p.circle(x,y,38);
+      p.stroke(on?p.color(245,158,11):p.color(75,85,99));p.strokeWeight(2);p.circle(x,y,38);
+      if(on){p.stroke(255,255,100,50);p.strokeWeight(1);p.circle(x,y,56);}
+      p.noStroke();p.fill(255);p.textSize(9);p.textAlign(p.CENTER);p.text(lbl,x,y+28);
+    };
+    // Battery
+    p.fill(16,185,129);p.noStroke();p.rect(20,H/2-14,26,28,2);p.fill(255);p.textSize(14);p.textAlign(p.CENTER);p.text('+',33,H/2+5);
+    if(mode==='series'){
+      const on=sw1&&sw2;
+      p.stroke(on?p.color(0,212,255):p.color(51,65,85));p.strokeWeight(on?3:2);p.noFill();
+      p.line(46,H/2,W/2-52,H/2);p.line(W/2-52,H/2,W/2-52,72);p.line(W/2-52,72,W/2+52,72);p.line(W/2+52,72,W/2+52,H/2);p.line(W/2+52,H/2,W-38,H/2);
+      p.line(20,H/2,20,H-32);p.line(20,H-32,W-38,H-32);p.line(W-38,H-32,W-38,H/2);
+      p.noStroke();drawBulb(W/2-26,72,on&&sw1,'বাল্ব ১');drawBulb(W/2+26,72,on&&sw2,'বাল্ব ২');
+      p.fill(167,139,250);p.textSize(11);p.textAlign(p.LEFT);p.text('সিরিজ: একটি নিভলে দুটোই নেভে',10,22);
+    } else {
+      p.stroke(0,212,255);p.strokeWeight(3);p.noFill();
+      p.line(46,H/2,W-38,H/2);p.line(20,H/2,20,H-32);p.line(20,H-32,W-38,H-32);p.line(W-38,H-32,W-38,H/2);
+      p.stroke(sw1?p.color(0,212,255):p.color(51,65,85));p.strokeWeight(sw1?3:1.5);
+      p.line(W/2-55,H/2,W/2-55,72);p.line(W/2-55,72,W/2-5,72);p.line(W/2-5,72,W/2-5,H/2);
+      p.stroke(sw2?p.color(245,158,11):p.color(51,65,85));p.strokeWeight(sw2?3:1.5);
+      p.line(W/2+5,H/2,W/2+5,72);p.line(W/2+5,72,W/2+55,72);p.line(W/2+55,72,W/2+55,H/2);
+      p.noStroke();drawBulb(W/2-40,72,sw1,'বাল্ব ১');drawBulb(W/2+40,72,sw2,'বাল্ব ২');
+      p.fill(167,139,250);p.textSize(11);p.textAlign(p.LEFT);p.text('প্যারালাল: একটি নিভলে অন্যটি জ্বলে',10,22);
+    }
+    p.fill(sw1?p.color(16,185,129):p.color(239,68,68));p.textSize(10);p.text('সুইচ ১: '+(sw1?'চালু':'বন্ধ'),10,40);
+    p.fill(sw2?p.color(16,185,129):p.color(239,68,68));p.text('সুইচ ২: '+(sw2?'চালু':'বন্ধ'),10,56);
+  };
+  document.getElementById('simtip').textContent='সিরিজে একটি বাল্ব নিভলে দুটোই নেভে। প্যারালালে নিভলে অন্যটি জ্বলে।';
+}
+
+function freefall(p){
+  let h=200,t=0,run=false,g=9.8,dropped=false;
+  const bar=document.getElementById('ctrlbar');
+  bar.innerHTML=`<button class="cbtn" onclick="window._ffRun=true">ছাড়ো</button><button class="cbtn" onclick="window._ffReset=true">রিসেট</button><div class="srow"><label>g (m/s²)</label><input type="range" min="1" max="20" value="9.8" step="0.1" oninput="this.nextSibling.textContent=this.value;window._ffG=parseFloat(this.value)"><span>9.8</span></div>`;
+  window._ffRun=false;window._ffReset=false;window._ffG=9.8;
+  p.setup=()=>{p.createCanvas(p.min(480,document.getElementById('p5host').offsetWidth||480),260);};
+  p.draw=()=>{
+    if(window._ffReset){h=200;t=0;run=false;dropped=false;window._ffReset=false;}
+    if(window._ffRun&&!run&&!dropped){run=true;window._ffRun=false;}
+    g=window._ffG||9.8;
+    if(run){t+=0.05;h=200-0.5*g*t*t*100;if(h<=0){h=0;run=false;dropped=true;}}
+    p.background(13,17,23);
+    const W=p.width;
+    // Ground
+    p.fill(30,58,47);p.rect(0,p.height-18,W,18);p.fill(16,185,129);p.rect(0,p.height-20,W,3);
+    // Height line
+    p.stroke(0,212,255,40);p.strokeWeight(1);p.setLineDash([4,4]);p.line(55,28,55,p.height-20);p.noStroke();
+    // Ball
+    const by=28+(200-h)/200*(p.height-52);
+    p.fill(245,158,11,50);p.circle(W/2,by+12,36);
+    p.fill(245,158,11);p.circle(W/2,by+12,24);
+    // Stats
+    const dist=(200-h)/100,v=Math.sqrt(2*g*Math.max(dist,0));
+    p.fill(0,212,255);p.textSize(13);p.textAlign(p.LEFT);p.text('উচ্চতা: '+(h/100).toFixed(2)+' m',10,20);
+    p.fill(167,139,250);p.text('সময়: '+t.toFixed(2)+' s',10,38);
+    p.fill(16,185,129);p.text('বেগ: '+v.toFixed(2)+' m/s',10,56);
+    p.fill(245,158,11);p.text('g = '+g.toFixed(1)+' m/s²',W-105,20);
+    if(dropped){p.fill(0,212,255);p.textSize(12);p.textAlign(p.CENTER);p.text('h = ½gt² = '+(0.5*g*(t*t)).toFixed(2)+' m ✓',W/2,p.height-25);}
+  };
+  document.getElementById('simtip').textContent='ছাড়ো বোতামে ক্লিক করো। g এর মান পরিবর্তন করো — বেগ ও সময় দেখো।';
+}
+
+function electromagnet(p){
+  let on=false,coils=30,t=0;
+  const bar=document.getElementById('ctrlbar');
+  bar.innerHTML=`<button class="cbtn" onclick="window._emOn=!window._emOn">${on?'বিদ্যুৎ বন্ধ':'বিদ্যুৎ চালু'}</button><div class="srow"><label>কয়েল সংখ্যা</label><input type="range" min="10" max="60" value="30" oninput="this.nextSibling.textContent=this.value;window._emCoils=parseInt(this.value)"><span>30</span></div>`;
+  window._emOn=false;window._emCoils=30;
+  p.setup=()=>{p.createCanvas(p.min(480,document.getElementById('p5host').offsetWidth||480),220);};
+  p.draw=()=>{
+    on=window._emOn;coils=window._emCoils||30;t+=on?0.1:0;
+    p.background(13,17,23);
+    const W=p.width;
+    // Iron core
+    p.fill(120,113,108);p.rect(W/2-9,58,18,128,2);p.fill(168,162,158);p.rect(W/2-9,58,18,8,2);
+    // Coils
+    p.noFill();
+    for(let i=0;i<coils;i++){
+      const y=70+i*(82/coils);
+      const c=on?p.color(253,224,71,i%3===0?220:130):p.color(120,53,15,160);
+      p.stroke(c);p.strokeWeight(2);p.ellipse(W/2,y,44,7);
+    }
+    // Battery
+    p.noStroke();p.fill(16,185,129);p.rect(W/2-56,178,26,26,2);p.fill(51,65,85);p.rect(W/2+30,178,26,26,2);
+    p.fill(255);p.textSize(12);p.textAlign(p.CENTER);p.text('+',W/2-43,195);p.text('-',W/2+43,195);
+    // Wires
+    p.stroke(on?p.color(251,191,36):p.color(51,65,85));p.strokeWeight(2);
+    p.line(W/2-30,178,W/2-28,178);p.line(W/2-28,178,W/2-28,64);p.line(W/2-28,64,W/2-18,64);
+    p.line(W/2+56,178,W/2+28,178);p.line(W/2+28,178,W/2+28,64);p.line(W/2+28,64,W/2+18,64);
+    p.noStroke();
+    // Poles & field
+    if(on){
+      p.fill(220,38,38);p.rect(W/2-9,50,18,7,2);p.fill(37,99,235);p.rect(W/2-9,186,18,7,2);
+      p.fill(255);p.textSize(13);p.textAlign(p.CENTER);p.text('N',W/2,47);p.text('S',W/2,206);
+      // Field lines
+      for(let i=0;i<5;i++){const off=(i-2)*13;p.stroke(0,212,255,60);p.strokeWeight(1);p.noFill();p.beginShape();for(let ty=0;ty<=1;ty+=0.1){const a=ty*p.PI;p.vertex(W/2-80+off*p.sin(a),56+ty*(186-56));}p.endShape();}
+      p.noStroke();
+      // Attracted clips
+      for(let i=0;i<4;i++){p.fill(148,163,184);p.rect(W/2+(i-1.5)*13,194,4,9,1);}
+      p.fill(0,212,255);p.textSize(12);p.textAlign(p.LEFT);p.text('চুম্বকত্ব সক্রিয়! ধাতু আকর্ষণ হচ্ছে',10,22);
+    } else {
+      p.fill(239,68,68);p.textSize(12);p.textAlign(p.LEFT);p.text('বিদ্যুৎ নেই — চুম্বকত্ব নেই',10,22);
+    }
+    p.fill(167,139,250);p.textSize(11);p.text('কয়েল: '+coils,10,40);
+  };
+  document.getElementById('simtip').textContent='বিদ্যুৎ চালু করলে বৈদ্যুতিক চুম্বক তৈরি হয়। কয়েল বেশি → শক্তিশালী।';
+}
+
+function photosynthesis(p){
+  let light=5,co2=5,bubs=[],t=0;
+  const bar=document.getElementById('ctrlbar');
+  bar.innerHTML=`<div class="srow"><label>আলোর তীব্রতা</label><input type="range" min="0" max="10" value="5" oninput="this.nextSibling.textContent=this.value;window._phLight=parseInt(this.value)"><span>5</span></div><div class="srow"><label>CO₂ পরিমাণ</label><input type="range" min="0" max="10" value="5" oninput="this.nextSibling.textContent=this.value;window._phCo2=parseInt(this.value)"><span>5</span></div>`;
+  window._phLight=5;window._phCo2=5;
+  p.setup=()=>{p.createCanvas(p.min(480,document.getElementById('p5host').offsetWidth||480),220);};
+  p.draw=()=>{
+    light=window._phLight!==undefined?window._phLight:5;co2=window._phCo2!==undefined?window._phCo2:5;
+    const rate=Math.max(0,(light+co2-4)/16);t+=0.05;
+    p.background(p.map(light,0,10,13,22),p.map(light,0,10,17,28),p.map(light,0,10,23,38));
+    const W=p.width;
+    // Sun
+    const br=light/10;
+    p.fill(255,200,50,br*100);p.circle(W-52,36,56*br+16);
+    p.fill(255,200,50,br*255);p.circle(W-52,36,26);
+    // Leaf
+    const g=Math.floor(50+rate*150);
+    p.fill(20,g,30);p.noStroke();p.beginShape();
+    p.vertex(W/2,200);p.bezierVertex(W/2-72,148,W/2-58,76,W/2,60);
+    p.bezierVertex(W/2+58,76,W/2+72,148,W/2,200);p.endShape(p.CLOSE);
+    p.stroke(100,g+50,100,80);p.strokeWeight(1);p.line(W/2,200,W/2,78);p.noStroke();
+    // Bubbles
+    if(p.random()<rate*0.4)bubs.push({x:W/2+(p.random()-0.5)*70,y:100,r:p.random(2,5),life:1});
+    bubs.forEach(b=>{b.y-=1.5;b.life-=0.02;p.fill(100,255,200,b.life*180);p.circle(b.x,b.y,b.r*2);});
+    bubs=bubs.filter(b=>b.life>0&&b.y>0);
+    if(rate>0){p.fill(16,185,129);p.textSize(12);p.textAlign(p.RIGHT);p.text('O₂ উৎপন্ন! 🫧',W-10,60);}
+    p.fill(245,158,11);p.textSize(12);p.textAlign(p.LEFT);p.text('সালোকসংশ্লেষণ হার: '+(rate*100).toFixed(0)+'%',10,22);
+    // CO2 arrows in
+    for(let i=0;i<Math.floor(co2/2.5);i++){p.fill(96,165,250,150);p.textSize(10);p.text('CO₂',10+i*40,p.height-10);}
+  };
+  document.getElementById('simtip').textContent='আলো ও CO₂ বাড়ালে সালোকসংশ্লেষণ হার বাড়ে — O₂ বুদবুদ দেখো।';
+}
+
+function transpiration(p){
+  let covered=false,drops=[],t=0;
+  const bar=document.getElementById('ctrlbar');
+  bar.innerHTML=`<button class="cbtn" onclick="window._trCov=!window._trCov">${covered?'ব্যাগ খোলো':'পলিথিন দিয়ে ঢাকো'}</button>`;
+  window._trCov=false;
+  p.setup=()=>{p.createCanvas(p.min(480,document.getElementById('p5host').offsetWidth||480),210);};
+  p.draw=()=>{
+    covered=window._trCov;t+=0.05;
+    p.background(covered?p.color(13,17,23):p.color(9,17,22));
+    const W=p.width;
+    if(!covered){p.fill(255,200,50,150);p.circle(W-50,36,44);}
+    // Pot
+    p.fill(120,53,14);p.beginShape();p.vertex(W/2-36,175);p.vertex(W/2-28,148);p.vertex(W/2+28,148);p.vertex(W/2+36,175);p.endShape(p.CLOSE);
+    p.fill(87,83,78);p.rect(W/2-28,151,56,16);
+    // Stem
+    p.stroke(74,222,128);p.strokeWeight(4);p.line(W/2,148,W/2,98);p.noStroke();
+    // Leaves
+    [[W/2-18,126,.4],[W/2+18,118,-.4],[W/2,99,0]].forEach(([lx,ly,rot])=>{
+      p.push();p.translate(lx,ly);p.rotate(rot);p.fill(22,163,74);p.ellipse(0,0,44,22);p.pop();
+    });
+    // Bag
+    if(covered){
+      p.stroke(148,163,184,60);p.strokeWeight(1.5);p.noFill();
+      p.ellipse(W/2,120,122,110);p.noStroke();
+      if(p.random()<0.06)drops.push({x:W/2+(p.random()-0.5)*90,y:75+p.random(70),r:p.random(2,5),life:0.7});
+      drops.forEach(d=>{d.life-=0.01;p.fill(59,130,246,d.life*180);p.circle(d.x,d.y,d.r*2);});
+      drops=drops.filter(d=>d.life>0);
+      p.fill(0,212,255);p.textSize(12);p.textAlign(p.CENTER);p.text('প্রস্বেদন চলছে — পানির ফোঁটা জমছে! ✓',W/2,20);
+    } else {
+      drops=[];p.fill(148,163,184);p.textSize(11);p.textAlign(p.CENTER);p.text('পলিথিন দিয়ে ঢাকো',W/2,20);
+    }
+  };
+  document.getElementById('simtip').textContent='পলিথিনে পানির বাষ্প জমে ফোঁটা হয় — এটাই প্রস্বেদনের প্রমাণ।';
+}
+
+function yeast(p){
+  let started=false,bubs=[],lime=0,t=0;
+  const bar=document.getElementById('ctrlbar');
+  bar.innerHTML=`<button class="cbtn" onclick="window._yrSt=!window._yrSt">${started?'রিসেট':'পরীক্ষা শুরু করো'}</button>`;
+  window._yrSt=false;
+  p.setup=()=>{p.createCanvas(p.min(480,document.getElementById('p5host').offsetWidth||480),210);};
+  p.draw=()=>{
+    if(window._yrSt&&!started){started=true;}
+    else if(!window._yrSt&&started){started=false;bubs=[];lime=0;t=0;}
+    if(started){t+=0.05;lime=p.min(lime+0.05,40);}
+    p.background(13,17,23);
+    const W=p.width;
+    // Beaker 1
+    p.fill(245,158,11,40);p.rect(75,75,88,110,3);p.stroke(245,158,11,90);p.strokeWeight(2);p.rect(75,75,88,110,3);p.noStroke();
+    p.fill(255);p.textSize(9);p.textAlign(p.CENTER);p.text('ইস্ট+চিনি পানি',119,198);
+    if(started){
+      if(p.random()<0.14)bubs.push({x:80+p.random(78),y:175,r:p.random(2,4.5),vy:-1.4-p.random(),life:1});
+      bubs.forEach(b=>{b.y+=b.vy;b.life-=0.012;p.fill(255,220,100,b.life*140);p.circle(b.x,b.y,b.r*2);});
+      bubs=bubs.filter(b=>b.y>75&&b.life>0);
+    }
+    // Tube
+    p.stroke(148,163,184,60);p.strokeWeight(2);p.setLineDash([4,3]);
+    p.line(163,125,W/2+25,118);p.noStroke();p.fill(148,163,184,140);p.textSize(9);p.textAlign(p.CENTER);p.text('CO₂',W/2-5,112);
+    // Beaker 2
+    const la=p.min(lime*0.02,0.7);
+    p.fill(200,200,200,40+la*60);p.rect(W-163,75,88,110,3);p.stroke(148,163,184,80);p.strokeWeight(2);p.rect(W-163,75,88,110,3);p.noStroke();
+    if(lime>2){for(let i=0;i<3;i++){p.fill(220,220,220,la*80);p.circle(W-163+18+i*18,125,26+i*10);}}
+    p.fill(255);p.textSize(9);p.textAlign(p.CENTER);p.text('চুনের পানি',W-119,198);
+    if(lime>5){p.fill(16,185,129);p.textSize(12);p.textAlign(p.CENTER);p.text('CO₂ প্রমাণিত! চুনের পানি ঘোলা ✓',W/2,22);}
+    else if(started){p.fill(245,158,11);p.textSize(11);p.textAlign(p.CENTER);p.text('ইস্ট শ্বসন করছে… CO₂ উৎপন্ন হচ্ছে',W/2,22);}
+    else{p.fill(148,163,184);p.textSize(11);p.textAlign(p.CENTER);p.text('পরীক্ষা শুরু করো',W/2,22);}
+  };
+  document.getElementById('simtip').textContent='পরীক্ষা শুরু করো — ইস্ট CO₂ তৈরি করে চুনের পানি ঘোলা করে।';
+}
+
+function vinegar_soda(p){
+  let added=false,bubs=[],t=0;
+  const bar=document.getElementById('ctrlbar');
+  bar.innerHTML=`<button class="cbtn" onclick="window._vsAdd=!window._vsAdd">${added?'রিসেট':'বেকিং সোডা যোগ করো'}</button>`;
+  window._vsAdd=false;
+  p.setup=()=>{p.createCanvas(p.min(480,document.getElementById('p5host').offsetWidth||480),210);};
+  p.draw=()=>{
+    if(window._vsAdd&&!added){added=true;}
+    else if(!window._vsAdd&&added){added=false;bubs=[];t=0;}
+    if(added)t+=0.05;
+    p.background(13,17,23);
+    const W=p.width;
+    p.fill(255,255,255,12);p.rect(W/2-60,72,120,110,3);p.stroke(255,255,255,50);p.strokeWeight(2);p.rect(W/2-60,72,120,110,3);p.noStroke();
+    p.fill(251,191,36,80);p.rect(W/2-58,150,116,30);
+    if(!added){p.fill(226,232,240);p.ellipse(W/2,130,44,18);p.fill(148,163,184);p.textSize(10);p.textAlign(p.CENTER);p.text('বেকিং সোডা',W/2,148);}
+    if(added){
+      if(p.random()<0.28)bubs.push({x:W/2+(p.random()-0.5)*100,y:175,r:p.random(2,4.5),vy:-1.5-p.random(),vx:(p.random()-0.5)*0.4,life:1});
+      bubs.forEach(b=>{b.y+=b.vy;b.x+=b.vx;b.life-=0.012;p.fill(180,240,255,b.life*160);p.circle(b.x,b.y,b.r*2);});
+      bubs=bubs.filter(b=>b.y>72&&b.life>0);
+      p.fill(0,212,255);p.textSize(13);p.textAlign(p.CENTER);p.text('CO₂ গ্যাস উৎপন্ন! 🫧',W/2,22);
+      p.fill(148,163,184);p.textSize(10);p.text('CH₃COOH + NaHCO₃ → CO₂+H₂O+CH₃COONa',W/2,p.height-8);
+    } else {p.fill(251,191,36);p.textSize(11);p.textAlign(p.CENTER);p.text('ভিনেগার প্রস্তুত — বেকিং সোডা যোগ করো',W/2,22);}
+  };
+  document.getElementById('simtip').textContent='বেকিং সোডা যোগ করো — CO₂ গ্যাসের বুদবুদ দেখো!';
+}
+
+function state_change(p){
+  let temp=-10,heating=false,iv=null;
+  const bar=document.getElementById('ctrlbar');
+  bar.innerHTML=`<button class="cbtn" onclick="window._scHeat=!window._scHeat">তাপ দাও / বন্ধ</button><button class="cbtn" onclick="window._scReset=true">রিসেট</button>`;
+  window._scHeat=false;window._scReset=false;
+  p.setup=()=>{p.createCanvas(p.min(480,document.getElementById('p5host').offsetWidth||480),230);};
+  p.draw=()=>{
+    if(window._scReset){temp=-10;heating=false;window._scReset=false;}
+    heating=window._scHeat;
+    if(heating)temp=p.min(temp+0.5,115);
+    p.background(13,17,23);
+    const W=p.width,state=temp<0?'কঠিন (বরফ)':temp<100?'তরল (পানি)':'বায়বীয় (বাষ্প)';
+    // Beaker
+    p.fill(255,255,255,18);p.rect(W/2-42,75,84,100,3);p.stroke(148,163,184,80);p.strokeWeight(2);p.rect(W/2-42,75,84,100,3);p.noStroke();
+    // Content
+    if(temp<0){p.fill(191,219,254);p.rect(W/2-40,138,80,35);for(let i=0;i<5;i++){p.stroke(255,255,255,80);p.strokeWeight(1);p.line(W/2-28+i*14,148,W/2-28+i*14,165);}p.noStroke();}
+    else if(temp<100){const lh=p.map(temp,0,100,35,80);p.fill(59,130,246,p.map(temp,0,100,100,180));p.rect(W/2-40,175-lh,80,lh);}
+    else{for(let i=0;i<10;i++){p.fill(150,200,255,p.random(30,70));p.circle(W/2+(p.random()-0.5)*60,p.random(80,160),p.random(5,14));}}
+    // Thermometer
+    const th=p.map(p.constrain(temp,-10,115),- 10,115,0,95);
+    p.fill(30,41,59);p.rect(48,75,16,100,3);
+    p.fill(temp<0?p.color(96,165,250):temp<100?p.color(245,158,11):p.color(239,68,68));p.rect(50,173-th,12,th+5,2);
+    p.stroke(255,255,255,40);p.strokeWeight(1);p.rect(48,75,16,100,3);p.noStroke();
+    // Labels
+    p.fill(0,212,255);p.textSize(14);p.textAlign(p.LEFT);p.text(temp.toFixed(1)+'°C',15,36);
+    p.fill(245,158,11);p.textSize(13);p.textAlign(p.CENTER);p.text(state,W/2,36);
+    if(temp>=0&&temp<2){p.fill(16,185,129);p.textSize(12);p.text('গলনাঙ্ক! (0°C) ✓',W/2,55);}
+    if(temp>=100){p.fill(239,68,68);p.textSize(12);p.text('স্ফুটনাঙ্ক! (100°C) ✓',W/2,55);}
+    if(heating){for(let i=0;i<4;i++){p.fill(255,100+i*20,0,p.random(120,200));p.circle(W/2-15+i*10,200,15-i*3);}}
+  };
+  document.getElementById('simtip').textContent='তাপ দিলে বরফ → পানি (0°C) → বাষ্প (100°C)। তাপমাত্রা পর্যবেক্ষণ করো।';
+}
+
+/* ═══════════ 3D MODAL (Three.js) ═══════════ */
+function open3D(id,key){
+  const x=D[key].m3d.find(m=>m.id===id);if(!x)return;
+  const legend=x.parts||[];
+  const colors=['#00d4ff','#a78bfa','#10b981','#f59e0b','#ef4444','#60a5fa','#fb923c','#34d399'];
+  modal(`
+    <button class="mx" onclick="closeModal()">✕</button>
+    <div class="mh2">🌐 ${x.t}</div>
+    <div class="mc2">📖 ${x.ch}</div>
+    <div class="tdw">
+      <canvas id="tdcanvas"></canvas>
+      <div class="tdlbl">🌐 Three.js 3D — ড্র্যাগ করে ঘোরাও</div>
+      <div class="tdhint">drag to rotate · scroll to zoom</div>
+    </div>
+    <div class="legend">${legend.map((p,i)=>`<span class="leg" style="background:${colors[i%colors.length]}22;border-color:${colors[i%colors.length]}66;color:${colors[i%colors.length]}">${p}</span>`).join('')}</div>`);
+  setTimeout(()=>launch3D(id,x),80);
+}
+
+function launch3D(id,x){
+  const cv=document.getElementById('tdcanvas');if(!cv)return;
+  cv.width=cv.clientWidth||600;cv.height=cv.clientHeight||300;
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(60,cv.width/cv.height,0.1,200);
+  camera.position.set(0,0,10);
+  const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+  renderer.setSize(cv.width,cv.height);
+  renderer.setClearColor(0x04070f,1);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  window._tdRenderer=renderer;
+  scene.add(new THREE.AmbientLight(0xffffff,0.55));
+  const dl=new THREE.DirectionalLight(0xffffff,0.85);dl.position.set(5,8,5);scene.add(dl);
+  const pl=new THREE.PointLight(0x00d4ff,0.5,50);pl.position.set(-5,3,5);scene.add(pl);
+
+  
+  // Build model
+  const group=new THREE.Group();
+  const C={solar_system:buildSolar,atom:buildAtom,plant_cell:buildCell,dna:buildDNA,earth_layers:buildEarth,magnet:buildMagnet,mitosis:buildMitosis};
+  (C[id]||buildGeneric)(group,x);
+  scene.add(group);
+
+  // Drag
+  let isDrag=false,px=0,py=0;
+  cv.addEventListener('mousedown',e=>{isDrag=true;px=e.clientX;py=e.clientY;});
+  window.addEventListener('mouseup',()=>isDrag=false);
+  cv.addEventListener('mousemove',e=>{if(!isDrag)return;group.rotation.y+=(e.clientX-px)*0.01;group.rotation.x+=(e.clientY-py)*0.01;px=e.clientX;py=e.clientY;});
+  cv.addEventListener('touchstart',e=>{isDrag=true;px=e.touches[0].clientX;py=e.touches[0].clientY;},{passive:true});
+  cv.addEventListener('touchend',()=>isDrag=false,{passive:true});
+  cv.addEventListener('touchmove',e=>{if(!isDrag)return;group.rotation.y+=(e.touches[0].clientX-px)*0.009;group.rotation.x+=(e.touches[0].clientY-py)*0.009;px=e.touches[0].clientX;py=e.touches[0].clientY;},{passive:true});
+  // Scroll zoom
+  cv.addEventListener('wheel',e=>{camera.position.z=Math.max(3,Math.min(20,camera.position.z+e.deltaY*0.01));},{passive:true});
+
+  let animT=0;
+  function animate(){
+    window._tdRaf=requestAnimationFrame(animate);
+    animT+=0.012;
+    if(!isDrag) group.rotation.y+=0.006;
+    // animate electrons in atom
+    if(id==='atom'||id==='atom_sim'){
+      group.children.forEach(c=>{if(c.userData.isElectron){const a=c.userData.baseAngle+animT*(c.userData.speed||1);c.position.set(Math.cos(a)*c.userData.r,c.userData.yi*Math.sin(animT*0.3),Math.sin(a)*c.userData.r);}});
+    }
+    if(id==='solar_system'){
+      group.children.forEach(c=>{if(c.userData.isPlanet){const a=animT*c.userData.speed;c.position.x=Math.cos(a)*c.userData.dist;c.position.z=Math.sin(a)*c.userData.dist;c.rotation.y+=0.02;}});
+    }
+    renderer.render(scene,camera);
+  }
+  animate();
+}
+
+function buildSolar(g){
+  // Sun
+  const sun=new THREE.Mesh(new THREE.SphereGeometry(1.2,32,32),new THREE.MeshBasicMaterial({color:0xfbbf24}));
+  sun.add(new THREE.PointLight(0xfbbf24,2,50));g.add(sun);
+  // Stars
+  const sG=new THREE.BufferGeometry();const sP=[];
+  for(let i=0;i<600;i++)sP.push((Math.random()-.5)*120,(Math.random()-.5)*120,(Math.random()-.5)*120);
+  sG.setAttribute('position',new THREE.Float32BufferAttribute(sP,3));
+  g.add(new THREE.Points(sG,new THREE.PointsMaterial({color:0xffffff,size:0.18})));
+  // Planets
+  [{r:.28,d:2.8,c:0x9ca3af,sp:4.2,nm:'বুধ'},{r:.45,d:4.2,c:0xfbbf24,sp:3.2,nm:'শুক্র'},{r:.48,d:5.8,c:0x3b82f6,sp:2.6,nm:'পৃথিবী'},{r:.32,d:7.4,c:0xef4444,sp:2,nm:'মঙ্গল'},{r:1.0,d:10.5,c:0xf97316,sp:1.1,nm:'বৃহস্পতি'},{r:.85,d:13.5,c:0xe2c49f,sp:0.8,nm:'শনি'}].forEach(pl=>{
+    const m=new THREE.Mesh(new THREE.SphereGeometry(pl.r,18,18),new THREE.MeshPhongMaterial({color:pl.c}));
+    m.position.x=pl.d;m.userData={isPlanet:true,dist:pl.d,speed:pl.sp};g.add(m);
+    // Orbit ring
+    const oG=new THREE.RingGeometry(pl.d-.03,pl.d+.03,64);
+    const oM=new THREE.MeshBasicMaterial({color:0x334155,side:THREE.DoubleSide,transparent:true,opacity:.35});
+    const oring=new THREE.Mesh(oG,oM);oring.rotation.x=Math.PI/2;g.add(oring);
+    if(pl.nm==='শনি'){const rG=new THREE.RingGeometry(pl.r+.3,pl.r+1,32);const rM=new THREE.MeshBasicMaterial({color:0xe2c49f,side:THREE.DoubleSide,transparent:true,opacity:.55});const ring=new THREE.Mesh(rG,rM);ring.rotation.x=1.2;m.add(ring);}
+  });
+  g.scale.set(0.65,0.65,0.65);
+}
+
+function buildAtom(g){
+  // Nucleus cluster
+  const nc=[0xef4444,0x94a3b8];
+  for(let i=0;i<10;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(.22,12,12),new THREE.MeshPhongMaterial({color:nc[i%2]}));m.position.set((Math.random()-.5)*.7,(Math.random()-.5)*.7,(Math.random()-.5)*.7);g.add(m);}
+  // Shells
+  const shells=[[2,2.2,1.4],[8,3.8,0.9],[1,5.2,0.7]];
+  shells.forEach(([cnt,r,sp],si)=>{
+    const oG=new THREE.TorusGeometry(r,.04,6,64);const oM=new THREE.MeshBasicMaterial({color:0x334155});
+    const torus=new THREE.Mesh(oG,oM);torus.rotation.x=si*0.55;torus.rotation.y=si*0.3;g.add(torus);
+    for(let ei=0;ei<cnt;ei++){
+      const em=new THREE.Mesh(new THREE.SphereGeometry(.15,10,10),new THREE.MeshPhongMaterial({color:0x60a5fa,emissive:0x1d4ed8,emissiveIntensity:.4}));
+      em.userData={isElectron:true,r,sp,baseAngle:ei*(Math.PI*2/cnt),yi:si*.4};
+      g.add(em);
+    }
+  });
+  g.scale.set(0.75,0.75,0.75);
+}
+
+function buildCell(g){
+  // Cell wall
+  const cw=new THREE.Mesh(new THREE.BoxGeometry(5,3.5,.1),new THREE.MeshPhongMaterial({color:0x4ade80,transparent:true,opacity:.18,wireframe:false}));
+  const cwW=new THREE.Mesh(new THREE.BoxGeometry(5,3.5,.1),new THREE.MeshBasicMaterial({color:0x4ade80,wireframe:true,transparent:true,opacity:.18}));
+  g.add(cw);g.add(cwW);
+  // Nucleus
+  const nuc=new THREE.Mesh(new THREE.SphereGeometry(.65,20,20),new THREE.MeshPhongMaterial({color:0xa855f7}));nuc.position.set(.1,.1,.15);g.add(nuc);
+  // Chloroplasts
+  [[1.4,.7],[-.9,.9],[1.3,-.5],[-.5,-.8]].forEach(([x,y])=>{const gx=new THREE.SphereGeometry(.28,12,12);gx.scale(1.6,1,.8);const m=new THREE.Mesh(gx,new THREE.MeshPhongMaterial({color:0x16a34a}));m.position.set(x,y,.15);g.add(m);});
+  // Mitochondria
+  [[-1.3,-.4],[.6,.95],[-1.1,.5]].forEach(([x,y])=>{const gx=new THREE.SphereGeometry(.22,12,12);gx.scale(1.5,1,1);const m=new THREE.Mesh(gx,new THREE.MeshPhongMaterial({color:0xf97316}));m.position.set(x,y,.15);g.add(m);});
+  // Vacuole
+  const vac=new THREE.Mesh(new THREE.SphereGeometry(.75,16,16),new THREE.MeshPhongMaterial({color:0x38bdf8,transparent:true,opacity:.38}));vac.position.set(-.35,.1,.1);g.add(vac);
+  g.scale.set(.85,.85,.85);
+}
+
+function buildDNA(g){
+  const cols={A:0x60a5fa,T:0xf59e0b,G:0x10b981,C:0xef4444};
+  const pairs=[['A','T'],['G','C'],['T','A'],['C','G'],['A','T'],['G','C'],['T','A'],['C','G'],['A','T'],['G','C']];
+  pairs.forEach((pr,i)=>{
+    const angle=i*.65,y=i*.85-4.3,r=1.9;
+    // Backbone
+    [[r,angle],[r,angle+Math.PI]].forEach(([rad,ang])=>{const m=new THREE.Mesh(new THREE.SphereGeometry(.23,10,10),new THREE.MeshPhongMaterial({color:0x94a3b8}));m.position.set(Math.cos(ang)*rad,y,Math.sin(ang)*rad);g.add(m);});
+    // Bases
+    [0,1].forEach(bi=>{const ang=angle+bi*Math.PI;const m=new THREE.Mesh(new THREE.SphereGeometry(.27,10,10),new THREE.MeshPhongMaterial({color:cols[pr[bi]],emissive:cols[pr[bi]],emissiveIntensity:.15}));m.position.set(Math.cos(ang)*.82,y,Math.sin(ang)*.82);g.add(m);});
+  });
+  g.scale.set(.82,.82,.82);
+}
+
+function buildEarth(g){
+  // Layers (cut in half via clipping)
+  renderer_ref_bypass:if(window._tdRenderer){window._tdRenderer.localClippingEnabled=true;}
+  [[3.8,0x4ade80,.45],[3.1,0xf97316,.6],[2.1,0xef4444,.7],[1.1,0xfbbf24,1]].forEach(([r,c,o])=>{
+    const m=new THREE.Mesh(new THREE.SphereGeometry(r,32,32),new THREE.MeshPhongMaterial({color:c,transparent:true,opacity:o,side:THREE.DoubleSide}));g.add(m);
+  });
+  if(window._tdRenderer){const clip=new THREE.Plane(new THREE.Vector3(1,0,0),0);window._tdRenderer.clippingPlanes=[clip];}
+  g.scale.set(.7,.7,.7);
+}
+
+function buildMagnet(g){
+  const nMesh=new THREE.Mesh(new THREE.BoxGeometry(1.4,3,.9),new THREE.MeshPhongMaterial({color:0xdc2626}));
+  nMesh.position.set(0,1.5,0);g.add(nMesh);
+  const sMesh=new THREE.Mesh(new THREE.BoxGeometry(1.4,3,.9),new THREE.MeshPhongMaterial({color:0x2563eb}));
+  sMesh.position.set(0,-1.5,0);g.add(sMesh);
+  // Field lines
+  for(let i=0;i<7;i++){
+    const ang=i*(Math.PI*2/7);const pts=[];
+    for(let t=0;t<=1;t+=0.06){const a=t*Math.PI;pts.push(new THREE.Vector3(Math.cos(ang)*2.2*Math.sin(a),3-t*6,Math.sin(ang)*2.2*Math.sin(a)));}
+    const curve=new THREE.CatmullRomCurve3(pts);
+    const tG=new THREE.TubeGeometry(curve,18,.05,5,false);
+    const tM=new THREE.MeshBasicMaterial({color:0x00d4ff,transparent:true,opacity:.38});
+    g.add(new THREE.Mesh(tG,tM));
+  }
+  g.scale.set(.75,.75,.75);
+}
+
+function buildMitosis(g){
+  // Simple cell division representation
+  const c1=new THREE.Mesh(new THREE.SphereGeometry(2.2,24,24),new THREE.MeshPhongMaterial({color:0x1e3a5f,transparent:true,opacity:.65}));
+  c1.position.x=-2.4;g.add(c1);
+  const c2=new THREE.Mesh(new THREE.SphereGeometry(2.2,24,24),new THREE.MeshPhongMaterial({color:0x1e3a5f,transparent:true,opacity:.65}));
+  c2.position.x=2.4;g.add(c2);
+  const n1=new THREE.Mesh(new THREE.SphereGeometry(.7,16,16),new THREE.MeshPhongMaterial({color:0xa855f7}));n1.position.x=-2.4;g.add(n1);
+  const n2=new THREE.Mesh(new THREE.SphereGeometry(.7,16,16),new THREE.MeshPhongMaterial({color:0xa855f7}));n2.position.x=2.4;g.add(n2);
+  // Chromosomes
+  for(let i=0;i<4;i++){const gc=new THREE.SphereGeometry(.2,8,8);const mc=new THREE.MeshPhongMaterial({color:0xf59e0b});const chr=new THREE.Mesh(gc,mc);chr.position.set(-2.4+(i-.5-1.5)*.5,p5inst_bypass0||0,0);g.add(chr);}
+  for(let i=0;i<4;i++){const gc=new THREE.SphereGeometry(.2,8,8);const mc=new THREE.MeshPhongMaterial({color:0xf59e0b});const chr=new THREE.Mesh(gc,mc);chr.position.set(2.4+(i-.5-1.5)*.5,0,0);g.add(chr);}
+  g.scale.set(.55,.55,.55);
+}
+
+function buildGeneric(g,x){
+  const cols=[0x00d4ff,0xa855f7,0x10b981,0xf59e0b,0xef4444,0x60a5fa,0xfb923c,0x34d399];
+  const shapes=['sphere','box','cylinder','cone'];
+  (x.parts||['অংশ ১','অংশ ২','অংশ ৩']).forEach((part,i)=>{
+    const sh=shapes[i%shapes.length];
+    let geo;
+    if(sh==='sphere')geo=new THREE.SphereGeometry(.55,16,16);
+    else if(sh==='box')geo=new THREE.BoxGeometry(.85,.85,.85);
+    else if(sh==='cylinder')geo=new THREE.CylinderGeometry(.4,.4,1,16);
+    else geo=new THREE.ConeGeometry(.45,.95,16);
+    const mat=new THREE.MeshPhongMaterial({color:cols[i%cols.length],transparent:true,opacity:.88});
+    const m=new THREE.Mesh(geo,mat);
+    const ang=(i/(x.parts.length))*Math.PI*2;const r=i===0?0:2.2;
+    m.position.set(Math.cos(ang)*r,Math.sin(ang)*r*0.4,0);
+    g.add(m);
+  });
+}
+
+// Init
 render();
 </script>
 </body>
 </html>
-HTMLEOF
-wc -c /mnt/user-data/outputs/index.html && echo "Done 
+EOF
+echo "Done! Size: $(wc -c < /mnt/user-data/outputs/index.html) bytes"
